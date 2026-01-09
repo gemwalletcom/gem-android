@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Tokens suspeitos ou de spam são identificados como potenciais golpes ou ativos nocivos. Eles podem aparecer na sua carteira devido a airdrops, transferências ou importações manuais.</string>
   <string name="errors.insufficient_funds">Fundos insuficientes</string>
   <string name="info.insufficient_network_fee_balance.title">%s necessário</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Esta transação requer ** %s ** para cobrir a taxa de rede paga aos ** %s ** mineradores, não Gem Wallet. Certifique-se de ter %s suficiente .</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Esta transação requer %s para cobrir a taxa de rede paga a %s mineiros, não Gem WalletCertifique-se de ter o suficiente. %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Saldo insuficiente</string>
   <string name="info.insufficient_balance.description">Você não tem %s suficientes para concluir esta transação. Recarregue, receba ou troque na sua carteira e tente novamente.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Comprar %s</string>
   <string name="wallet.import_address_warning">Você pode visualizar saldos e transações para este endereço, mas **não pode enviar ou vender fundos**.</string>
   <string name="info.stake_minimum_amount.title">Quantidade mínima</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Na rede %s, o requisito mínimo de staking é **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">No %s Na rede, o requisito mínimo de staking é %s.</string>
   <string name="asset.add_to_wallet">Adicionar à carteira</string>
   <string name="asset.hide_from_wallet">Esconder da carteira</string>
   <string name="common.details">Detalhes</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Ativos</string>
   <string name="stake.delegations">Delegações</string>
   <string name="info.stake.apr.description">Taxa Percentual Anual (APR) é a taxa de recompensa anual para apostar sua criptomoeda.</string>
-  <string name="receive.warning" formatted="false">Este é o seu endereço — envie apenas **%s** no **%s** rede.</string>
+  <string name="receive.warning" formatted="false">Este é o seu endereço — envie apenas %s no %s rede.</string>
   <string name="perpetual.leverage">Alavancagem</string>
   <string name="perpetual.direction">Direção</string>
   <string name="perpetual.auto_close">Fechamento automático</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Alavancagem padrão</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recente</string>
   <string name="errors.no_data_available">Não há dados disponíveis.</string>
   <string name="errors.dust_threshold_short">A rede considera essa quantia insignificante — a taxa cobrada é superior à própria quantia.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Juntar Gem Wallet Use meu link de indicação e ganhe recompensas: %s</string>
   <string name="rewards.my_referral_code">Meu código de indicação</string>
   <string name="rewards.invite_friends.title">Convide amigos</string>
-  <string name="rewards.invite_friends.description">Ganhar **%d pontos** para cada amigo que se inscrever.</string>
+  <string name="rewards.invite_friends.description">Ganhar %s Pontos para cada amigo que se inscrever.</string>
   <string name="common.get_started">Comece agora</string>
   <string name="rewards.referral_code">Código de indicação</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Pegar %s</string>
   <string name="rewards.insufficient_points">Pontos insuficientes</string>
   <string name="rewards.confirm_redeem" formatted="false">Pegar %s para %s!</string>
+  <string name="transfer.sign_transaction.title">Assinar transação</string>
+  <string name="recent_activity.title">Recentes</string>
+  <string name="settings.preferences.app_icon">Ícone do aplicativo</string>
+  <string name="recent_activity.clear_confirmation">Tem certeza de que deseja apagar todos os itens recentes?</string>
+  <string name="rewards.pending.title">Bônus pendente</string>
+  <string name="rewards.pending.description">Disponível em %s</string>
+  <string name="rewards.pending.description_ready">Seu bônus está pronto!</string>
 </resources>

@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">의심스럽거나 스팸 토큰은 잠재적 사기 또는 유해 자산으로 식별됩니다. 이러한 토큰은 에어드랍, 이체 또는 수동 가져오기를 통해 지갑에 나타날 수 있습니다.</string>
   <string name="errors.insufficient_funds">자금이 부족합니다</string>
   <string name="info.insufficient_network_fee_balance.title">%s 이 필요합니다</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">이 거래에는 ** %s ** 채굴자에게 지불된 네트워크 수수료를 충당하기 위해 ** %s **가 필요하며, Gem Wallet 가 필요하지 않습니다. 충분한 %s 가 있는지 확인하세요.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">이 거래에는 다음이 필요합니다. %s 지불된 네트워크 수수료를 충당하기 위해 %s 광부들이 아니라 Gem Wallet충분한 양을 확보하세요. %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">잔액이 부족합니다</string>
   <string name="info.insufficient_balance.description">이 거래를 완료하기에 %s 잔액이 부족합니다. 지갑에 충전, 수령 또는 스왑한 후 다시 시도해 주세요.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">%s 구매</string>
   <string name="wallet.import_address_warning">이 주소에 대한 잔액과 거래 내역은 볼 수 있지만, **자금을 보내거나 판매할 수는 없습니다**.</string>
   <string name="info.stake_minimum_amount.title">최소 금액</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%s 네트워크에서 최소 스테이킹 요구 사항은 **%s**입니다.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">위에 %s 네트워크에서 최소 스테이킹 요구 사항은 다음과 같습니다. %s.</string>
   <string name="asset.add_to_wallet">지갑에 추가</string>
   <string name="asset.hide_from_wallet">지갑에서 숨기기</string>
   <string name="common.details">세부</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">자산</string>
   <string name="stake.delegations">위임</string>
   <string name="info.stake.apr.description">연이율(APR)은 암호화폐를 스테이킹할 때 매년 지급되는 보상률입니다.</string>
-  <string name="receive.warning" formatted="false">이 주소로 보내주세요. **만 보내시면 됩니다.%s** 위에 **%s** 네트워크.</string>
+  <string name="receive.warning" formatted="false">이 주소는 귀하의 주소입니다. 발송 전용입니다. %s 위에 %s 회로망.</string>
   <string name="perpetual.leverage">레버리지</string>
   <string name="perpetual.direction">방향</string>
   <string name="perpetual.auto_close">자동 닫기</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">기본 레버리지</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">최근의</string>
   <string name="errors.no_data_available">사용 가능한 데이터가 없습니다</string>
   <string name="errors.dust_threshold_short">네트워크는 이 금액을 먼지로 간주합니다. 수수료가 금액 자체보다 높기 때문입니다.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">가입하다 Gem Wallet 제 추천 링크를 통해 가입하시고 보상을 받으세요: %s</string>
   <string name="rewards.my_referral_code">내 추천 코드</string>
   <string name="rewards.invite_friends.title">친구 초대하기</string>
-  <string name="rewards.invite_friends.description">벌다 **%d 친구가 가입할 때마다 포인트가 적립됩니다.</string>
+  <string name="rewards.invite_friends.description">벌다 %s 친구가 가입할 때마다 포인트를 획득합니다.</string>
   <string name="common.get_started">시작하기</string>
   <string name="rewards.referral_code">추천 코드</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">얻다 %s</string>
   <string name="rewards.insufficient_points">점수가 부족합니다</string>
   <string name="rewards.confirm_redeem" formatted="false">얻다 %s ~을 위한 %s!</string>
+  <string name="transfer.sign_transaction.title">거래 서명</string>
+  <string name="recent_activity.title">최근</string>
+  <string name="settings.preferences.app_icon">앱 아이콘</string>
+  <string name="recent_activity.clear_confirmation">최근 항목을 모두 삭제하시겠습니까?</string>
+  <string name="rewards.pending.title">보너스 지급 예정</string>
+  <string name="rewards.pending.description">다음에서 이용 가능합니다: %s</string>
+  <string name="rewards.pending.description_ready">보너스가 지급되었습니다!</string>
 </resources>

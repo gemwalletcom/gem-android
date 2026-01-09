@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
   <string name="errors.insufficient_funds">Insufficient funds</string>
   <string name="info.insufficient_network_fee_balance.title">%s required</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">This transaction requires **%s** to cover the network fee paid to **%s** miners, not Gem Wallet. Ensure you have enough %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Wannan ciniki yana buƙatar %s don biyan kuɗin hanyar sadarwa da aka biya %s masu hakar ma\'adinai, ba Gem WalletTabbatar kana da isassun kayan aiki %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Insufficient Balance</string>
   <string name="info.insufficient_balance.description">You don’t have enough %s to complete this transaction. Please top up, receive, or swap in your wallet and try again.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Buy %s</string>
   <string name="wallet.import_address_warning">You can view balances and transactions for this address, but **cannot send or sell funds**.</string>
   <string name="info.stake_minimum_amount.title">Minimum Amount</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">On the %s network, the minimum staking requirement is **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">A kan %s hanyar sadarwa, mafi ƙarancin buƙatar saka hannun jari shine %s.</string>
   <string name="asset.add_to_wallet">Add to wallet</string>
   <string name="asset.hide_from_wallet">Hide from wallet</string>
   <string name="common.details">Details</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Assets</string>
   <string name="stake.delegations">Delegations</string>
   <string name="info.stake.apr.description">Annual Percentage Rate (APR) is the yearly reward rate for staking your cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Wannan shine adireshinka — aika kawai **%s** a cikin **%s** hanyar sadarwa.</string>
+  <string name="receive.warning" formatted="false">Wannan shine adireshinka — aika kawai %s a kan %s hanyar sadarwa.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Direction</string>
   <string name="perpetual.auto_close">Auto Close</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Default Leverage</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Kwanan nan</string>
   <string name="errors.no_data_available">No data available</string>
   <string name="errors.dust_threshold_short">The network considers this amount dust — the fee is higher than the amount itself.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Shiga Gem Wallet tare da hanyar haɗin yanar gizo na kuma sami lada: %s</string>
   <string name="rewards.my_referral_code">Lambar da na bayar ta hanyar sadarwa</string>
   <string name="rewards.invite_friends.title">Gayyaci Abokai</string>
-  <string name="rewards.invite_friends.description">Sami **%d maki** ga kowane aboki da ya shiga.</string>
+  <string name="rewards.invite_friends.description">Sami %s maki ga kowane aboki da ya shiga.</string>
   <string name="common.get_started">Fara</string>
   <string name="rewards.referral_code">Lambar Shawara</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Samu %s</string>
   <string name="rewards.insufficient_points">Rashin isassun maki</string>
   <string name="rewards.confirm_redeem" formatted="false">Samu %s don %s!</string>
+  <string name="transfer.sign_transaction.title">Sa hannu kan Ma\'amala</string>
+  <string name="recent_activity.title">Kwanan nan</string>
+  <string name="settings.preferences.app_icon">Alamar Manhaja</string>
+  <string name="recent_activity.clear_confirmation">Shin kana da tabbacin kana son share duk sabbin bayanai?</string>
+  <string name="rewards.pending.title">Karin Kudi Ana Jira</string>
+  <string name="rewards.pending.description">Akwai a cikin %s</string>
+  <string name="rewards.pending.description_ready">Karin kyautar ku a shirye take!</string>
 </resources>

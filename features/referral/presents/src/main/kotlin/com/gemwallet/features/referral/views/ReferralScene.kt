@@ -48,6 +48,8 @@ import com.gemwallet.features.referral.views.components.referralHead
 import com.gemwallet.features.referral.views.components.referralInfo
 import com.gemwallet.features.referral.views.dialogs.GetStartedDialog
 import com.gemwallet.features.referral.views.dialogs.ReferralCodeDialog
+import com.wallet.core.primitives.ReferralAllowance
+import com.wallet.core.primitives.ReferralQuota
 import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
@@ -203,7 +205,12 @@ private fun ReferralScenePreview() {
                 points = 1000,
                 usedReferralCode = null,
                 isEnabled = true,
-                redemptionOptions = emptyList()
+                redemptionOptions = emptyList(),
+                verified = true,
+                referralAllowance = ReferralAllowance(
+                    daily = ReferralQuota(0, 0),
+                    weekly = ReferralQuota(0, 0),
+                ),
             ),
             currentWallet = Wallet(
                 id = "1",

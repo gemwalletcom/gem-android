@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">संदिग्ध या स्पैम टोकन को संभावित घोटाले या हानिकारक संपत्ति के रूप में पहचाना जाता है। वे एयरड्रॉप, ट्रांसफ़र या मैन्युअल आयात के कारण आपके वॉलेट में दिखाई दे सकते हैं।</string>
   <string name="errors.insufficient_funds">अपर्याप्त कोष</string>
   <string name="info.insufficient_network_fee_balance.title">%s आवश्यक</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेन-देन के लिए ** [ %s %s ** माइनर्स को दिए गए नेटवर्क शुल्क को कवर करना आवश्यक है, न कि Gem Wallet । सुनिश्चित करें कि आपके पास पर्याप्त %s हैं।</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेनदेन के लिए आवश्यकता है %s नेटवर्क शुल्क का भुगतान करने के लिए %s खनिक, नहीं Gem Walletसुनिश्चित करें कि आपके पास पर्याप्त मात्रा में हो। %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">अपर्याप्त शेषराशि</string>
   <string name="info.insufficient_balance.description">इस लेनदेन को पूरा करने के लिए आपके पास पर्याप्त %s नहीं है। कृपया अपने वॉलेट में टॉप अप करें, प्राप्त करें या स्वैप करें और फिर से प्रयास करें।</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">%s खरीदें</string>
   <string name="wallet.import_address_warning">आप इस पते के लिए शेष राशि और लेनदेन देख सकते हैं, लेकिन **धन भेज या बेच नहीं सकते**।</string>
   <string name="info.stake_minimum_amount.title">न्यूनतम राशि</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%s नेटवर्क पर, न्यूनतम स्टेकिंग आवश्यकता **%s** है.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">पर %s नेटवर्क के लिए, न्यूनतम स्टेकिंग आवश्यकता है %s.</string>
   <string name="asset.add_to_wallet">वॉलेट में जोड़ें</string>
   <string name="asset.hide_from_wallet">बटुए से छिपाएँ</string>
   <string name="common.details">विवरण</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">संपत्ति</string>
   <string name="stake.delegations">प्रतिनियोजन</string>
   <string name="info.stake.apr.description">वार्षिक प्रतिशत दर (एपीआर) आपकी क्रिप्टोकरेंसी को दांव पर लगाने के लिए वार्षिक पुरस्कार दर है।</string>
-  <string name="receive.warning" formatted="false">यह आपका पता है — केवल ** भेजें%s** पर **%s** नेटवर्क।</string>
+  <string name="receive.warning" formatted="false">यह आपका पता है — केवल संदेश भेजें %s पर %s नेटवर्क।</string>
   <string name="perpetual.leverage">उत्तोलन</string>
   <string name="perpetual.direction">दिशा</string>
   <string name="perpetual.auto_close">स्वतः बंद</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">डिफ़ॉल्ट उत्तोलन</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">हाल ही का</string>
   <string name="errors.no_data_available">कोई डेटा मौजूद नहीं</string>
   <string name="errors.dust_threshold_short">नेटवर्क इस राशि को धूल मानता है - शुल्क स्वयं राशि से अधिक है।</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">जोड़ना Gem Wallet मेरे रेफरल लिंक का उपयोग करें और पुरस्कार अर्जित करें: %s</string>
   <string name="rewards.my_referral_code">मेरा रेफरल कोड</string>
   <string name="rewards.invite_friends.title">मित्रों को आमंत्रित करें</string>
-  <string name="rewards.invite_friends.description">कमाना **%d शामिल होने वाले प्रत्येक मित्र के लिए अंक**।</string>
+  <string name="rewards.invite_friends.description">कमाना %s जितने दोस्त जुड़ेंगे, उतने ही पॉइंट्स मिलेंगे।</string>
   <string name="common.get_started">शुरू हो जाओ</string>
   <string name="rewards.referral_code">रेफरल कोड</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">पाना %s</string>
   <string name="rewards.insufficient_points">अपर्याप्त अंक</string>
   <string name="rewards.confirm_redeem" formatted="false">पाना %s के लिए %s!</string>
+  <string name="transfer.sign_transaction.title">लेनदेन पर हस्ताक्षर करें</string>
+  <string name="recent_activity.title">हाल ही</string>
+  <string name="settings.preferences.app_icon">ऐप आइकन</string>
+  <string name="recent_activity.clear_confirmation">क्या आप वाकई सभी हालिया पोस्ट मिटाना चाहते हैं?</string>
+  <string name="rewards.pending.title">बोनस लंबित है</string>
+  <string name="rewards.pending.description">उपलब्ध है %s</string>
+  <string name="rewards.pending.description_ready">आपका बोनस तैयार है!</string>
 </resources>

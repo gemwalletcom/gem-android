@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">يتم تحديد الرموز المشبوهة أو غير المرغوب فيها على أنها عمليات احتيال محتملة أو أصول ضارة. قد تظهر في محفظتك نتيجةً لعمليات الإنزال الجوي أو التحويلات أو الاستيراد اليدوي.</string>
   <string name="errors.insufficient_funds">عدم كفاية الأموال</string>
   <string name="info.insufficient_network_fee_balance.title">%s مطلوب</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة ** %s ** لتغطية رسوم الشبكة المدفوعة لعمال المناجم ** %s **، وليس Gem Wallet. تأكد من وجود مبلغ كافٍ %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة %s لتغطية رسوم الشبكة المدفوعة إلى %s عمال المناجم، وليس Gem Walletتأكد من أن لديك ما يكفي %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">رصيد غير كاف</string>
   <string name="info.insufficient_balance.description">ليس لديك رصيد كافٍ %s لإتمام هذه المعاملة. يُرجى شحن رصيدك أو استلامه أو استبداله في محفظتك والمحاولة مرة أخرى.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">شراء %s</string>
   <string name="wallet.import_address_warning">يمكنك عرض الأرصدة والمعاملات لهذا العنوان، ولكن **لا يمكنك إرسال أو بيع الأموال**.</string>
   <string name="info.stake_minimum_amount.title">الحد الأدنى للمبلغ</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">على شبكة %s ، الحد الأدنى لمتطلبات المشاركة هو ** %s **.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">في %s في الشبكة، الحد الأدنى لمتطلبات التخزين هو %s.</string>
   <string name="asset.add_to_wallet">أضف إلى المحفظة</string>
   <string name="asset.hide_from_wallet">إخفاء من المحفظة</string>
   <string name="common.details">تفاصيل</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">أصول</string>
   <string name="stake.delegations">التفويضات</string>
   <string name="info.stake.apr.description">معدل النسبة السنوية (APR) هو معدل المكافأة السنوي لمراهنة العملة المشفرة الخاصة بك.</string>
-  <string name="receive.warning" formatted="false">هذا عنوانك — أرسل فقط **%s** على **%s** شبكة.</string>
+  <string name="receive.warning" formatted="false">هذا عنوانك — أرسل فقط %s على %s شبكة.</string>
   <string name="perpetual.leverage">الرافعة المالية</string>
   <string name="perpetual.direction">اتجاه</string>
   <string name="perpetual.auto_close">إغلاق تلقائي</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">الرافعة المالية الافتراضية</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">مؤخرًا</string>
   <string name="errors.no_data_available">لا توجد بيانات متاحة</string>
   <string name="errors.dust_threshold_short">تعتبر الشبكة هذه الكمية مجرد غبار، حيث أن الرسوم أعلى من الكمية نفسها.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">ينضم Gem Wallet استخدم رابط الإحالة الخاص بي واحصل على مكافآت: %s</string>
   <string name="rewards.my_referral_code">رمز الإحالة الخاص بي</string>
   <string name="rewards.invite_friends.title">ادعُ الأصدقاء</string>
-  <string name="rewards.invite_friends.description">يكسب **%d نقاط** لكل صديق ينضم.</string>
+  <string name="rewards.invite_friends.description">يكسب %s نقاط لكل صديق ينضم.</string>
   <string name="common.get_started">ابدأ الآن</string>
   <string name="rewards.referral_code">رمز الإحالة</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">يحصل %s</string>
   <string name="rewards.insufficient_points">نقاط غير كافية</string>
   <string name="rewards.confirm_redeem" formatted="false">يحصل %s ل %s!</string>
+  <string name="transfer.sign_transaction.title">توقيع المعاملة</string>
+  <string name="recent_activity.title">آخر الأخبار</string>
+  <string name="settings.preferences.app_icon">أيقونة التطبيق</string>
+  <string name="recent_activity.clear_confirmation">هل أنت متأكد من رغبتك في مسح جميع الملفات الأخيرة؟</string>
+  <string name="rewards.pending.title">المكافأة معلقة</string>
+  <string name="rewards.pending.description">متوفر في %s</string>
+  <string name="rewards.pending.description_ready">مكافأتك جاهزة!</string>
 </resources>

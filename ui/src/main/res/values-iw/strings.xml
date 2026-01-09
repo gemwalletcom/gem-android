@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">אסימונים חשודים או ספאם מזוהים כתרמיות פוטנציאליות או נכסים מזיקים. הם עשויים להופיע בארנק שלך עקב הטלות אוויר, העברות או ייבוא ידני.</string>
   <string name="errors.insufficient_funds">חוסר כספים</string>
   <string name="info.insufficient_network_fee_balance.title">נדרש %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">עסקה זו דורשת ** %s ** כדי לכסות את דמי הרשת ששולמו לכורי ** %s **, ולא ל- Gem Wallet. ודא שיש לך מספיק %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">עסקה זו דורשת %s כדי לכסות את דמי הרשת ששולמו %s כורים, לא Gem Walletודא שיש לך מספיק %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">יתרה לא מספקת</string>
   <string name="info.insufficient_balance.description">אין לך מספיק %s כדי להשלים עסקה זו. אנא טען, קבל או החלף בארנק שלך ונסה שוב.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">קנה %s</string>
   <string name="wallet.import_address_warning">ניתן לצפות ביתרות ועסקאות עבור כתובת זו, אך **לא ניתן לשלוח או למכור כספים**.</string>
   <string name="info.stake_minimum_amount.title">סכום מינימלי</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">ברשת %s, דרישת ההימור המינימלית היא **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">על ה %s רשת, דרישת ההימור המינימלית היא %s.</string>
   <string name="asset.add_to_wallet">הוסף לארנק</string>
   <string name="asset.hide_from_wallet">הסתר מהארנק</string>
   <string name="common.details">פרטים</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">נכסים</string>
   <string name="stake.delegations">האצלות</string>
   <string name="info.stake.apr.description">שיעור אחוז שנתי (APR) הוא שיעור התגמול השנתי עבור הפקדת מטבע הקריפטו שלך.</string>
-  <string name="receive.warning" formatted="false">זוהי הכתובת שלך - לשלוח בלבד **%s** על ה **%s**רשת.</string>
+  <string name="receive.warning" formatted="false">זוהי הכתובת שלך - שליחה בלבד %s על ה- %s רֶשֶׁת.</string>
   <string name="perpetual.leverage">מינוף</string>
   <string name="perpetual.direction">כיוון</string>
   <string name="perpetual.auto_close">סגירה אוטומטית</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">מינוף ברירת מחדל</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">אחרונים</string>
   <string name="errors.no_data_available">אין נתונים זמינים</string>
   <string name="errors.dust_threshold_short">הרשת מחשיבה את הכמות הזו כאבק - העמלה גבוהה יותר מהכמות עצמה.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">לְהִצְטַרֵף Gem Wallet בעזרת קישור ההפניה שלי וצברו פרסים: %s</string>
   <string name="rewards.my_referral_code">קוד ההפניה שלי</string>
   <string name="rewards.invite_friends.title">הזמן חברים</string>
-  <string name="rewards.invite_friends.description">להרוויח **%d נקודות** לכל חבר שמצטרף.</string>
+  <string name="rewards.invite_friends.description">לִזכּוֹת %s נקודות לכל חבר שמצטרף.</string>
   <string name="common.get_started">התחל</string>
   <string name="rewards.referral_code">קוד הפניה</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">לְקַבֵּל %s</string>
   <string name="rewards.insufficient_points">נקודות לא מספיקות</string>
   <string name="rewards.confirm_redeem" formatted="false">לְקַבֵּל %s עֲבוּר %s!</string>
+  <string name="transfer.sign_transaction.title">חתימה על עסקה</string>
+  <string name="recent_activity.title">אחרונים</string>
+  <string name="settings.preferences.app_icon">סמל האפליקציה</string>
+  <string name="recent_activity.clear_confirmation">האם אתה בטוח שאתה רוצה למחוק את כל ההודעות האחרונות?</string>
+  <string name="rewards.pending.title">בונוס ממתין</string>
+  <string name="rewards.pending.description">זמין ב %s</string>
+  <string name="rewards.pending.description_ready">הבונוס שלך מוכן!</string>
 </resources>

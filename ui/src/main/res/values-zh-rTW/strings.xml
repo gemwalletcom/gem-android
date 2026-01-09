@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">可疑或垃圾代幣會被識別為潛在的詐騙或有害資產。它們可能因空投、轉帳或手動匯入而出現在您的錢包中。</string>
   <string name="errors.insufficient_funds">資金不足</string>
   <string name="info.insufficient_network_fee_balance.title">需要%s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">此交易需要 ** %s ** 來支付給 ** %s ** 礦工的網路費用，而不是Gem Wallet 。請確保您有足夠的%s 。</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">此交易需要 %s 用於支付網路費用 %s 礦工，而不是 Gem Wallet確保你有足夠的 %s。</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">餘額不足</string>
   <string name="info.insufficient_balance.description">您的餘額不足%s ，無法完成此交易。請充值、接收或兌換您的錢包，然後重試。</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">購買%s</string>
   <string name="wallet.import_address_warning">您可以查看此地址的餘額和交易，但**不能發送或出售資金**。</string>
   <string name="info.stake_minimum_amount.title">最低金額</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">在%s網路上，最低質押要求為 **%s**。</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">在 %s 在網路中，最低質押要求是 %s。</string>
   <string name="asset.add_to_wallet">加入錢包</string>
   <string name="asset.hide_from_wallet">隱藏錢包</string>
   <string name="common.details">詳情</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">資產</string>
   <string name="stake.delegations">委託</string>
   <string name="info.stake.apr.description">年利率（APR）是質押加密貨幣的年度報酬率。</string>
-  <string name="receive.warning" formatted="false">這是您的地址—僅發送**%s**在**%s** 網路。</string>
+  <string name="receive.warning" formatted="false">這是您的地址—請僅發送郵件 %s 在 %s 網路。</string>
   <string name="perpetual.leverage">槓桿作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動關閉</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">預設槓桿</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">最近的</string>
   <string name="errors.no_data_available">暫無數據</string>
   <string name="errors.dust_threshold_short">網路將這筆金額視為微不足道的垃圾——手續費甚至高於金額本身。</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">加入 Gem Wallet 使用我的推薦鏈接，即可獲得獎勵： %s</string>
   <string name="rewards.my_referral_code">我的推薦碼</string>
   <string name="rewards.invite_friends.title">邀請好友</string>
-  <string name="rewards.invite_friends.description">賺 **%d 每邀請一位好友加入，即可獲得積分**。</string>
+  <string name="rewards.invite_friends.description">賺 %s 每邀請一位好友加入，即可獲得分數。</string>
   <string name="common.get_started">開始使用</string>
   <string name="rewards.referral_code">推薦碼</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">得到 %s</string>
   <string name="rewards.insufficient_points">分數不足</string>
   <string name="rewards.confirm_redeem" formatted="false">得到 %s 為了 %s！</string>
+  <string name="transfer.sign_transaction.title">簽署交易</string>
+  <string name="recent_activity.title">近期</string>
+  <string name="settings.preferences.app_icon">應用程式圖示</string>
+  <string name="recent_activity.clear_confirmation">您確定要清除所有最近使用記錄嗎？</string>
+  <string name="rewards.pending.title">獎金待發放</string>
+  <string name="rewards.pending.description">有售 %s</string>
+  <string name="rewards.pending.description_ready">您的獎金已發放！</string>
 </resources>

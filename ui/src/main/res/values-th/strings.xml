@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">โทเค็นที่น่าสงสัยหรือเป็นสแปมจะถูกระบุว่าเป็นการหลอกลวงหรือทรัพย์สินที่เป็นอันตราย โทเค็นเหล่านี้อาจปรากฏในกระเป๋าเงินของคุณเนื่องจากการส่งทางอากาศ การโอน หรือการนำเข้าด้วยตนเอง</string>
   <string name="errors.insufficient_funds">เงินไม่เพียงพอ</string>
   <string name="info.insufficient_network_fee_balance.title">%s จำเป็น</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้ต้องการ ** %s ** เพื่อครอบคลุมค่าธรรมเนียมเครือข่ายที่จ่ายให้กับ ** %s ** นักขุด ไม่ใช่ Gem Wallet โปรดตรวจสอบให้แน่ใจว่าคุณมี %s เพียงพอ</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้ต้องการ %s เพื่อชดเชยค่าธรรมเนียมเครือข่ายที่จ่ายไป %s ไม่ใช่คนงานเหมือง Gem Walletตรวจสอบให้แน่ใจว่าคุณมีเพียงพอ %s-</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">ยอดเงินคงเหลือไม่เพียงพอ</string>
   <string name="info.insufficient_balance.description">คุณมี %s ไม่เพียงพอสำหรับการทำธุรกรรมนี้ โปรดเติมเงิน รับ หรือแลกเปลี่ยนในกระเป๋าสตางค์ของคุณแล้วลองอีกครั้ง</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">ซื้อ %s</string>
   <string name="wallet.import_address_warning">คุณสามารถดูยอดคงเหลือและธุรกรรมสำหรับที่อยู่นี้ แต่ **ไม่สามารถส่งหรือขายเงินได้**</string>
   <string name="info.stake_minimum_amount.title">จำนวนเงินขั้นต่ำ</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">บนเครือข่าย %s ข้อกำหนดการเดิมพันขั้นต่ำคือ **%s**</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">บน %s เครือข่ายนี้ ข้อกำหนดการวางเดิมพันขั้นต่ำคือ %s-</string>
   <string name="asset.add_to_wallet">เพิ่มลงในกระเป๋าสตางค์</string>
   <string name="asset.hide_from_wallet">ซ่อนจากกระเป๋าสตางค์</string>
   <string name="common.details">รายละเอียด</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">สินทรัพย์</string>
   <string name="stake.delegations">การมอบหมาย</string>
   <string name="info.stake.apr.description">อัตราเปอร์เซ็นต์ต่อปี (APR) คืออัตราผลตอบแทนรายปีสำหรับการเดิมพันสกุลเงินดิจิทัลของคุณ</string>
-  <string name="receive.warning" formatted="false">นี่คือที่อยู่ของคุณ — ส่งเฉพาะ ** เท่านั้น%s** บน **%s**เครือข่าย**</string>
+  <string name="receive.warning" formatted="false">นี่คือที่อยู่ของคุณ — ส่งเฉพาะที่อยู่นี้เท่านั้น %s บน %s เครือข่าย</string>
   <string name="perpetual.leverage">อัตราทดทางการเงิน</string>
   <string name="perpetual.direction">ทิศทาง</string>
   <string name="perpetual.auto_close">ปิดอัตโนมัติ</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">เลเวอเรจเริ่มต้น</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">ล่าสุด</string>
   <string name="errors.no_data_available">ไม่มีข้อมูล</string>
   <string name="errors.dust_threshold_short">เครือข่ายถือว่าจำนวนนี้เป็นแค่ฝุ่น เพราะค่าธรรมเนียมนั้นสูงกว่าจำนวนที่แท้จริง</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">เข้าร่วม Gem Wallet ใช้ลิงก์แนะนำของฉันเพื่อรับรางวัล: %s</string>
   <string name="rewards.my_referral_code">รหัสแนะนำของฉัน</string>
   <string name="rewards.invite_friends.title">เชิญเพื่อนๆ</string>
-  <string name="rewards.invite_friends.description">ได้รับ **%d รับคะแนน** สำหรับเพื่อนแต่ละคนที่เข้าร่วม</string>
+  <string name="rewards.invite_friends.description">ได้รับ %s รับคะแนนสะสมสำหรับเพื่อนแต่ละคนที่เข้าร่วม</string>
   <string name="common.get_started">เริ่มต้นใช้งาน</string>
   <string name="rewards.referral_code">รหัสอ้างอิง</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">รับ %s</string>
   <string name="rewards.insufficient_points">คะแนนไม่เพียงพอ</string>
   <string name="rewards.confirm_redeem" formatted="false">รับ %s สำหรับ %s-</string>
+  <string name="transfer.sign_transaction.title">ลงนามในธุรกรรม</string>
+  <string name="recent_activity.title">ล่าสุด</string>
+  <string name="settings.preferences.app_icon">ไอคอนแอป</string>
+  <string name="recent_activity.clear_confirmation">คุณแน่ใจหรือไม่ว่าต้องการล้างรายการล่าสุดทั้งหมด?</string>
+  <string name="rewards.pending.title">โบนัสรออนุมัติ</string>
+  <string name="rewards.pending.description">มีจำหน่ายใน %s</string>
+  <string name="rewards.pending.description_ready">โบนัสของคุณพร้อมแล้ว!</string>
 </resources>

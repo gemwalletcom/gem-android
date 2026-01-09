@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">疑わしいトークンやスパムトークンは、詐欺や有害な資産の可能性があると判断されます。エアドロップ、送金、または手動インポートによってウォレットに表示される場合があります。</string>
   <string name="errors.insufficient_funds">資金不足</string>
   <string name="info.insufficient_network_fee_balance.title">%sが必要です</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">このトランザクションでは、マイナーへのネットワーク手数料として%s Gem Walletではなく [ %s s] が必要です。十分な%sがあることを確認してください。</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">この取引には %s ネットワーク料金を賄うために %s 鉱夫ではなく Gem Wallet十分な量があることを確認してください %s。</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">残高不足</string>
   <string name="info.insufficient_balance.description">この取引を完了するには%sが足りません。ウォレットにチャージ、受け取り、または交換して、もう一度お試しください。</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">%sを購入</string>
   <string name="wallet.import_address_warning">このアドレスの残高と取引は表示できますが、**資金を送信または売却することはできません**。</string>
   <string name="info.stake_minimum_amount.title">最低金額</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%sネットワークでは、最小ステーキング要件は **%s** です。</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">オンザ %s ネットワークの最小ステーキング要件は %s。</string>
   <string name="asset.add_to_wallet">ウォレットに追加</string>
   <string name="asset.hide_from_wallet">ウォレットから隠す</string>
   <string name="common.details">ディテール</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">資産</string>
   <string name="stake.delegations">委任</string>
   <string name="info.stake.apr.description">年率 (APR) は、暗号通貨をステーキングした場合の年間報酬率です。</string>
-  <string name="receive.warning" formatted="false">これはあなたの住所です - 送信のみ**%s** オン ザ **%s** ネットワーク。</string>
+  <string name="receive.warning" formatted="false">これはあなたの住所です - 送信のみ %s 上の %s ネットワーク。</string>
   <string name="perpetual.leverage">てこの作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動閉じる</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">デフォルトレバレッジ</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">最近の</string>
   <string name="errors.no_data_available">データなし</string>
   <string name="errors.dust_threshold_short">ネットワークはこの金額をダストとみなします。つまり、手数料は金額自体よりも高くなります。</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">参加する Gem Wallet 私の紹介リンクを使用して報酬を獲得しましょう: %s</string>
   <string name="rewards.my_referral_code">私の紹介コード</string>
   <string name="rewards.invite_friends.title">友達を招待</string>
-  <string name="rewards.invite_friends.description">得る **%d 参加した友達ごとに**ポイントが付与されます。</string>
+  <string name="rewards.invite_friends.description">得る %s 参加した友達ごとにポイントが付与されます。</string>
   <string name="common.get_started">始める</string>
   <string name="rewards.referral_code">紹介コード</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">得る %s</string>
   <string name="rewards.insufficient_points">ポイントが足りない</string>
   <string name="rewards.confirm_redeem" formatted="false">得る %s のために %s!</string>
+  <string name="transfer.sign_transaction.title">トランザクションに署名</string>
+  <string name="recent_activity.title">最近</string>
+  <string name="settings.preferences.app_icon">アプリアイコン</string>
+  <string name="recent_activity.clear_confirmation">最近使ったものをすべて消去してもよろしいですか?</string>
+  <string name="rewards.pending.title">ボーナス保留中</string>
+  <string name="rewards.pending.description">入手可能な %s</string>
+  <string name="rewards.pending.description_ready">ボーナスの準備ができました!</string>
 </resources>

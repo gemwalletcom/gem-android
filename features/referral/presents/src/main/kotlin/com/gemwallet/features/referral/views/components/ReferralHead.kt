@@ -56,7 +56,7 @@ internal fun LazyListScope.referralHead(
                 text = parseMarkdownToAnnotatedString(
                     markdown = stringResource(
                         R.string.rewards_invite_friends_description,
-                        joinPointsCost
+                        "**$joinPointsCost**"
                     )
                 ),
                 color = MaterialTheme.colorScheme.secondary,

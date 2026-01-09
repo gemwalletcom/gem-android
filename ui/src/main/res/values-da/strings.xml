@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Mistænkelige eller spam-tokens identificeres som potentielle svindelnumre eller skadelige aktiver. De kan dukke op i din wallet på grund af airdrops, overførsler eller manuelle importer.</string>
   <string name="errors.insufficient_funds">Utilstrækkelige midler</string>
   <string name="info.insufficient_network_fee_balance.title">%s påkrævet</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Denne transaktion kræver ** %s ** for at dække netværksgebyret betalt til ** %s ** minere, ikke Gem Wallet. Sørg for, at du har nok %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Denne transaktion kræver %s til dækning af det betalte netværksgebyr %s minearbejdere, ikke Gem WalletSørg for at du har nok %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Utilstrækkelig saldo</string>
   <string name="info.insufficient_balance.description">Du har ikke nok %s til at gennemføre denne transaktion. Tank op, modtag eller veksle i din wallet, og prøv igen.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Køb %s</string>
   <string name="wallet.import_address_warning">Du kan se saldi og transaktioner for denne adresse, men **kan ikke sende eller sælge penge**.</string>
   <string name="info.stake_minimum_amount.title">Minimumsbeløb</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">På netværket %s er minimumskravet for staking **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">På den %s netværk, minimumskravet til staking er %s.</string>
   <string name="asset.add_to_wallet">Tilføj til tegnebog</string>
   <string name="asset.hide_from_wallet">Skjul fra tegnebogen</string>
   <string name="common.details">Detaljer</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiver</string>
   <string name="stake.delegations">Delegationer</string>
   <string name="info.stake.apr.description">Årlig procentsats (ÅOP) er den årlige belønningssats for at satse din kryptovaluta.</string>
-  <string name="receive.warning" formatted="false">Dette er din adresse — kun send **%s** på **%s** netværk.</string>
+  <string name="receive.warning" formatted="false">Dette er din adresse — kun forsendelse %s på %s netværk.</string>
   <string name="perpetual.leverage">Gearing</string>
   <string name="perpetual.direction">Retning</string>
   <string name="perpetual.auto_close">Automatisk lukning</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Standardgearing</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Nylig</string>
   <string name="errors.no_data_available">Ingen data tilgængelige</string>
   <string name="errors.dust_threshold_short">Netværket anser denne mængde for støv – gebyret er højere end selve mængden.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Deltag Gem Wallet med mit henvisningslink og optjen belønninger: %s</string>
   <string name="rewards.my_referral_code">Min henvisningskode</string>
   <string name="rewards.invite_friends.title">Inviter venner</string>
-  <string name="rewards.invite_friends.description">Optjen **%d point** for hver ven, der tilmelder sig.</string>
+  <string name="rewards.invite_friends.description">Optjen %s point for hver ven, der tilmelder sig.</string>
   <string name="common.get_started">Kom i gang</string>
   <string name="rewards.referral_code">Henvisningskode</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Få %s</string>
   <string name="rewards.insufficient_points">Utilstrækkelige point</string>
   <string name="rewards.confirm_redeem" formatted="false">Få %s for %s!</string>
+  <string name="transfer.sign_transaction.title">Underskriv transaktion</string>
+  <string name="recent_activity.title">Seneste</string>
+  <string name="settings.preferences.app_icon">App-ikon</string>
+  <string name="recent_activity.clear_confirmation">Er du sikker på, at du vil slette alle seneste?</string>
+  <string name="rewards.pending.title">Bonus afventer</string>
+  <string name="rewards.pending.description">Tilgængelig i %s</string>
+  <string name="rewards.pending.description_ready">Din bonus er klar!</string>
 </resources>

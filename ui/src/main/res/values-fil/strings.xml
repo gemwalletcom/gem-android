@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Ang mga kahina-hinalang token o spam ay tinutukoy bilang mga potensyal na scam o mapaminsalang asset. Maaaring lumabas ang mga ito sa iyong wallet dahil sa mga airdrop, paglilipat, o manual na pag-import.</string>
   <string name="errors.insufficient_funds">Hindi sapat na pondo</string>
   <string name="info.insufficient_network_fee_balance.title">%s kinakailangan</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ang transaksyong ito ay nangangailangan ng ** %s ** upang mabayaran ang bayad sa network na binayaran sa ** %s ** mga minero, hindi Gem Wallet. Tiyaking mayroon kang sapat na %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ang transaksyong ito ay nangangailangan ng %s para mabayaran ang bayad sa network na ibinayad sa %s mga minero, hindi Gem WalletTiyaking mayroon kang sapat %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Hindi Sapat na Balanse</string>
   <string name="info.insufficient_balance.description">Wala kang sapat na %s upang makumpleto ang transaksyong ito. Mangyaring mag-top up, tumanggap, o magpalit sa iyong wallet at subukang muli.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Bumili ng %s</string>
   <string name="wallet.import_address_warning">Maaari mong tingnan ang mga balanse at transaksyon para sa address na ito, ngunit **hindi maaaring magpadala o magbenta ng mga pondo**.</string>
   <string name="info.stake_minimum_amount.title">Minimum na halaga</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Sa %s network, ang minimum na kinakailangan sa staking ay **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Sa %s network, ang minimum na kinakailangan sa staking ay %s.</string>
   <string name="asset.add_to_wallet">Idagdag sa wallet</string>
   <string name="asset.hide_from_wallet">Itago sa wallet</string>
   <string name="common.details">Mga Detalye</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Mga asset</string>
   <string name="stake.delegations">Mga delegasyon</string>
   <string name="info.stake.apr.description">Ang Annual Percentage Rate (APR) ay ang taunang reward rate para sa staking ng iyong cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Ito ang iyong address — ipadala lamang **%s** sa **%s** network.</string>
+  <string name="receive.warning" formatted="false">Ito ang iyong address — ipadala lamang %s sa %s network.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Direksyon</string>
   <string name="perpetual.auto_close">Auto Close</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Default na Leverage</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Kamakailan</string>
   <string name="errors.no_data_available">Walang available na data</string>
   <string name="errors.dust_threshold_short">Isinasaalang-alang ng network ang halagang ito ng alikabok — ang bayad ay mas mataas kaysa sa halaga mismo.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Sumali Gem Wallet gamit ang aking referral link at kumita ng mga gantimpala: %s</string>
   <string name="rewards.my_referral_code">Ang aking referral code</string>
   <string name="rewards.invite_friends.title">Mag-imbita ng mga Kaibigan</string>
-  <string name="rewards.invite_friends.description">Kumita **%d puntos** para sa bawat kaibigang sasali.</string>
+  <string name="rewards.invite_friends.description">Kumita %s puntos para sa bawat kaibigang sasali.</string>
   <string name="common.get_started">Magsimula</string>
   <string name="rewards.referral_code">Kodigo ng Referral</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Kunin %s</string>
   <string name="rewards.insufficient_points">Hindi sapat na puntos</string>
   <string name="rewards.confirm_redeem" formatted="false">Kunin %s para sa %s!</string>
+  <string name="transfer.sign_transaction.title">Pirmahan ang Transaksyon</string>
+  <string name="recent_activity.title">Mga Kamakailan</string>
+  <string name="settings.preferences.app_icon">Icon ng App</string>
+  <string name="recent_activity.clear_confirmation">Sigurado ka bang gusto mong i-clear lahat ng mga kamakailang impormasyon?</string>
+  <string name="rewards.pending.title">Bonus na Nakabinbin</string>
+  <string name="rewards.pending.description">Makukuha sa %s</string>
+  <string name="rewards.pending.description_ready">Handa na ang iyong bonus!</string>
 </resources>

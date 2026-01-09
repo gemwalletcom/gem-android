@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Підозрілі або спам-токени ідентифікуються як потенційні шахрайські або шкідливі активи. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
   <string name="errors.insufficient_funds">Недостатньо коштів</string>
   <string name="info.insufficient_network_fee_balance.title">Потрібно %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для цієї транзакції потрібно ** %s ** для покриття мережевої плати, сплаченої ** %s ** майнерам, а не Gem Wallet. Переконайтеся, що у вас достатньо %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ця транзакція вимагає %s для покриття сплаченої мережевої плати %s шахтарі, а не Gem WalletПереконайтеся, що у вас достатньо %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Недостатній баланс</string>
   <string name="info.insufficient_balance.description">У вас недостатньо %s для завершення цієї транзакції. Будь ласка, поповніть, отримайте або обміняйте свій гаманець і спробуйте ще раз.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Купити %s</string>
   <string name="wallet.import_address_warning">Ви можете переглядати баланси та транзакції для цієї адреси, але **не можете надсилати або продавати кошти**.</string>
   <string name="info.stake_minimum_amount.title">Мінімальна сума</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">У мережі %s мінімальний розмір стейкінгу становить **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">На %s мережі, мінімальна вимога до стейкінгу становить %s.</string>
   <string name="asset.add_to_wallet">Додати до гаманця</string>
   <string name="asset.hide_from_wallet">Приховати від гаманця</string>
   <string name="common.details">Деталі</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Активи</string>
   <string name="stake.delegations">Делегації</string>
   <string name="info.stake.apr.description">Річна процентна ставка (APR) – це річна ставка винагороди за стейкінг вашої криптовалюти.</string>
-  <string name="receive.warning" formatted="false">Надсилайте на цю адресу тільки **%s** у мережі **%s**.</string>
+  <string name="receive.warning" formatted="false">Це ваша адреса - надсилайте тільки %s в мережі %s.</string>
   <string name="perpetual.leverage">Кредитне плече</string>
   <string name="perpetual.direction">Напрямок</string>
   <string name="perpetual.auto_close">Автоматичне закриття</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Кредитне плече за замовчуванням</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Нещодавні</string>
   <string name="errors.no_data_available">Дані недоступні</string>
   <string name="errors.dust_threshold_short">Мережа вважає цю кількість пилом — плата вища за саму суму.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Приєднатися Gem Wallet за моїм реферальним посиланням та отримуйте винагороди: %s</string>
   <string name="rewards.my_referral_code">Мій реферальний код</string>
   <string name="rewards.invite_friends.title">Запросити друзів</string>
-  <string name="rewards.invite_friends.description">Заробіть **%d бали** за кожного друга, який приєднається.</string>
+  <string name="rewards.invite_friends.description">Заробляти %s бали за кожного друга, який приєднається.</string>
   <string name="common.get_started">Почати</string>
   <string name="rewards.referral_code">Реферальний код</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Отримати %s</string>
   <string name="rewards.insufficient_points">Недостатньо балів</string>
   <string name="rewards.confirm_redeem" formatted="false">Отримати %s для %s!</string>
+  <string name="transfer.sign_transaction.title">Підписати транзакцію</string>
+  <string name="recent_activity.title">Нещодавні</string>
+  <string name="settings.preferences.app_icon">Значок програми</string>
+  <string name="recent_activity.clear_confirmation">Ви впевнені, що хочете очистити всі нещодавні записи?</string>
+  <string name="rewards.pending.title">Бонус очікує на розгляд</string>
+  <string name="rewards.pending.description">Доступно в %s</string>
+  <string name="rewards.pending.description_ready">Ваш бонус готовий!</string>
 </resources>

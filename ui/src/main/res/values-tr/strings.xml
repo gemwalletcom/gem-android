@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Şüpheli veya spam token\'lar potansiyel dolandırıcılık veya zararlı varlıklar olarak tanımlanır. Airdrop\'lar, transferler veya manuel ithalatlar nedeniyle cüzdanınızda görünebilirler.</string>
   <string name="errors.insufficient_funds">Yetersiz fon</string>
   <string name="info.insufficient_network_fee_balance.title">%s gerekli</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem, ** %s ** madencilere ödenen ağ ücretini karşılamak için ** %s ** gerektirir, Gem Wallet değil. Yeterli %s kaynağınız olduğundan emin olun.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem gerektirir %s ödenen ağ ücretini karşılamak için %s madenciler, değil Gem WalletYeterli miktarda olduğundan emin olun. %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Yetersiz Bakiye</string>
   <string name="info.insufficient_balance.description">Bu işlemi tamamlamak için yeterli %s iniz yok. Lütfen cüzdanınıza para yükleyin, alın veya takas edin ve tekrar deneyin.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">%s satın al</string>
   <string name="wallet.import_address_warning">Bu adrese ait bakiyeleri ve işlemleri görüntüleyebilirsiniz, ancak **para gönderemez veya satamazsınız**.</string>
   <string name="info.stake_minimum_amount.title">Asgari tutar</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%s ağında, minimum stake gereksinimi **%s**\'dir.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Üzerinde %s Ağda, minimum staking gereksinimi şöyledir: %s.</string>
   <string name="asset.add_to_wallet">Cüzdana ekle</string>
   <string name="asset.hide_from_wallet">Cüzdandan gizle</string>
   <string name="common.details">Detaylar</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Varlıklar</string>
   <string name="stake.delegations">Yetkilendirmeler</string>
   <string name="info.stake.apr.description">Yıllık Yüzde Oranı (APR), kripto paranızı stake etmeniz durumunda ödeyeceğiniz yıllık ödül oranıdır.</string>
-  <string name="receive.warning" formatted="false">Bu sizin adresiniz — sadece ** gönderin%s** üzerinde **%s** ağ.</string>
+  <string name="receive.warning" formatted="false">Bu sizin adresiniz — sadece bu adrese gönderin. %s üzerinde %s ağ.</string>
   <string name="perpetual.leverage">Kaldıraç</string>
   <string name="perpetual.direction">Yön</string>
   <string name="perpetual.auto_close">Otomatik Kapatma</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Varsayılan Kaldıraç</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Son</string>
   <string name="errors.no_data_available">Veri mevcut değil</string>
   <string name="errors.dust_threshold_short">Ağ bu miktarı toz olarak değerlendiriyor; ücret miktarın kendisinden daha yüksek.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Katılmak Gem Wallet Benim referans linkimi kullanarak kayıt olun ve ödüller kazanın: %s</string>
   <string name="rewards.my_referral_code">Benim referans kodum</string>
   <string name="rewards.invite_friends.title">Arkadaşlarınızı Davet Edin</string>
-  <string name="rewards.invite_friends.description">Para kazanmak **%d Katılan her arkadaşınız için puan**.</string>
+  <string name="rewards.invite_friends.description">Para kazanmak %s Katılan her arkadaş için puan kazanacaksınız.</string>
   <string name="common.get_started">Başlayın</string>
   <string name="rewards.referral_code">Yönlendirme Kodu</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Elde etmek %s</string>
   <string name="rewards.insufficient_points">Yetersiz puan</string>
   <string name="rewards.confirm_redeem" formatted="false">Elde etmek %s için %s!</string>
+  <string name="transfer.sign_transaction.title">İmza İşlemi</string>
+  <string name="recent_activity.title">Son Haberler</string>
+  <string name="settings.preferences.app_icon">Uygulama Simgesi</string>
+  <string name="recent_activity.clear_confirmation">Son kullanılanları silmek istediğinizden emin misiniz?</string>
+  <string name="rewards.pending.title">Bonus Beklemede</string>
+  <string name="rewards.pending.description">Mevcuttur %s</string>
+  <string name="rewards.pending.description_ready">Bonusunuz hazır!</string>
 </resources>

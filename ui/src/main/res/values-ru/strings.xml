@@ -281,7 +281,7 @@
   <string name="common.warning">Внимание</string>
   <string name="warnings.multi_signature_blocked">Не переводите средства на этот %s кошелек Multi-Signature, если вы не уверены, что контролируете закрытые ключи. Невыполнение этого требования может подвергнуть вас мошенничеству, и вы можете навсегда потерять свои активы.</string>
   <string name="swap.price_impact">Влияние цены</string>
-  <string name="wallet.sell">Продавать</string>
+  <string name="wallet.sell">Продать</string>
   <string name="sell.title">Продать %s</string>
   <string name="common.learn_more">Узнать больше</string>
   <string name="info.network_fee.title">Сетевая плата</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Подозрительные или спам‑токены помечаются как потенциальные мошеннические или вредоносные активы. Они могут появиться в вашем кошельке в результате airdrop‑раздач, переводов или ручного добавления.</string>
   <string name="errors.insufficient_funds">Недостаточно средств</string>
   <string name="info.insufficient_network_fee_balance.title">Требуется %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для этой транзакции требуется ** %s ** для покрытия сетевой комиссии, выплачиваемой майнерам ** %s **, а не Gem Wallet. Убедитесь, что у вас достаточно %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для совершения этой транзакции требуется %s для покрытия сетевой комиссии, уплаченной %s шахтеры, а не Gem WalletУбедитесь, что у вас достаточно средств. %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Недостаточный баланс</string>
   <string name="info.insufficient_balance.description">У вас недостаточно %s для завершения этой транзакции. Пожалуйста, пополните, получите или обменяйте ваш кошелек и попробуйте еще раз.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Купить %s</string>
   <string name="wallet.import_address_warning">Вы можете просматривать балансы и транзакции для этого адреса, но **не можете отправлять или продавать средства**.</string>
   <string name="info.stake_minimum_amount.title">Минимальная сумма</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">В сети %s минимальное требование к стейкингу составляет **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">На %s в сети минимальные требования к стейкингу составляют %s.</string>
   <string name="asset.add_to_wallet">Добавить в кошелек</string>
   <string name="asset.hide_from_wallet">Скрыть из кошелька</string>
   <string name="common.details">Детали</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Ресурсы</string>
   <string name="stake.delegations">Делегации</string>
   <string name="info.stake.apr.description">Годовая процентная ставка (APR) — это годовая ставка вознаграждения за стейкинг вашей криптовалюты.</string>
-  <string name="receive.warning" formatted="false">Это ваш адрес — отправляйте только **%s** на **%s** сеть.</string>
+  <string name="receive.warning" formatted="false">Это ваш адрес — отправляйте только %s на %s сеть.</string>
   <string name="perpetual.leverage">Кредитное плечо</string>
   <string name="perpetual.direction">Направление</string>
   <string name="perpetual.auto_close">Автоматическое закрытие</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Кредитное плечо по умолчанию</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Недавний</string>
   <string name="errors.no_data_available">Данные отсутствуют.</string>
   <string name="errors.dust_threshold_short">Эту сумму сеть считает пылью — комиссия выше самой суммы.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Создайте Gem Wallet по моей реферальной ссылке и получите вознаграждение: %s</string>
   <string name="rewards.my_referral_code">Мой реферальный код</string>
   <string name="rewards.invite_friends.title">Пригласите друзей</string>
-  <string name="rewards.invite_friends.description">Зарабатывать **%d баллов** за каждого друга, который присоединится.</string>
+  <string name="rewards.invite_friends.description">Зарабатывать %s Баллы начисляются за каждого друга, который присоединится.</string>
   <string name="common.get_started">Начать</string>
   <string name="rewards.referral_code">Реферальный код</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Получать %s</string>
   <string name="rewards.insufficient_points">Недостаточно баллов</string>
   <string name="rewards.confirm_redeem" formatted="false">Получать %s для %s!</string>
+  <string name="transfer.sign_transaction.title">Подписать транзакцию</string>
+  <string name="recent_activity.title">Последние</string>
+  <string name="settings.preferences.app_icon">Значок приложения</string>
+  <string name="recent_activity.clear_confirmation">Вы уверены, что хотите удалить все последние записи?</string>
+  <string name="rewards.pending.title">Ожидается выплата бонуса</string>
+  <string name="rewards.pending.description">Доступно в %s</string>
+  <string name="rewards.pending.description_ready">Ваш бонус готов!</string>
 </resources>

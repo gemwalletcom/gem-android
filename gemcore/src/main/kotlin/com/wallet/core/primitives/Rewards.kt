@@ -16,6 +16,8 @@ data class RedemptionRequest (
 enum class RewardRedemptionType(val string: String) {
 	@SerialName("asset")
 	Asset("asset"),
+	@SerialName("giftAsset")
+	GiftAsset("giftAsset"),
 }
 
 @Serializable
@@ -53,20 +55,50 @@ data class RedemptionResult (
 )
 
 @Serializable
+data class ReferralQuota (
+	val limit: Int,
+	val available: Int
+)
+
+@Serializable
+data class ReferralAllowance (
+	val daily: ReferralQuota,
+	val weekly: ReferralQuota
+)
+
+@Serializable
 data class ReferralCode (
 	val code: String
+)
+
+@Serializable
+data class ReferralLeader (
+	val username: String,
+	val referrals: Int,
+	val points: Int
+)
+
+@Serializable
+data class ReferralLeaderboard (
+	val daily: List<ReferralLeader>,
+	val weekly: List<ReferralLeader>,
+	val monthly: List<ReferralLeader>
 )
 
 @Serializable
 enum class RewardEventType(val string: String) {
 	@SerialName("createUsername")
 	CreateUsername("createUsername"),
+	@SerialName("invitePending")
+	InvitePending("invitePending"),
 	@SerialName("inviteNew")
 	InviteNew("inviteNew"),
 	@SerialName("inviteExisting")
 	InviteExisting("inviteExisting"),
 	@SerialName("joined")
 	Joined("joined"),
+	@SerialName("disabled")
+	Disabled("disabled"),
 }
 
 @Serializable
@@ -83,6 +115,10 @@ data class Rewards (
 	val points: Int,
 	val usedReferralCode: String? = null,
 	val isEnabled: Boolean,
-	val redemptionOptions: List<RewardRedemptionOption>
+	val verified: Boolean,
+	val redemptionOptions: List<RewardRedemptionOption>,
+	val disableReason: String? = null,
+	val referralAllowance: ReferralAllowance,
+	val pendingVerificationAfter: SerializedDate? = null
 )
 

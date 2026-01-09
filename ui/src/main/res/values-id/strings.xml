@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Token yang mencurigakan atau spam diidentifikasi sebagai potensi penipuan atau aset berbahaya. Token tersebut mungkin muncul di dompet Anda karena airdrop, transfer, atau impor manual.</string>
   <string name="errors.insufficient_funds">Dana tidak mencukupi</string>
   <string name="info.insufficient_network_fee_balance.title">%s diperlukan</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Transaksi ini membutuhkan ** %s ** untuk menutupi biaya jaringan yang dibayarkan kepada ** %s ** penambang, bukan Gem Wallet. Pastikan Anda memiliki %s yang cukup.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Transaksi ini memerlukan %s untuk menutupi biaya jaringan yang dibayarkan kepada %s penambang, bukan Gem WalletPastikan Anda memiliki cukup %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Saldo Tidak Cukup</string>
   <string name="info.insufficient_balance.description">Anda tidak memiliki cukup %s untuk menyelesaikan transaksi ini. Harap isi ulang, terima, atau tukarkan di dompet Anda dan coba lagi.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Beli %s</string>
   <string name="wallet.import_address_warning">Anda dapat melihat saldo dan transaksi untuk alamat ini, tetapi **tidak dapat mengirim atau menjual dana**.</string>
   <string name="info.stake_minimum_amount.title">Jumlah minimum</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Pada jaringan %s, persyaratan staking minimum adalah **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Pada %s jaringan, persyaratan staking minimum adalah %s.</string>
   <string name="asset.add_to_wallet">Tambahkan ke dompet</string>
   <string name="asset.hide_from_wallet">Sembunyikan dari dompet</string>
   <string name="common.details">Rincian</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiva</string>
   <string name="stake.delegations">Delegasi</string>
   <string name="info.stake.apr.description">Tingkat Persentase Tahunan (APR) adalah tingkat imbalan tahunan untuk mempertaruhkan mata uang kripto Anda.</string>
-  <string name="receive.warning" formatted="false">Ini alamat Anda — kirim hanya **%s** pada **%s** jaringan.</string>
+  <string name="receive.warning" formatted="false">Ini alamat Anda — kirim saja %s pada %s jaringan.</string>
   <string name="perpetual.leverage">Daya ungkit keuangan</string>
   <string name="perpetual.direction">Arah</string>
   <string name="perpetual.auto_close">Tutup Otomatis</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Leverage Default</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Terkini</string>
   <string name="errors.no_data_available">Tidak ada data tersedia</string>
   <string name="errors.dust_threshold_short">Jaringan menganggap jumlah ini sebagai debu — biayanya lebih tinggi daripada jumlahnya sendiri.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Bergabung Gem Wallet Gunakan tautan referensi saya dan dapatkan hadiah: %s</string>
   <string name="rewards.my_referral_code">Kode referensi saya</string>
   <string name="rewards.invite_friends.title">Undang Teman</string>
-  <string name="rewards.invite_friends.description">Menghasilkan **%d poin** untuk setiap teman yang bergabung.</string>
+  <string name="rewards.invite_friends.description">Menghasilkan %s poin untuk setiap teman yang bergabung.</string>
   <string name="common.get_started">Mulai</string>
   <string name="rewards.referral_code">Kode Referensi</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Mendapatkan %s</string>
   <string name="rewards.insufficient_points">Poin tidak mencukupi</string>
   <string name="rewards.confirm_redeem" formatted="false">Mendapatkan %s untuk %s!</string>
+  <string name="transfer.sign_transaction.title">Menandatangani Transaksi</string>
+  <string name="recent_activity.title">Terbaru</string>
+  <string name="settings.preferences.app_icon">Ikon Aplikasi</string>
+  <string name="recent_activity.clear_confirmation">Apakah Anda yakin ingin menghapus semua postingan terbaru?</string>
+  <string name="rewards.pending.title">Bonus Tertunda</string>
+  <string name="rewards.pending.description">Tersedia dalam %s</string>
+  <string name="rewards.pending.description_ready">Bonus Anda sudah siap!</string>
 </resources>

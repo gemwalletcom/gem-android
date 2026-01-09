@@ -65,7 +65,7 @@ sealed class InfoSheetEntity(
         action = action,
         actionLabel = actionLabel,
         titleArgs = listOf(chain.asset().symbol),
-        descriptionArgs = listOf(value, chain.asset().name, chain.asset().symbol),
+        descriptionArgs = listOf("**$value**", "**${chain.asset().name}**", "**${chain.asset().symbol}**"),
     )
 
     class ReserveForFee(icon: Any) : InfoSheetEntity(

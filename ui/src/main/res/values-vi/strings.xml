@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Mã thông báo đáng ngờ hoặc thư rác được xác định là lừa đảo tiềm ẩn hoặc tài sản có hại. Chúng có thể xuất hiện trong ví của bạn do airdrop, chuyển khoản hoặc nhập thủ công.</string>
   <string name="errors.insufficient_funds">Không đủ tiền</string>
   <string name="info.insufficient_network_fee_balance.title">%s bắt buộc</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu ** %s ** để trang trải phí mạng lưới trả cho ** %s ** thợ đào, không phải Gem Wallet. Hãy đảm bảo bạn có đủ %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu %s để trang trải phí mạng đã trả cho %s thợ mỏ, không phải Gem WalletHãy đảm bảo bạn có đủ %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Số dư không đủ</string>
   <string name="info.insufficient_balance.description">Bạn không có đủ %s để hoàn tất giao dịch này. Vui lòng nạp tiền, nhận hoặc đổi trong ví của bạn và thử lại.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Mua %s</string>
   <string name="wallet.import_address_warning">Bạn có thể xem số dư và giao dịch của địa chỉ này, nhưng **không thể gửi hoặc bán tiền**.</string>
   <string name="info.stake_minimum_amount.title">Số tiền tối thiểu</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Trên mạng %s, yêu cầu đặt cược tối thiểu là **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Trên %s mạng lưới, yêu cầu đặt cọc tối thiểu là %s.</string>
   <string name="asset.add_to_wallet">Thêm vào ví</string>
   <string name="asset.hide_from_wallet">Ẩn khỏi ví</string>
   <string name="common.details">Chi tiết</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Tài sản</string>
   <string name="stake.delegations">Ủy quyền</string>
   <string name="info.stake.apr.description">Tỷ lệ phần trăm hàng năm (APR) là tỷ lệ phần thưởng hàng năm cho việc đặt cược tiền điện tử của bạn.</string>
-  <string name="receive.warning" formatted="false">Đây là địa chỉ của bạn — chỉ gửi **%s** trên **%s** mạng.</string>
+  <string name="receive.warning" formatted="false">Đây là địa chỉ của bạn — chỉ gửi thư %s trên %s mạng.</string>
   <string name="perpetual.leverage">Đòn bẩy</string>
   <string name="perpetual.direction">Phương hướng</string>
   <string name="perpetual.auto_close">Tự động đóng</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Đòn bẩy mặc định</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Gần đây</string>
   <string name="errors.no_data_available">Không có dữ liệu có sẵn</string>
   <string name="errors.dust_threshold_short">Mạng lưới coi số tiền này là bụi — mức phí còn cao hơn cả số tiền thực tế.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Tham gia Gem Wallet Sử dụng liên kết giới thiệu của tôi và nhận phần thưởng: %s</string>
   <string name="rewards.my_referral_code">Mã giới thiệu của tôi</string>
   <string name="rewards.invite_friends.title">Mời bạn bè</string>
-  <string name="rewards.invite_friends.description">Kiếm **%d điểm** cho mỗi người bạn tham gia.</string>
+  <string name="rewards.invite_friends.description">Kiếm %s Điểm thưởng cho mỗi người bạn tham gia.</string>
   <string name="common.get_started">Bắt đầu</string>
   <string name="rewards.referral_code">Mã giới thiệu</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Lấy %s</string>
   <string name="rewards.insufficient_points">Không đủ điểm</string>
   <string name="rewards.confirm_redeem" formatted="false">Lấy %s vì %s!</string>
+  <string name="transfer.sign_transaction.title">Ký giao dịch</string>
+  <string name="recent_activity.title">Gần đây</string>
+  <string name="settings.preferences.app_icon">Biểu tượng ứng dụng</string>
+  <string name="recent_activity.clear_confirmation">Bạn có chắc chắn muốn xóa tất cả mục gần đây không?</string>
+  <string name="rewards.pending.title">Tiền thưởng đang chờ xử lý</string>
+  <string name="rewards.pending.description">Có sẵn trong %s</string>
+  <string name="rewards.pending.description_ready">Phần thưởng của bạn đã sẵn sàng!</string>
 </resources>

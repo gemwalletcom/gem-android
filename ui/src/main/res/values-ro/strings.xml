@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Tokenurile suspecte sau spam sunt identificate ca potențiale escrocherii sau active dăunătoare. Acestea pot apărea în portofelul dvs. din cauza lansărilor prin airdrop, transferuri sau importuri manuale.</string>
   <string name="errors.insufficient_funds">Fonduri insuficiente</string>
   <string name="info.insufficient_network_fee_balance.title">%s necesar</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Această tranzacție necesită ** %s ** pentru a acoperi taxa de rețea plătită minerilor ** %s **, nu Gem Wallet. Asigurați-vă că aveți suficienți %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Această tranzacție necesită %s pentru a acoperi taxa de rețea plătită către %s mineri, nu Gem WalletAsigurați-vă că aveți suficienți %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Sold insuficient</string>
   <string name="info.insufficient_balance.description">Nu aveți suficienți %s pentru a finaliza această tranzacție. Vă rugăm să încărcați, să primiți sau să schimbați contul în portofelul dvs. și să încercați din nou.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Cumpără %s</string>
   <string name="wallet.import_address_warning">Puteți vizualiza soldurile și tranzacțiile pentru această adresă, dar **nu puteți trimite sau vinde fonduri**.</string>
   <string name="info.stake_minimum_amount.title">Suma minimă</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">În rețeaua %s, cerința minimă de staking este **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Pe %s rețea, cerința minimă de miză este %s.</string>
   <string name="asset.add_to_wallet">Adaugă în portofel</string>
   <string name="asset.hide_from_wallet">Ascunde din portofel</string>
   <string name="common.details">Detalii</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Active</string>
   <string name="stake.delegations">Delegații</string>
   <string name="info.stake.apr.description">Rata anuală procentuală (DAE) este rata anuală de recompensă pentru plasarea criptomonedei tale.</string>
-  <string name="receive.warning" formatted="false">Aceasta este adresa dumneavoastră — doar trimitere **%s** pe **%s** rețea.</string>
+  <string name="receive.warning" formatted="false">Aceasta este adresa dvs. — doar trimitere %s pe %s reţea.</string>
   <string name="perpetual.leverage">Efect de levier</string>
   <string name="perpetual.direction">Direcţie</string>
   <string name="perpetual.auto_close">Închidere automată</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Levier implicit</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
   <string name="errors.no_data_available">Nu sunt disponibile date</string>
   <string name="errors.dust_threshold_short">Rețeaua consideră această cantitate drept praf — taxa este mai mare decât suma în sine.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Alătură-te Gem Wallet cu linkul meu de recomandare și câștigă recompense: %s</string>
   <string name="rewards.my_referral_code">Codul meu de recomandare</string>
   <string name="rewards.invite_friends.title">Invită prieteni</string>
-  <string name="rewards.invite_friends.description">Câștigă **%d puncte** pentru fiecare prieten care se înscrie.</string>
+  <string name="rewards.invite_friends.description">Câştiga %s puncte pentru fiecare prieten care se alătură.</string>
   <string name="common.get_started">Începeți</string>
   <string name="rewards.referral_code">Cod de recomandare</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Obţine %s</string>
   <string name="rewards.insufficient_points">Puncte insuficiente</string>
   <string name="rewards.confirm_redeem" formatted="false">Obţine %s pentru %s!</string>
+  <string name="transfer.sign_transaction.title">Semnează tranzacția</string>
+  <string name="recent_activity.title">Recente</string>
+  <string name="settings.preferences.app_icon">Pictogramă aplicație</string>
+  <string name="recent_activity.clear_confirmation">Sigur vrei să ștergi toate cele recente?</string>
+  <string name="rewards.pending.title">Bonus în așteptare</string>
+  <string name="rewards.pending.description">Disponibil în %s</string>
+  <string name="rewards.pending.description_ready">Bonusul tău este gata!</string>
 </resources>

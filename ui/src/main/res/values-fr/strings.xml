@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Les jetons suspects ou indésirables sont identifiés comme des arnaques potentielles ou des actifs dangereux. Ils peuvent apparaître dans votre portefeuille suite à des airdrops, des transferts ou des importations manuelles.</string>
   <string name="errors.insufficient_funds">Fonds insuffisants</string>
   <string name="info.insufficient_network_fee_balance.title">%s requis</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Cette transaction nécessite ** %s ** pour couvrir les frais de réseau payés aux ** %s ** mineurs, et non à Gem Wallet. Assurez-vous d\'avoir suffisamment de %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Cette transaction nécessite %s pour couvrir les frais de réseau payés à %s mineurs, pas Gem WalletAssurez-vous d\'en avoir suffisamment %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Solde insuffisant</string>
   <string name="info.insufficient_balance.description">Vous n\'avez pas assez de %s pour finaliser cette transaction. Veuillez recharger, recevoir ou échanger votre portefeuille et réessayer.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Achetez %s</string>
   <string name="wallet.import_address_warning">Vous pouvez consulter les soldes et les transactions pour cette adresse, mais **vous ne pouvez pas envoyer ou vendre des fonds**.</string>
   <string name="info.stake_minimum_amount.title">Montant minimum</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Sur le réseau %s, l\'exigence minimale de jalonnement est de **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Sur le %s sur le réseau, l\'exigence de mise minimale est %s.</string>
   <string name="asset.add_to_wallet">Ajouter au portefeuille</string>
   <string name="asset.hide_from_wallet">Se cacher du portefeuille</string>
   <string name="common.details">Détails</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Actifs</string>
   <string name="stake.delegations">Délégations</string>
   <string name="info.stake.apr.description">Le taux annuel en pourcentage (APR) est le taux de récompense annuel pour le jalonnement de votre crypto-monnaie.</string>
-  <string name="receive.warning" formatted="false">Voici votre adresse — envoyez uniquement **%s** sur le **%s** réseau.</string>
+  <string name="receive.warning" formatted="false">Voici votre adresse — envoyez uniquement %s sur le %s réseau.</string>
   <string name="perpetual.leverage">Effet de levier</string>
   <string name="perpetual.direction">Direction</string>
   <string name="perpetual.auto_close">Fermeture automatique</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">effet de levier par défaut</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Récent</string>
   <string name="errors.no_data_available">Aucune donnée disponible</string>
   <string name="errors.dust_threshold_short">Le réseau considère ce montant comme négligeable — les frais sont supérieurs au montant lui-même.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Rejoindre Gem Wallet Utilisez mon lien de parrainage et gagnez des récompenses : %s</string>
   <string name="rewards.my_referral_code">Mon code de parrainage</string>
   <string name="rewards.invite_friends.title">Inviter des amis</string>
-  <string name="rewards.invite_friends.description">Gagner **%d points** pour chaque ami qui s\'inscrit.</string>
+  <string name="rewards.invite_friends.description">Gagner %s Des points pour chaque ami qui s\'inscrit.</string>
   <string name="common.get_started">Commencer</string>
   <string name="rewards.referral_code">Code de parrainage</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Obtenir %s</string>
   <string name="rewards.insufficient_points">Points insuffisants</string>
   <string name="rewards.confirm_redeem" formatted="false">Obtenir %s pour %s!</string>
+  <string name="transfer.sign_transaction.title">Signer la transaction</string>
+  <string name="recent_activity.title">Récents</string>
+  <string name="settings.preferences.app_icon">Icône de l\'application</string>
+  <string name="recent_activity.clear_confirmation">Êtes-vous sûr de vouloir effacer tous les éléments récents ?</string>
+  <string name="rewards.pending.title">Bonus en attente</string>
+  <string name="rewards.pending.description">Disponible en %s</string>
+  <string name="rewards.pending.description_ready">Votre prime est prête !</string>
 </resources>

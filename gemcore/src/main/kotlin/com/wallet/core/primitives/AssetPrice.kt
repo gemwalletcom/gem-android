@@ -15,7 +15,11 @@ data class AssetMarket (
 	val totalVolume: Double? = null,
 	val circulatingSupply: Double? = null,
 	val totalSupply: Double? = null,
-	val maxSupply: Double? = null
+	val maxSupply: Double? = null,
+	val allTimeHigh: Double? = null,
+	val allTimeHighDate: SerializedDate? = null,
+	val allTimeLow: Double? = null,
+	val allTimeLowDate: SerializedDate? = null
 )
 
 @Serializable

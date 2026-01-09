@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">مشکوک یا سپیم ٹوکنز کی شناخت ممکنہ گھوٹالوں یا نقصان دہ اثاثوں کے طور پر کی جاتی ہے۔ وہ ایئر ڈراپس، ٹرانسفرز، یا دستی درآمدات کی وجہ سے آپ کے بٹوے میں ظاہر ہو سکتے ہیں۔</string>
   <string name="errors.insufficient_funds">ناکافی فنڈز</string>
   <string name="info.insufficient_network_fee_balance.title">%s درکار ہے۔</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">اس لین دین کے لیے ** %s ** نیٹ ورک فیس کو پورا کرنے کے لیے ** %s ** کان کنوں کو ادا کرنے کی ضرورت ہے، نہ کہ Gem Wallet ۔ یقینی بنائیں کہ آپ کے پاس کافی ہے %s ۔</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">اس لین دین کی ضرورت ہے۔ %s نیٹ ورک کی فیس کو پورا کرنے کے لیے %s کان کنوں، نہیں Gem Wallet. یقینی بنائیں کہ آپ کے پاس کافی ہے۔ %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">ناکافی بیلنس</string>
   <string name="info.insufficient_balance.description">آپ کے پاس اس لین دین کو مکمل کرنے کے لیے کافی %s نہیں ہے۔ براہ کرم اپنے بٹوے میں ٹاپ اپ کریں، وصول کریں یا تبدیل کریں اور دوبارہ کوشش کریں۔</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">خریدیں %s</string>
   <string name="wallet.import_address_warning">آپ اس پتے کے بیلنس اور لین دین دیکھ سکتے ہیں، لیکن **فنڈز بھیج یا فروخت نہیں کر سکتے**۔</string>
   <string name="info.stake_minimum_amount.title">کم از کم رقم</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%s نیٹ ورک پر، اسٹیکنگ کی کم از کم ضرورت **%s** ہے۔</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">پر %s نیٹ ورک، اسٹیکنگ کی کم از کم ضرورت ہے۔ %s.</string>
   <string name="asset.add_to_wallet">بٹوے میں شامل کریں۔</string>
   <string name="asset.hide_from_wallet">بٹوے سے چھپائیں۔</string>
   <string name="common.details">تفصیلات</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">اثاثے</string>
   <string name="stake.delegations">تفویضات</string>
   <string name="info.stake.apr.description">سالانہ فیصدی شرح (APR) آپ کی کریپٹو کرنسی کو داغدار کرنے کے لیے سالانہ انعام کی شرح ہے۔</string>
-  <string name="receive.warning" formatted="false">یہ آپ کا پتہ ہے - صرف بھیجیں **%s** پر **%s** نیٹ ورک۔</string>
+  <string name="receive.warning" formatted="false">یہ آپ کا پتہ ہے - صرف بھیجیں۔ %s پر %s نیٹ ورک</string>
   <string name="perpetual.leverage">مالی فائدہ اٹھانا</string>
   <string name="perpetual.direction">سمت</string>
   <string name="perpetual.auto_close">آٹو بند</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">ڈیفالٹ لیوریج</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">حالیہ</string>
   <string name="errors.no_data_available">کوئی ڈیٹا دستیاب نہیں ہے۔</string>
   <string name="errors.dust_threshold_short">نیٹ ورک اس رقم کو دھول سمجھتا ہے — فیس خود رقم سے زیادہ ہے۔</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">شمولیت Gem Wallet میرے ریفرل لنک کے ساتھ اور انعامات حاصل کریں: %s</string>
   <string name="rewards.my_referral_code">میرا ریفرل کوڈ</string>
   <string name="rewards.invite_friends.title">دوستوں کو مدعو کریں۔</string>
-  <string name="rewards.invite_friends.description">کمائیں **%d شامل ہونے والے ہر دوست کے لیے پوائنٹس**۔</string>
+  <string name="rewards.invite_friends.description">کمائیں %s شامل ہونے والے ہر دوست کے لیے پوائنٹس۔</string>
   <string name="common.get_started">شروع کریں</string>
   <string name="rewards.referral_code">ریفرل کوڈ</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">حاصل کریں۔ %s</string>
   <string name="rewards.insufficient_points">ناکافی پوائنٹس</string>
   <string name="rewards.confirm_redeem" formatted="false">حاصل کریں۔ %s کے لیے %s!</string>
+  <string name="transfer.sign_transaction.title">لین دین پر دستخط کریں۔</string>
+  <string name="recent_activity.title">حالیہ</string>
+  <string name="settings.preferences.app_icon">ایپ آئیکن</string>
+  <string name="recent_activity.clear_confirmation">کیا آپ واقعی تمام حالیہ کو صاف کرنا چاہتے ہیں؟</string>
+  <string name="rewards.pending.title">بونس زیر التواء</string>
+  <string name="rewards.pending.description">میں دستیاب ہے۔ %s</string>
+  <string name="rewards.pending.description_ready">آپ کا بونس تیار ہے!</string>
 </resources>

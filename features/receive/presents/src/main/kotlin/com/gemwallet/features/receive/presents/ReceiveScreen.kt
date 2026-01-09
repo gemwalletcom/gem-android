@@ -130,7 +130,9 @@ private fun ReceiveScene(
         ) {
             item {
                 Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
@@ -200,8 +202,8 @@ private fun ReceiveScene(
                             text = parseMarkdownToAnnotatedString(
                                 stringResource(
                                     R.string.receive_warning,
-                                    assetInfo.asset.symbol,
-                                    assetInfo.asset.chain.asset().name + if (assetInfo.asset.id.type() == AssetSubtype.TOKEN) " (${assetInfo.asset.type})" else ""
+                                    "**${assetInfo.asset.symbol}**",
+                                    "**${ assetInfo.asset.chain.asset().name + if (assetInfo.asset.id.type() == AssetSubtype.TOKEN) " (${assetInfo.asset.type})" else "" }**"
                                 )
                             ),
                             textAlign = TextAlign.Center,

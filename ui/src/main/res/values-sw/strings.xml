@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Tokeni zinazotiliwa shaka au taka zinatambuliwa kuwa ulaghai au mali hatari. Huenda zikaonekana kwenye mkoba wako kwa sababu ya matone ya hewa, uhamisho, au uagizaji wa mikono.</string>
   <string name="errors.insufficient_funds">Upungufu wa fedha</string>
   <string name="info.insufficient_network_fee_balance.title">%s inahitajika</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Muamala huu unahitaji ** %s ** kulipia ada ya mtandao inayolipwa kwa ** %s ** wachimbaji, si Gem Wallet. Hakikisha una %s ya kutosha .</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Muamala huu unahitaji %s ili kufidia ada ya mtandao iliyolipwa kwa %s wachimbaji, si Gem WalletHakikisha una vya kutosha %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Mizani isiyotosha</string>
   <string name="info.insufficient_balance.description">Huna %s ya kutosha kukamilisha muamala huu. Tafadhali jaza, pokea, au ubadilishe pochi yako na ujaribu tena.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Nunua %s</string>
   <string name="wallet.import_address_warning">Unaweza kuangalia salio na miamala ya anwani hii, lakini **haiwezi kutuma au kuuza fedha**.</string>
   <string name="info.stake_minimum_amount.title">Kiasi cha chini</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Kwenye mtandao %s, hitaji la chini kabisa la kuweka hisa ni **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Juu ya %s mtandao, sharti la chini kabisa la kuweka dau ni %s.</string>
   <string name="asset.add_to_wallet">Ongeza kwenye mkoba</string>
   <string name="asset.hide_from_wallet">Ficha kutoka kwa mkoba</string>
   <string name="common.details">Maelezo</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Mali</string>
   <string name="stake.delegations">Uwakilishi</string>
   <string name="info.stake.apr.description">Kiwango cha Asilimia cha Mwaka (APR) ni kiwango cha tuzo cha kila mwaka cha kuweka sarafu yako ya cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Hii ni anwani yako — tuma tu **%s**kwenye **%s** mtandao.</string>
+  <string name="receive.warning" formatted="false">Hii ni anwani yako — tuma pekee %s kwenye %s mtandao.</string>
   <string name="perpetual.leverage">Uvunjaji wa kifedh</string>
   <string name="perpetual.direction">Mwelekeo</string>
   <string name="perpetual.auto_close">Funga Kiotomatiki</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Njia Chaguomsingi</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Hivi karibuni</string>
   <string name="errors.no_data_available">Hakuna data inayopatikana</string>
   <string name="errors.dust_threshold_short">Mtandao unazingatia kiasi hiki cha vumbi - ada ni kubwa kuliko kiasi yenyewe.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Jiunge Gem Wallet kwa kutumia kiungo changu cha rufaa na upate zawadi: %s</string>
   <string name="rewards.my_referral_code">Nambari yangu ya rufaa</string>
   <string name="rewards.invite_friends.title">Alika Marafiki</string>
-  <string name="rewards.invite_friends.description">Pata **%d pointi** kwa kila rafiki anayejiunga.</string>
+  <string name="rewards.invite_friends.description">Pata %s pointi kwa kila rafiki anayejiunga.</string>
   <string name="common.get_started">Anza</string>
   <string name="rewards.referral_code">Nambari ya Rufaa</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Pata %s</string>
   <string name="rewards.insufficient_points">Pointi zisizotosha</string>
   <string name="rewards.confirm_redeem" formatted="false">Pata %s kwa %s!</string>
+  <string name="transfer.sign_transaction.title">Saini Muamala</string>
+  <string name="recent_activity.title">Hivi karibuni</string>
+  <string name="settings.preferences.app_icon">Aikoni ya Programu</string>
+  <string name="recent_activity.clear_confirmation">Una uhakika unataka kufuta taarifa zote za hivi karibuni?</string>
+  <string name="rewards.pending.title">Bonasi Inasubiri</string>
+  <string name="rewards.pending.description">Inapatikana katika %s</string>
+  <string name="rewards.pending.description_ready">Bonasi yako iko tayari!</string>
 </resources>

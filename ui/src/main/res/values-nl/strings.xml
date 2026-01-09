@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Verdachte of spamtokens worden herkend als potentiële oplichting of schadelijke activa. Ze kunnen in uw wallet verschijnen via airdrops, overschrijvingen of handmatige imports.</string>
   <string name="errors.insufficient_funds">Onvoldoende fondsen</string>
   <string name="info.insufficient_network_fee_balance.title">%s vereist</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Voor deze transactie is ** %s ** nodig om de netwerkkosten te dekken die aan ** %s ** miners worden betaald, niet aan Gem Wallet. Zorg ervoor dat u voldoende %s hebt.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Deze transactie vereist %s om de netwerkkosten te dekken die betaald worden aan %s mijnwerkers, niet Gem WalletZorg ervoor dat je voldoende hebt. %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Onvoldoende saldo</string>
   <string name="info.insufficient_balance.description">Je hebt niet genoeg %s om deze transactie te voltooien. Vul je wallet aan, ontvang of wissel in en probeer het opnieuw.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">Koop %s</string>
   <string name="wallet.import_address_warning">U kunt het saldo en de transacties voor dit adres bekijken, maar u kunt geen geld verzenden of verkopen.</string>
   <string name="info.stake_minimum_amount.title">Minimumbedrag</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Op het %s netwerk is de minimale inzetvereiste **%s**.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Op de %s netwerk, de minimale inzetvereiste is %s.</string>
   <string name="asset.add_to_wallet">Toevoegen aan portemonnee</string>
   <string name="asset.hide_from_wallet">Verbergen voor portemonnee</string>
   <string name="common.details">Details</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Activa</string>
   <string name="stake.delegations">Delegaties</string>
   <string name="info.stake.apr.description">Jaarlijks percentage (APR) is het jaarlijkse beloningspercentage voor het staken van uw cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Dit is uw adres — alleen verzenden **%s** op de **%s** netwerk.</string>
+  <string name="receive.warning" formatted="false">Dit is uw adres — alleen verzenden %s op de %s netwerk.</string>
   <string name="perpetual.leverage">Hefboom</string>
   <string name="perpetual.direction">Richting</string>
   <string name="perpetual.auto_close">Automatisch sluiten</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">Standaard hefboomwerking</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
   <string name="errors.no_data_available">Geen gegevens beschikbaar</string>
   <string name="errors.dust_threshold_short">Het netwerk beschouwt deze hoeveelheid als stof; de vergoeding is hoger dan de hoeveelheid zelf.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">Meedoen Gem Wallet Gebruik mijn verwijzingslink en verdien beloningen: %s</string>
   <string name="rewards.my_referral_code">Mijn verwijzingscode</string>
   <string name="rewards.invite_friends.title">Nodig vrienden uit</string>
-  <string name="rewards.invite_friends.description">Verdienen **%d punten** voor elke vriend die meedoet.</string>
+  <string name="rewards.invite_friends.description">Verdienen %s punten voor elke vriend die meedoet.</string>
   <string name="common.get_started">Aan de slag</string>
   <string name="rewards.referral_code">Verwijzingscode</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">Krijgen %s</string>
   <string name="rewards.insufficient_points">Onvoldoende punten</string>
   <string name="rewards.confirm_redeem" formatted="false">Krijgen %s voor %s!</string>
+  <string name="transfer.sign_transaction.title">Transactie ondertekenen</string>
+  <string name="recent_activity.title">Recente</string>
+  <string name="settings.preferences.app_icon">App-pictogram</string>
+  <string name="recent_activity.clear_confirmation">Weet je zeker dat je alle recente items wilt verwijderen?</string>
+  <string name="rewards.pending.title">Bonus in afwachting</string>
+  <string name="rewards.pending.description">Beschikbaar in %s</string>
+  <string name="rewards.pending.description_ready">Je bonus staat klaar!</string>
 </resources>

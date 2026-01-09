@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">توکن‌های مشکوک یا اسپم به عنوان کلاهبرداری‌های بالقوه یا دارایی‌های مضر شناسایی می‌شوند. آنها ممکن است به دلیل ایردراپ‌ها، انتقال‌ها یا واردات دستی در کیف پول شما ظاهر شوند.</string>
   <string name="errors.insufficient_funds">بودجه ناکافی</string>
   <string name="info.insufficient_network_fee_balance.title">%s مورد نیاز</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">این تراکنش به ** %s ** برای پوشش کارمزد شبکه پرداخت شده به ** %s ** ماینرها نیاز دارد، نه Gem Wallet. مطمئن شوید که %s کافی دارید.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">این تراکنش مستلزم %s برای پوشش هزینه شبکه پرداخت شده به %s معدنچیان، نه Gem Walletمطمئن شوید که به اندازه کافی دارید. %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">موجودی ناکافی</string>
   <string name="info.insufficient_balance.description">شما %s کافی برای تکمیل این تراکنش ندارید. لطفاً کیف پول خود را شارژ، دریافت یا مبادله کنید و دوباره امتحان کنید.</string>
@@ -434,7 +434,7 @@
   <string name="asset.buy_asset">خرید %s</string>
   <string name="wallet.import_address_warning">شما می‌توانید موجودی و تراکنش‌های این آدرس را مشاهده کنید، اما **نمی‌توانید وجه ارسال یا بفروشید**.</string>
   <string name="info.stake_minimum_amount.title">حداقل مقدار</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">در شبکه %s ، حداقل میزان سپرده‌گذاری **%s** است.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">روی %s شبکه، حداقل الزام استیکینگ %s.</string>
   <string name="asset.add_to_wallet">اضافه کردن به کیف پول</string>
   <string name="asset.hide_from_wallet">پنهان شدن از کیف پول</string>
   <string name="common.details">جزئیات</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">دارایی‌ها</string>
   <string name="stake.delegations">واگذاری‌ها</string>
   <string name="info.stake.apr.description">نرخ درصد سالانه (APR) نرخ پاداش سالانه برای سپرده‌گذاری ارز دیجیتال شما است.</string>
-  <string name="receive.warning" formatted="false">این آدرس شماست — فقط ارسال کنید **%s**روی**%s**شبکه.</string>
+  <string name="receive.warning" formatted="false">این آدرس شماست — فقط ارسال %s روی %s شبکه.</string>
   <string name="perpetual.leverage">اهرم مالی</string>
   <string name="perpetual.direction">جهت</string>
   <string name="perpetual.auto_close">بستن خودکار</string>
@@ -523,7 +523,6 @@
   <string name="settings.preferences.default_leverage">اهرم پیش‌فرض</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">اخیر</string>
   <string name="errors.no_data_available">داده‌ای موجود نیست</string>
   <string name="errors.dust_threshold_short">شبکه این مبلغ را داست (dust) در نظر می‌گیرد - کارمزد آن از خود مبلغ بیشتر است.</string>
   <string name="charts.take_profit">TP</string>
@@ -539,7 +538,7 @@
   <string name="rewards.share_text">عضویت Gem Wallet با لینک معرفی من و کسب جوایز: %s</string>
   <string name="rewards.my_referral_code">کد معرف من</string>
   <string name="rewards.invite_friends.title">دعوت از دوستان</string>
-  <string name="rewards.invite_friends.description">کسب درآمد **%d امتیاز** برای هر دوستی که ملحق می‌شود.</string>
+  <string name="rewards.invite_friends.description">کسب درآمد %s امتیاز برای هر دوستی که عضو می‌شود.</string>
   <string name="common.get_started">شروع کنید</string>
   <string name="rewards.referral_code">کد ارجاع</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -556,4 +555,11 @@
   <string name="rewards.ways_spend.asset.title">دریافت %s</string>
   <string name="rewards.insufficient_points">امتیاز ناکافی</string>
   <string name="rewards.confirm_redeem" formatted="false">دریافت %s برای %s!</string>
+  <string name="transfer.sign_transaction.title">ثبت تراکنش</string>
+  <string name="recent_activity.title">تازه‌ها</string>
+  <string name="settings.preferences.app_icon">آیکون برنامه</string>
+  <string name="recent_activity.clear_confirmation">آیا مطمئن هستید که می‌خواهید تمام موارد اخیر را پاک کنید؟</string>
+  <string name="rewards.pending.title">پاداش در انتظار</string>
+  <string name="rewards.pending.description">موجود در %s</string>
+  <string name="rewards.pending.description_ready">جایزه شما آماده است!</string>
 </resources>
