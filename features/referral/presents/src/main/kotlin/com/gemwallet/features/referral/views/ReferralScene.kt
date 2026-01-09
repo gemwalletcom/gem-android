@@ -1,6 +1,7 @@
 package com.gemwallet.features.referral.views
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -44,6 +45,8 @@ import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.referral.viewmodels.SyncType
+import com.gemwallet.features.referral.views.components.referralConfirmCode
+import com.gemwallet.features.referral.views.components.referralError
 import com.gemwallet.features.referral.views.components.referralHead
 import com.gemwallet.features.referral.views.components.referralInfo
 import com.gemwallet.features.referral.views.dialogs.GetStartedDialog
@@ -82,6 +85,8 @@ fun ReferralScene(
     var getStartedDialogShow by remember(rewards) { mutableStateOf(false) }
     var codeDialogShow by remember(referralCode, inSync) { mutableStateOf(referralCode != null && inSync == SyncType.None) }
     var referralCode by remember(referralCode) { mutableStateOf(referralCode) }
+
+    val successStr = stringResource(R.string.common_done)
 
     val onShare = fun () {
         val type = "text/plain"
@@ -172,6 +177,13 @@ fun ReferralScene(
                         )
                     }
                 } else {
+                    referralError(rewards)
+                    referralConfirmCode(rewards) {
+                        onCode(it) {
+                            Toast.makeText(context, it?.message ?: successStr, Toast.LENGTH_SHORT).show()
+                            onRefresh()
+                        }
+                    }
                     referralInfo(rewards, onRedeem)
                 }
             }
