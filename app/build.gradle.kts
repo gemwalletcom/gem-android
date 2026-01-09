@@ -92,6 +92,15 @@ android {
             }
             buildConfigField("String", "UPDATE_URL", "\"https://apps.samsung.com/appquery/appDetail.as?appId=com.gemwallet.android\"")
         }
+
+        create("raw") {
+            dimension = channelDimension
+            ndk {
+                abiFilters.add("armeabi-v7a")
+                abiFilters.add("arm64-v8a")
+            }
+            buildConfigField("String", "UPDATE_URL", System.getenv("RAW_UPDATE_URL") ?: "\"https://apk.gemwallet.com/gem_wallet_latest.apk\"")
+        }
     }
     signingConfigs {
         create("release") {
@@ -241,7 +250,6 @@ dependencies {
     implementation(project(":features:settings:settings:viewmodels"))
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
-    implementation(project(":features:update_app:presents"))
     implementation(project(":features:wallet-details:presents"))
     implementation(project(":features:bridge:presents"))
     implementation(project(":features:bridge:viewmodels"))
@@ -276,8 +284,6 @@ dependencies {
 
     implementation(libs.reorderable)
 
-//    implementation ("io.github.ehsannarmani:compose-charts:0.1.7")
-
     // Google Play
     "googleImplementation"(project(":flavors:fcm"))
     "googleImplementation"(project(":flavors:google-review"))
@@ -296,6 +302,9 @@ dependencies {
     // fdroid
     "fdroidImplementation"(project(":flavors:pushes-stub"))
     "fdroidImplementation"(project(":flavors:review-stub"))
+    // raw
+    "rawImplementation"(project(":flavors:fcm"))
+    "rawImplementation"(project(":flavors:review-stub"))
 
     // Preview
     debugImplementation(libs.androidx.ui.tooling)
