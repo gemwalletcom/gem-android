@@ -94,17 +94,14 @@ fun ReferralNavScreen(
 
     if (showErrorDialog != null) {
         val message = when (showErrorDialog) {
-            is ReferralError.InsufficientPoints -> R.string.rewards_insufficient_points
-            else -> R.string.transaction_status_failed
+            is ReferralError.InsufficientPoints -> stringResource(R.string.rewards_insufficient_points)
+            is ReferralError.OperationError -> showErrorDialog?.message ?: stringResource(R.string.transaction_status_failed)
+            else -> stringResource(R.string.transaction_status_failed)
         }
         AlertDialog(
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = { showErrorDialog = null},
-            text = {
-                Text(
-                    stringResource(message)
-                )
-            },
+            text = { Text(message) },
             confirmButton = {
                 Button({ showErrorDialog = null}) { Text(stringResource(R.string.common_cancel)) }
             }
