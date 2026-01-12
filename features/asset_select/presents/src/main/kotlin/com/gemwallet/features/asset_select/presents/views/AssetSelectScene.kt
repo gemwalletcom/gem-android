@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
+import com.gemwallet.android.ui.components.TabsBar
 import com.gemwallet.android.ui.components.filters.AssetsFilter
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
@@ -205,7 +206,21 @@ fun AssetSelectScene(
         LazyColumn(state = listState) {
             item {
                 Box {
-                    TagsBar(selectedTag, tags, onTagSelect)
+                    TabsBar(tags, selectedTag, onTagSelect) { item ->
+                        Text(
+                            stringResource(
+                                when (item) {
+                                    AssetTag.Trending -> R.string.assets_tags_trending
+                                    AssetTag.TrendingFiatPurchase -> R.string.assets_tags_trending
+                                    AssetTag.Gainers -> R.string.assets_tags_gainers
+                                    AssetTag.Losers -> R.string.assets_tags_losers
+                                    AssetTag.New -> R.string.assets_tags_new
+                                    AssetTag.Stablecoins -> R.string.assets_tags_stablecoins
+                                    null -> R.string.common_all
+                                }
+                            ),
+                        )
+                    }
                 }
             }
             recent(recent, onSelect)

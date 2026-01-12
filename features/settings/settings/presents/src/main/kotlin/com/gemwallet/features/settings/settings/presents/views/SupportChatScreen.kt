@@ -8,19 +8,12 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -31,16 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.TabsBar
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.features.settings.settings.viewmodels.SupportChatViewModel
 import com.kevinnzou.web.AccompanistWebChromeClient
 import com.kevinnzou.web.AccompanistWebViewClient
@@ -81,38 +70,15 @@ fun SupportChatScreen(
 
     Scene(
         titleContent = {
-            Row(
-                modifier = Modifier.padding(horizontal = paddingDefault),
-                horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall),
-            ) {
-                SupportType.entries.forEachIndexed { index, item ->
-                    ToggleButton(
-                        modifier = Modifier.semantics { role = Role.RadioButton },
-                        checked = item == selectedType,
-                        onCheckedChange = { selectedType = item },
-                        colors = ToggleButtonDefaults.toggleButtonColors()
-                            .copy(containerColor = MaterialTheme.colorScheme.background),
-                        shapes = when (index) {
-                            0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                .copy(checkedShape = ButtonGroupDefaults.connectedLeadingButtonShape)
-
-                            SupportType.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                .copy(checkedShape = ButtonGroupDefaults.connectedTrailingButtonShape)
-
-                            else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                .copy(checkedShape = ShapeDefaults.Small)
-                        },
-                    ) {
-                        Text(
-                            stringResource(
-                                when (item) {
-                                    SupportType.Chat ->  R.string.settings_support
-                                    SupportType.HelpCenter -> R.string.settings_help_center
-                                }
-                            ),
-                        )
-                    }
-                }
+            TabsBar(SupportType.entries, selectedType, { selectedType = it }) { item ->
+                Text(
+                    stringResource(
+                        when (item) {
+                            SupportType.Chat ->  R.string.settings_support
+                            SupportType.HelpCenter -> R.string.settings_help_center
+                        }
+                    ),
+                )
             }
         },
         onClose = onCancel,

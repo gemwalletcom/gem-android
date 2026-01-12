@@ -7,14 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -22,15 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.domains.asset.getFiatProviderIcon
 import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.TabsBar
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.buttons.RandomGradientButton
 import com.gemwallet.android.ui.components.fields.AmountField
@@ -45,8 +39,6 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
 import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
@@ -79,38 +71,15 @@ fun BuyScene(
     Scene(
         titleContent = {
             if (asset.assetInfo.metadata?.isSellEnabled == true && asset.assetInfo.balance.balance.hasAvailable()) {
-                Row(
-                    modifier = Modifier.padding(horizontal = paddingDefault),
-                    horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall),
-                ) {
-                    FiatQuoteType.entries.forEachIndexed { index, item ->
-                        ToggleButton(
-                            modifier = Modifier.semantics { role = Role.RadioButton },
-                            checked = item == type,
-                            onCheckedChange = { onTypeClick(item) },
-                            colors = ToggleButtonDefaults.toggleButtonColors()
-                                .copy(containerColor = MaterialTheme.colorScheme.background),
-                            shapes = when (index) {
-                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                    .copy(checkedShape = ButtonGroupDefaults.connectedLeadingButtonShape)
-
-                                FiatQuoteType.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                    .copy(checkedShape = ButtonGroupDefaults.connectedTrailingButtonShape)
-
-                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                    .copy(checkedShape = ShapeDefaults.Small)
-                            },
-                        ) {
-                            Text(
-                                stringResource(
-                                    when (item) {
-                                        FiatQuoteType.Buy -> R.string.buy_title
-                                        FiatQuoteType.Sell -> R.string.sell_title
-                                    }, ""
-                                ),
-                            )
-                        }
-                    }
+                TabsBar(FiatQuoteType.entries, type, onTypeClick) { item ->
+                    Text(
+                        stringResource(
+                            when (item) {
+                                FiatQuoteType.Buy -> R.string.buy_title
+                                FiatQuoteType.Sell -> R.string.sell_title
+                            }, ""
+                        ),
+                    )
                 }
             } else {
                 Text(
