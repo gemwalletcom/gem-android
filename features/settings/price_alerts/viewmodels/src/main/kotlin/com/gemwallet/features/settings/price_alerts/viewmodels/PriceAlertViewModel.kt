@@ -7,7 +7,7 @@ import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
-import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
+import com.gemwallet.android.cases.pricealerts.PutPriceAlert
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
@@ -38,7 +38,7 @@ class PriceAlertViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     val sessionRepository: SessionRepository,
     private val enablePriceAlert: EnablePriceAlert,
-    private val putPriceAlertCase: PutPriceAlertCase,
+    private val putPriceAlert: PutPriceAlert,
     private val syncDeviceInfo: SyncDeviceInfo,
     private val getPushEnabled: GetPushEnabled,
     private val switchPushEnabled: SwitchPushEnabled,
@@ -48,7 +48,6 @@ class PriceAlertViewModel @Inject constructor(
     val pushEnabled = getPushEnabled.getPushEnabled()
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-
     val forceSync = MutableStateFlow(false)
 
     val enabled = MutableStateFlow(enablePriceAlert.isPriceAlertEnabled())
@@ -57,17 +56,17 @@ class PriceAlertViewModel @Inject constructor(
     val alertingAssets = getPriceAlerts.getPriceAlerts().flatMapLatest { alerts ->
         val ids = alerts.map { it.assetId }
         assetsRepository.getTokensInfo(ids.map { it.toIdentifier() })
-            .map { it.distinctBy { it.id() } }
+            .map { items -> items.distinctBy { it.id() } }
     }
-        .map { it.map { AssetInfoUIModel(it) } }
-        .combine(forceSync) { items, sync ->
-            viewModelScope.launch(Dispatchers.IO) {
-                delay(300)
-                forceSync.update { false }
-            }
-            items
+    .map { items -> items.map { AssetInfoUIModel(it) } }
+    .combine(forceSync) { items, _ ->
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(300)
+            forceSync.update { false }
         }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        items
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     init {
         refresh(false)
@@ -101,14 +100,13 @@ class PriceAlertViewModel @Inject constructor(
 
     fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) =
         viewModelScope.launch(Dispatchers.IO) {
-            putPriceAlertCase.putPriceAlert(
+            putPriceAlert.putPriceAlert(
                 PriceAlert(
                     assetId,
                     Currency.USD.string
                 )
             ) // TODO: Add user selected currency
-            val assetInfo =
-                assetsRepository.getAssetsInfo(listOf(assetId)).firstOrNull()?.firstOrNull()
+            val assetInfo = assetsRepository.getAssetsInfo(listOf(assetId)).firstOrNull()?.firstOrNull()
                     ?: return@launch
 
             viewModelScope.launch {
