@@ -30,6 +30,7 @@ class UseReferralCodeImpl(
                     data = ReferralCode(code)
                 )
             )
+            true
         } catch (err: HttpException) {
             val body = err.response()?.errorBody()?.string() ?: throw ReferralError.NetworkError
             val errorBody = jsonEncoder.decodeFromString<ResponseError>(body)

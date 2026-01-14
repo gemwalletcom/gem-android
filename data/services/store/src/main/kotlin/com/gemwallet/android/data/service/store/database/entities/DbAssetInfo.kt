@@ -225,7 +225,7 @@ fun DbAssetInfo.toDTO(): AssetInfo? {
         ),
         rank = entity.assetRank,
         walletName = entity.walletName ?: "",
-        walletType = entity.walletType ?: WalletType.multicoin,
+        walletType = entity.walletType ?: WalletType.Multicoin,
         stakeApr = entity.stakingApr,
         position = entity.listPosition ?: 0,
         walletId = walletId,

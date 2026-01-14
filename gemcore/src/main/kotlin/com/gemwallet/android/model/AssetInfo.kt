@@ -10,7 +10,7 @@ data class AssetInfo(
     val asset: Asset,
     val balance: AssetBalance = AssetBalance(asset),
     val walletId: String?,
-    val walletType: WalletType = WalletType.view,
+    val walletType: WalletType = WalletType.View,
     val walletName: String = "",
     val price: AssetPriceInfo? = null,
     val metadata: AssetMetaData? = null,

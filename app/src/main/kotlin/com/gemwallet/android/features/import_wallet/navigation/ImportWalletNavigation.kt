@@ -57,7 +57,7 @@ fun NavGraphBuilder.importWalletScreen(
             val chainString = entry.arguments?.getString(chainArg)
             val walletType = WalletType.entries.firstOrNull { it.string == walletTypeString }
             val chain = chainString?.toChain()
-            if (walletType == null || (walletType != WalletType.multicoin && chain == null)) {
+            if (walletType == null || (walletType != WalletType.Multicoin && chain == null)) {
                 onSelectType(null)
             } else {
                 ImportScreen(

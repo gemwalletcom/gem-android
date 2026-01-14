@@ -36,7 +36,7 @@ import com.wallet.core.primitives.WalletType
 internal fun WalletAddress(
     wallet: Wallet,
 ) {
-    if (wallet.type == WalletType.multicoin) {
+    if (wallet.type == WalletType.Multicoin) {
         return
     }
     val account = wallet.accounts.firstOrNull() ?: return

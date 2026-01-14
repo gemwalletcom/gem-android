@@ -71,21 +71,21 @@ fun PreviewWalletScreen() {
             WalletsScene(
                 unpinnedWallets = listOf(
                     Wallet(
-                        "1", "Foo wallet #1", 1, WalletType.view, emptyList(), 0, false, source = WalletSource.Import,
+                        "1", "Foo wallet #1", 1, WalletType.View, emptyList(), 0, false, source = WalletSource.Import,
                     ),
                     Wallet(
-                        "2", "Foo wallet #2", 2, WalletType.view, emptyList(), 0, false, source = WalletSource.Import,
+                        "2", "Foo wallet #2", 2, WalletType.View, emptyList(), 0, false, source = WalletSource.Import,
                     ),
                     Wallet(
-                        "3", "Foo wallet #3", 3, WalletType.multicoin, emptyList(), 1, false, source = WalletSource.Import,
+                        "3", "Foo wallet #3", 3, WalletType.Multicoin, emptyList(), 1, false, source = WalletSource.Import,
                     ),
                     Wallet(
-                        "4", "Foo wallet #4", 4, WalletType.multicoin, emptyList(), 2, false, source = WalletSource.Import,
+                        "4", "Foo wallet #4", 4, WalletType.Multicoin, emptyList(), 2, false, source = WalletSource.Import,
                     ),
                 ),
                 pinnedWallets = listOf(
                     Wallet(
-                        "5", "Foo wallet #5", 44, WalletType.multicoin, emptyList(), 2, true, source = WalletSource.Import,
+                        "5", "Foo wallet #5", 44, WalletType.Multicoin, emptyList(), 2, true, source = WalletSource.Import,
                     ),
                 ),
                 currentWalletId = "1",

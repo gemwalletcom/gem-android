@@ -100,7 +100,7 @@ class DelegationViewModel @Inject constructor(
         assetInfo,
         sessionRepository.session().filterNotNull(),
     ) { delegation, assetInfo, session ->
-        if (delegation == null || assetInfo == null || session.wallet.type == WalletType.view) {
+        if (delegation == null || assetInfo == null || session.wallet.type == WalletType.View) {
             return@combine emptyList()
         }
         val stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!

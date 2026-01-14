@@ -8,18 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-enum class WalletType(val string: String) {
-	@SerialName("multicoin")
-	multicoin("multicoin"),
-	@SerialName("single")
-	single("single"),
-	@SerialName("privateKey")
-	private_key("privateKey"),
-	@SerialName("view")
-	view("view"),
-}
-
-@Serializable
 enum class WalletSource(val string: String) {
 	@SerialName("create")
 	Create("create"),
@@ -38,10 +26,5 @@ data class Wallet (
 	val isPinned: Boolean,
 	val imageUrl: String? = null,
 	val source: WalletSource
-)
-
-@Serializable
-data class WalletId (
-	val id: String
 )
 

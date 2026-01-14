@@ -29,13 +29,16 @@ import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.pendingColor
 import com.gemwallet.android.ui.theme.trailingIconSmall
+import com.wallet.core.primitives.ReferralActivation
 import com.wallet.core.primitives.ReferralAllowance
+import com.wallet.core.primitives.ReferralCodeActivation
 import com.wallet.core.primitives.ReferralQuota
+import com.wallet.core.primitives.RewardStatus
 import com.wallet.core.primitives.Rewards
 
 internal fun LazyListScope.referralConfirmCode(rewards: Rewards, onConfirm: (String) -> Unit) {
     val code = rewards.usedReferralCode ?: return
-    val pendingDate = rewards.pendingVerificationAfter ?: return
+    val pendingDate = rewards.referralActivation?.verifyAfter ?: return
     val isEnable = System.currentTimeMillis() > pendingDate
     item {
         Column(
@@ -82,8 +85,7 @@ private fun ReferralConfirmCodePedningPreview() {
                 Rewards(
                     referralCount = 0,
                     points = 0,
-                    isEnabled = false,
-                    verified = false,
+                    status = RewardStatus.Unverified,
                     redemptionOptions = emptyList(),
                     referralAllowance = ReferralAllowance(
                         daily = ReferralQuota(limit = 0, available = 0),
@@ -91,7 +93,13 @@ private fun ReferralConfirmCodePedningPreview() {
                     ),
                     code = "some_code",
                     usedReferralCode = "some_code_1",
-                    pendingVerificationAfter = System.currentTimeMillis() + 120000
+                    referralCodeActivation = ReferralCodeActivation(false, 0),
+                    referralActivation = ReferralActivation(
+                        verifyCompleted = false,
+                        verifyAfter = null,
+                        swapCompleted = false,
+                        swapAmount = 0,
+                    ),
                 )
             ) {}
         }
@@ -107,8 +115,7 @@ private fun ReferralConfirmCodeReadyPreview() {
                 Rewards(
                     referralCount = 0,
                     points = 0,
-                    isEnabled = false,
-                    verified = false,
+                    status = RewardStatus.Unverified,
                     redemptionOptions = emptyList(),
                     referralAllowance = ReferralAllowance(
                         daily = ReferralQuota(limit = 0, available = 0),
@@ -116,7 +123,13 @@ private fun ReferralConfirmCodeReadyPreview() {
                     ),
                     code = "some_code",
                     usedReferralCode = "some_code_1",
-                    pendingVerificationAfter = System.currentTimeMillis() - 120000
+                    referralCodeActivation = ReferralCodeActivation(false, 0),
+                    referralActivation = ReferralActivation(
+                        verifyCompleted = false,
+                        verifyAfter = null,
+                        swapCompleted = false,
+                        swapAmount = 0,
+                    ),
                 )
             ) {}
         }

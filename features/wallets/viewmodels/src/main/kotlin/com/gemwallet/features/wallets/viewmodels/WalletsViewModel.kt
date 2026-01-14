@@ -25,10 +25,10 @@ class WalletsViewModel @Inject constructor(
 
     private val wallets = walletsRepository.getAll()
         .map { items ->
-            val watch = items.filter { it.type == WalletType.view }
-            val single = items.filter { it.type == WalletType.single }
-            val privateKey = items.filter { it.type == WalletType.private_key }
-            val multi = items.filter { it.type == WalletType.multicoin }
+            val watch = items.filter { it.type == WalletType.View }
+            val single = items.filter { it.type == WalletType.Single }
+            val privateKey = items.filter { it.type == WalletType.PrivateKey }
+            val multi = items.filter { it.type == WalletType.Multicoin }
             multi + single + privateKey + watch
         }
     private val session = sessionRepository.session()

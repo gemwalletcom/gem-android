@@ -53,10 +53,10 @@ class PhraseAddressImportWalletService(
         data: String
     ): Result<Wallet> {
         val result = when (importType.walletType) {
-            WalletType.multicoin -> handlePhrase(importType, walletName, data, WalletSource.Import)
-            WalletType.single -> handlePhrase(importType, walletName, data, WalletSource.Import)
-            WalletType.view -> handleAddress(importType.chain!!, walletName, data)
-            WalletType.private_key -> handlePrivateKey(importType.chain!!, walletName, data)
+            WalletType.Multicoin -> handlePhrase(importType, walletName, data, WalletSource.Import)
+            WalletType.Single -> handlePhrase(importType, walletName, data, WalletSource.Import)
+            WalletType.View -> handleAddress(importType.chain!!, walletName, data)
+            WalletType.PrivateKey -> handlePrivateKey(importType.chain!!, walletName, data)
         }
         if (result.isFailure) {
             return result
@@ -72,7 +72,7 @@ class PhraseAddressImportWalletService(
 
     override suspend fun createWallet(walletName: String, data: String): Result<Wallet> =
         withContext(Dispatchers.IO) {
-            val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data, WalletSource.Create)
+            val result = handlePhrase(ImportType(WalletType.Multicoin), walletName, data, WalletSource.Create)
             if (result.isFailure) return@withContext result
             val wallet =
                 result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
@@ -132,7 +132,7 @@ class PhraseAddressImportWalletService(
         } catch (_: Throwable) {
             return Result.failure(ImportError.InvalidationPrivateKey)
         }
-        val wallet = walletsRepository.addControlled(walletName, key, WalletType.private_key, chain, source = WalletSource.Import)
+        val wallet = walletsRepository.addControlled(walletName, key, WalletType.PrivateKey, chain, source = WalletSource.Import)
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, key, password)
         return if (storeResult.isSuccess) {

@@ -22,7 +22,7 @@ fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationD
                 Transaction(
                     transactionId = it.transaction.id,
                     assetId = it.assetId,
-                    walletIndex = it.walletIndex
+                    walletIndex = it.walletIndex ?: 0,
                 )
             }
             PushNotificationTypes.PriceAlert,

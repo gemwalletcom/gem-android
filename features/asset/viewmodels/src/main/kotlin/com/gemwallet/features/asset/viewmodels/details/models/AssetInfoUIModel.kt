@@ -28,7 +28,7 @@ class AssetInfoUIModel(
     val asset: Asset get() = assetInfo.asset
 
     data class AccountInfoUIModel(
-        val walletType: WalletType = WalletType.view,
+        val walletType: WalletType = WalletType.View,
         val totalBalance: String = "0",
         val totalFiat: String = "",
         val owner: String = "",

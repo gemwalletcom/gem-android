@@ -46,7 +46,7 @@ class SettingsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUIState.General())
     val wallets = walletsRepository.getAll()
 
-    val isRewardsAvailable = wallets.mapLatest { it.any { it.type == WalletType.multicoin } }
+    val isRewardsAvailable = wallets.mapLatest { it.any { it.type == WalletType.Multicoin } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val pushEnabled = getPushEnabled.getPushEnabled()

@@ -12,7 +12,7 @@ class WCStorePhraseOperator(
     private val coinTypeProxy: WCChainTypeProxy = WCChainTypeProxy()
 ) : StorePhraseOperator {
     override suspend fun invoke(wallet: Wallet, data: String, password: String): Result<Boolean> = try {
-        val storedKey = if (wallet.type == WalletType.private_key) {
+        val storedKey = if (wallet.type == WalletType.PrivateKey) {
             val coinType = coinTypeProxy(wallet.accounts.firstOrNull()?.chain ?: throw IllegalArgumentException())
             StoredKey.importPrivateKey(
                 data.decodeHex(),

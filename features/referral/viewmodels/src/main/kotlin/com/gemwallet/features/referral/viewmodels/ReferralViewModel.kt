@@ -52,13 +52,13 @@ class ReferralViewModel @Inject constructor(
     val inSync = MutableStateFlow(SyncType.Init)
 
     val availableWallets = walletsRepository.getAll().mapLatest { items ->
-        items.filter { it.type == WalletType.multicoin }
+        items.filter { it.type == WalletType.Multicoin }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val session = sessionRepository.session()
         .filterNotNull()
         .combine(availableWallets) { session, availableWallets ->
-            if (session.wallet.type != WalletType.multicoin) {
+            if (session.wallet.type != WalletType.Multicoin) {
                 availableWallets.firstOrNull()
             } else {
                 session.wallet

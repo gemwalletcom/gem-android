@@ -38,7 +38,9 @@ data class PushNotificationPayloadType (
 )
 
 @Serializable
-object PushNotificationReward
+data class PushNotificationReward (
+	val walletId: String
+)
 
 @Serializable
 object PushNotificationSupport
@@ -51,7 +53,8 @@ data class PushNotificationSwapAsset (
 
 @Serializable
 data class PushNotificationTransaction (
-	val walletIndex: Int,
+	val walletIndex: Int? = null,
+	val walletId: String,
 	val assetId: String,
 	val transaction: Transaction
 )

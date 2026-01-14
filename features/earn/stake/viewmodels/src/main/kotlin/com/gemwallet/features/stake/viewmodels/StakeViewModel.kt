@@ -83,7 +83,7 @@ class StakeViewModel @Inject constructor(
         rewardsAmount,
         assetInfo,
     ) { walletType, rewardsAmount, assetInfo ->
-        if (walletType == WalletType.view) {
+        if (walletType == WalletType.View) {
             return@combine emptyList()
         }
         listOfNotNull(

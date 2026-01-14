@@ -19,7 +19,7 @@ internal fun ShowSecretData(
     onAuthRequest: (() -> Unit) -> Unit,
     onPhraseShow: () -> Unit,
 ) {
-    if (wallet.type == WalletType.view) {
+    if (wallet.type == WalletType.View) {
         return
     }
     PropertyItem(
@@ -28,7 +28,7 @@ internal fun ShowSecretData(
             PropertyTitleText(
                 text = stringResource(
                     id = R.string.common_show,
-                    if (wallet.type == WalletType.private_key)
+                    if (wallet.type == WalletType.PrivateKey)
                         stringResource(R.string.common_private_key)
                     else
                         stringResource(id = R.string.common_secret_phrase)

@@ -159,7 +159,7 @@ fun AssetHeadActions(
     onSwap: (() -> Unit)?,
 ) {
     var actionFontSize by remember { mutableStateOf(16.sp) }
-    if (walletType == WalletType.view) {
+    if (walletType == WalletType.View) {
         AssetWatchOnly()
         return
     }
@@ -433,7 +433,7 @@ private class ActionTextAutoSize(
 fun PreviewAssetHeadActions() {
     WalletTheme {
         AssetHeadActions(
-            walletType = WalletType.multicoin,
+            walletType = WalletType.Multicoin,
             onTransfer = { },
             transferEnabled = true,
             operationsEnabled = true,

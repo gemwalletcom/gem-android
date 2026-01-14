@@ -26,7 +26,7 @@ internal fun AssetHeadItem(
     ) {
         AssetHeadActions(
             walletType = uiState.accountInfoUIModel.walletType,
-            transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.view,
+            transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.View,
             operationsEnabled = isOperationEnabled,
             onTransfer = { onTransfer(uiState.asset.id) },
             onReceive = { onReceive(uiState.asset.id) },
@@ -35,7 +35,7 @@ internal fun AssetHeadItem(
             } else {
                 null
             },
-            onSwap = if (uiState.isSwapEnabled && uiState.accountInfoUIModel.walletType != WalletType.view) {
+            onSwap = if (uiState.isSwapEnabled && uiState.accountInfoUIModel.walletType != WalletType.View) {
                 {
                     val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
                         null

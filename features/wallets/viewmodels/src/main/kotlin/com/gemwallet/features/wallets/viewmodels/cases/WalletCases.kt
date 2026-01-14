@@ -9,10 +9,10 @@ import com.wallet.core.primitives.WalletType
 
 val Wallet.typeLabel: String
     get() = when (type) {
-        WalletType.view,
-        WalletType.private_key,
-        WalletType.single -> accounts.firstOrNull()?.address ?: ""
-        WalletType.multicoin -> "Multi-coin"
+        WalletType.View,
+        WalletType.PrivateKey,
+        WalletType.Single -> accounts.firstOrNull()?.address ?: ""
+        WalletType.Multicoin -> "Multi-coin"
     }
 
 val Wallet.icon: Any

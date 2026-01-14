@@ -51,8 +51,8 @@ internal fun LazyListScope.wallets(
                     name = item.name,
                     icon = item.icon,
                     typeLabel = when (item.type) {
-                        WalletType.multicoin -> stringResource(id = R.string.wallet_multicoin)
-                        WalletType.single -> item.typeLabel.getAddressEllipsisText()
+                        WalletType.Multicoin -> stringResource(id = R.string.wallet_multicoin)
+                        WalletType.Single -> item.typeLabel.getAddressEllipsisText()
                         else -> item.typeLabel.getAddressEllipsisText()
                     },
                     isCurrent = item.id == currentWalletId,

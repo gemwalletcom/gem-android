@@ -38,7 +38,7 @@ class WalletsRepository @Inject constructor(
             Wallet(
                 id = newWalletId(),
                 name = walletName,
-                type = WalletType.view,
+                type = WalletType.View,
                 accounts = listOf(
                     Account(
                         address = address,
@@ -55,7 +55,7 @@ class WalletsRepository @Inject constructor(
 
     suspend fun addControlled(walletName: String, data: String, type: WalletType, chain: Chain?, source: WalletSource): Wallet {
         val accounts = mutableListOf<Account>()
-        val chains = if ((type == WalletType.single || type == WalletType.private_key) && chain != null) listOf(chain) else Chain.entries
+        val chains = if ((type == WalletType.Single || type == WalletType.PrivateKey) && chain != null) listOf(chain) else Chain.entries
         for (item in chains) {
             accounts.add(createAccount(type, data, item))
         }

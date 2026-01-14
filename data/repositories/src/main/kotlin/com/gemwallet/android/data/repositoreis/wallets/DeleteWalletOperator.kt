@@ -33,7 +33,7 @@ class DeleteWalletOperator @Inject constructor(
         if (!walletsRepository.removeWallet(walletId = walletId)) {
             return@withContext
         }
-        if (wallet.type != WalletType.view) {
+        if (wallet.type != WalletType.View) {
             if (!deleteKeyStoreOperator(walletId)) {
                 return@withContext
             }

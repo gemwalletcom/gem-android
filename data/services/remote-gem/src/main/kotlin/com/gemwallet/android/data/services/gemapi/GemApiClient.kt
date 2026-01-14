@@ -23,6 +23,7 @@ import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.RedemptionRequest
 import com.wallet.core.primitives.RedemptionResult
 import com.wallet.core.primitives.ReferralCode
+import com.wallet.core.primitives.RewardEvent
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
@@ -146,7 +147,7 @@ interface GemApiClient {
     suspend fun createReferral(@Body body: AuthenticatedRequest<ReferralCode>): Rewards
 
     @POST("/v1/rewards/referrals/use")
-    suspend fun useReferralCode(@Body body: AuthenticatedRequest<ReferralCode>): Boolean
+    suspend fun useReferralCode(@Body body: AuthenticatedRequest<ReferralCode>): List<RewardEvent>
 
     @POST("/v1/rewards/{address}/redeem")
     suspend fun redeem(@Path("address") address: String, @Body request: AuthenticatedRequest<RedemptionRequest>): RedemptionResult

@@ -158,7 +158,7 @@ private fun ImportScene(
     val chainWalletName = stringResource(id = R.string.wallet_default_name_chain, chainName, generatedNameIndex)
     val mainWalletName = stringResource(id = R.string.wallet_default_name, generatedNameIndex)
     val generatedName = remember(key1 = importType.walletType, key2 = generatedNameIndex) {
-        if (generatedNameIndex == 0 || importType.walletType == WalletType.multicoin) {
+        if (generatedNameIndex == 0 || importType.walletType == WalletType.Multicoin) {
             mainWalletName
         } else {
             chainWalletName
@@ -234,7 +234,7 @@ private fun DataInput(
 
             onChange()
 
-            if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
+            if (suggestions.isNotEmpty() && importType.walletType != WalletType.View) {
                 return@ImportInput
             }
 
@@ -254,7 +254,7 @@ private fun DataInput(
         nameRecordState.value = it
     }
 
-    if (importType.walletType == WalletType.view) {
+    if (importType.walletType == WalletType.View) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = parseMarkdownToAnnotatedString(
@@ -264,7 +264,7 @@ private fun DataInput(
             style = MaterialTheme.typography.bodySmall,
         )
     }
-    if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
+    if (suggestions.isNotEmpty() && importType.walletType != WalletType.View) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -289,7 +289,7 @@ private fun TypeSelection(
     importType: ImportType,
     onTypeChange: (WalletType) -> Unit,
 ) {
-    if (importType.walletType == WalletType.multicoin) {
+    if (importType.walletType == WalletType.Multicoin) {
         return
     }
     PrimaryTabRow(
@@ -299,9 +299,9 @@ private fun TypeSelection(
         containerColor = Color.Transparent,//(0xFFEBEBEB),
         divider = {}
     ) {
-        WalletTypeTab(WalletType.single, importType.walletType, onTypeChange)
-        WalletTypeTab(WalletType.private_key, importType.walletType, onTypeChange)
-        WalletTypeTab(WalletType.view, importType.walletType, onTypeChange)
+        WalletTypeTab(WalletType.Single, importType.walletType, onTypeChange)
+        WalletTypeTab(WalletType.PrivateKey, importType.walletType, onTypeChange)
+        WalletTypeTab(WalletType.View, importType.walletType, onTypeChange)
     }
     Spacer16()
 }
@@ -346,7 +346,7 @@ fun PreviewImportAddress() {
     WalletTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             ImportScene(
-                importType = ImportType(chain = Chain.Bitcoin, walletType = WalletType.view),
+                importType = ImportType(chain = Chain.Bitcoin, walletType = WalletType.View),
                 generatedNameIndex = 1,
                 chainName = "Ethereum",
                 walletName = "Foo wallet name",

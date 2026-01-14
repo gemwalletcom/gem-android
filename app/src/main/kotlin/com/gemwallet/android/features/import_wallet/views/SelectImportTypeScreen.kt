@@ -64,7 +64,7 @@ private fun SelectImportTypeScene(
                     icon = R.drawable.multicoin_wallet,
                     listPosition = ListPosition.Single,
                 ) {
-                    onSelect(ImportType(WalletType.multicoin))
+                    onSelect(ImportType(WalletType.Multicoin))
                 }
             }
             itemsIndexed(chains) { index, item ->
@@ -73,7 +73,7 @@ private fun SelectImportTypeScene(
                     icon = item.chain,
                     listPosition = ListPosition.getPosition(index, chains.size),
                 ) {
-                    onSelect(ImportType(WalletType.single, item.chain))
+                    onSelect(ImportType(WalletType.Single, item.chain))
                 }
             }
         }

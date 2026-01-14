@@ -36,10 +36,10 @@ fun WalletItem(
         id = wallet.id,
         name = wallet.name,
         typeLabel = when (wallet.type) {
-            WalletType.private_key,
-            WalletType.view,
-            WalletType.single -> wallet.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
-            WalletType.multicoin -> "Multi-coin"
+            WalletType.PrivateKey,
+            WalletType.View,
+            WalletType.Single -> wallet.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
+            WalletType.Multicoin -> "Multi-coin"
         },
         icon = if (wallet.accounts.size > 1) {
             R.drawable.multicoin_wallet
@@ -70,7 +70,7 @@ fun WalletItem(
         leading = @Composable {
             IconWithBadge(
                 icon = icon,
-                supportIcon = if (type == WalletType.view) {
+                supportIcon = if (type == WalletType.View) {
                     "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}"
                 } else null,
             )
@@ -78,7 +78,7 @@ fun WalletItem(
         title = {
             ListItemTitleText(
                 text = name,
-                titleBadge = if (type == WalletType.view) {
+                titleBadge = if (type == WalletType.View) {
                     { Badge(stringResource(id = R.string.wallets_watch).uppercase()) }
                 } else {
                     null
@@ -123,7 +123,7 @@ fun PreviewWalletItem() {
             name = "Foo wallet name",
             icon = "",
             typeLabel = "Multi-coin",
-            type = WalletType.multicoin,
+            type = WalletType.Multicoin,
             listPosition = ListPosition.Single,
             isCurrent = true,
             onEdit = {},

@@ -191,23 +191,23 @@ class AssetsViewModel @Inject constructor(
             if (it.isNaN()) 0.0 else it
         }
         val icon = when (wallet.type) {
-            WalletType.multicoin -> R.drawable.multicoin_wallet
+            WalletType.Multicoin -> R.drawable.multicoin_wallet
             else -> wallet.accounts.firstOrNull()?.chain?.asset()
         }
         val cryptoTotal = assets.fold(0.0) { acc, asset ->
             acc + asset.balance.totalAmount
         }
         val isSwapEnabled = when (wallet.type) {
-            WalletType.multicoin -> true
-            WalletType.single,
-            WalletType.private_key -> wallet.accounts.firstOrNull()?.chain?.isSwapSupport() == true
-            WalletType.view -> false
+            WalletType.Multicoin -> true
+            WalletType.Single,
+            WalletType.PrivateKey -> wallet.accounts.firstOrNull()?.chain?.isSwapSupport() == true
+            WalletType.View -> false
         }
         val swapPayAsset = when(wallet.type) {
-            WalletType.multicoin -> (wallet.getAccount(Chain.Ethereum) ?: wallet.accounts.firstOrNull())?.chain
-            WalletType.single,
-            WalletType.private_key -> wallet.accounts.firstOrNull()?.chain
-            WalletType.view -> null
+            WalletType.Multicoin -> (wallet.getAccount(Chain.Ethereum) ?: wallet.accounts.firstOrNull())?.chain
+            WalletType.Single,
+            WalletType.PrivateKey -> wallet.accounts.firstOrNull()?.chain
+            WalletType.View -> null
         }?.asset()
 
         return if (isHideBalances) {

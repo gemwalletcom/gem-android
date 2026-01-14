@@ -63,7 +63,7 @@ class ProposalSceneViewModel @Inject constructor(
                 proposal.optionalNamespaces.values.flatMap { it.chains.orEmpty() }).toSet()
         val availableWallets = (walletsRepository.getAll().firstOrNull() ?: emptyList())
             .filter { wallet ->
-                wallet.type != WalletType.view &&
+                wallet.type != WalletType.View &&
                     wallet.accounts.any { "${it.chain.getChainNameSpace()}:${it.chain.getReference()}" in availableChains }
             }
             .sortedBy { it.type }

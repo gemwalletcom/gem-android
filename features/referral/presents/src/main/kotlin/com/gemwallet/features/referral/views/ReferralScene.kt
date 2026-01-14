@@ -54,6 +54,7 @@ import com.gemwallet.features.referral.views.dialogs.ReferralCodeDialog
 import com.wallet.core.primitives.ReferralAllowance
 import com.wallet.core.primitives.ReferralQuota
 import com.wallet.core.primitives.RewardRedemptionOption
+import com.wallet.core.primitives.RewardStatus
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
@@ -216,9 +217,8 @@ private fun ReferralScenePreview() {
                 referralCount = 5,
                 points = 1000,
                 usedReferralCode = null,
-                isEnabled = true,
+                status = RewardStatus.Unverified,
                 redemptionOptions = emptyList(),
-                verified = true,
                 referralAllowance = ReferralAllowance(
                     daily = ReferralQuota(0, 0),
                     weekly = ReferralQuota(0, 0),
@@ -228,7 +228,7 @@ private fun ReferralScenePreview() {
                 id = "1",
                 name = "Wallet 1",
                 index = 0,
-                type = WalletType.multicoin,
+                type = WalletType.Multicoin,
                 accounts = emptyList(),
                 order = 0,
                 isPinned = false,
@@ -259,7 +259,7 @@ private fun ReferralSceneNoRewardsPreview() {
                 id = "1",
                 name = "Wallet 1",
                 index = 0,
-                type = WalletType.multicoin,
+                type = WalletType.Multicoin,
                 accounts = emptyList(),
                 order = 0,
                 isPinned = false,

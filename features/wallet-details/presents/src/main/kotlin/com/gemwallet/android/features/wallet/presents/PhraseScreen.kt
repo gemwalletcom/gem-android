@@ -88,9 +88,9 @@ fun PhraseScreen(
             }
 
             when (walletType) {
-                WalletType.multicoin,
-                WalletType.single -> PhraseLayout(words = phrase?.split(" ") ?: emptyList())
-                WalletType.private_key -> Text(
+                WalletType.Multicoin,
+                WalletType.Single -> PhraseLayout(words = phrase?.split(" ") ?: emptyList())
+                WalletType.PrivateKey -> Text(
                     text = phrase ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,

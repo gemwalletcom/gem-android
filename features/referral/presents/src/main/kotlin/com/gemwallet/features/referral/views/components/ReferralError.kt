@@ -25,6 +25,7 @@ import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.trailingIconSmall
 import com.wallet.core.primitives.ReferralAllowance
 import com.wallet.core.primitives.ReferralQuota
+import com.wallet.core.primitives.RewardStatus
 import com.wallet.core.primitives.Rewards
 
 internal fun LazyListScope.referralError(rewards: Rewards) {
@@ -61,8 +62,7 @@ private fun ReferralErrorPreview() {
                 Rewards(
                     referralCount = 0,
                     points = 0,
-                    isEnabled = false,
-                    verified = false,
+                    status = RewardStatus.Unverified,
                     redemptionOptions = emptyList(),
                     referralAllowance = ReferralAllowance(
                         daily = ReferralQuota(limit = 0, available = 0),

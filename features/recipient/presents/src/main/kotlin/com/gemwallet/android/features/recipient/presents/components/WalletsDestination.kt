@@ -30,7 +30,7 @@ fun LazyListScope.walletsDestination(
         items = items,
         onSelect = onSelect,
         isPinned = true,
-        WalletType.multicoin, WalletType.private_key, WalletType.single, WalletType.view,
+        WalletType.Multicoin, WalletType.PrivateKey, WalletType.Single, WalletType.View,
     )
 
     walletsSection(
@@ -39,7 +39,7 @@ fun LazyListScope.walletsDestination(
         items = items,
         onSelect = onSelect,
         isPinned = false,
-        WalletType.multicoin, WalletType.private_key, WalletType.single
+        WalletType.Multicoin, WalletType.PrivateKey, WalletType.Single
     )
     walletsSection(
         header = R.string.transfer_recipient_view_wallets,
@@ -47,7 +47,7 @@ fun LazyListScope.walletsDestination(
         items = items,
         onSelect = onSelect,
         isPinned = false,
-        WalletType.view
+        WalletType.View
     )
 }
 

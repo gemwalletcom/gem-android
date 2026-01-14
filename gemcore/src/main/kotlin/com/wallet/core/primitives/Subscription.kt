@@ -14,3 +14,16 @@ data class Subscription (
 	val address: String
 )
 
+@Serializable
+data class WalletSubscription (
+	val wallet_id: String,
+	val source: WalletSource,
+	val subscriptions: List<ChainAddress>
+)
+
+@Serializable
+data class WalletSubscriptionChains (
+	val wallet_id: String,
+	val chains: List<Chain>
+)
+

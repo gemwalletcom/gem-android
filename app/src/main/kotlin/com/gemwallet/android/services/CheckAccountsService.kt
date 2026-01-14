@@ -33,7 +33,7 @@ class CheckAccountsService @Inject constructor(
         wallets.forEach { wallet ->
             val nativeAssets = assetsRepository.getNativeAssets(wallet)
 
-            if (wallet.type != WalletType.multicoin) {
+            if (wallet.type != WalletType.Multicoin) {
                 if (nativeAssets.isEmpty()) {
                     assetsRepository.invalidateDefault(wallet)
                 }

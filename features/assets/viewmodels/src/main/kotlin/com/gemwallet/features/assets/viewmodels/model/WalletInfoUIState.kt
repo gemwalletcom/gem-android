@@ -12,7 +12,7 @@ data class WalletInfoUIState(
     val changedValue: String = "0.0",
     val changedPercentages: String = "0.0%",
     val priceState: PriceState = PriceState.Up,
-    val type: WalletType = WalletType.view,
+    val type: WalletType = WalletType.View,
     val operationsEnabled: Boolean = true,
     val isSwapEnabled: Boolean = false,
     val swapPayAsset: Asset? = null

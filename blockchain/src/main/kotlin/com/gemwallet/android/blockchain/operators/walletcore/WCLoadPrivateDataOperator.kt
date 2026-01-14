@@ -12,7 +12,7 @@ class WCLoadPrivateDataOperator(
 ) : LoadPrivateDataOperator {
     override suspend fun invoke(wallet: Wallet, password: String): String {
         val storeKey = StoredKey.load("$keyStoreDir/${wallet.id}")
-        return if (wallet.type == WalletType.private_key)
+        return if (wallet.type == WalletType.PrivateKey)
             storeKey.decryptPrivateKey(password.decodeHex()).toHexString()
         else
             storeKey.decryptMnemonic(password.decodeHex())

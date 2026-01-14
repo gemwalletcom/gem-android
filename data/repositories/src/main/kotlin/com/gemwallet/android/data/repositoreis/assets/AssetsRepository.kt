@@ -447,7 +447,7 @@ class AssetsRepository @Inject constructor(
     }
 
     private fun Account.isVisibleByDefault(type: WalletType): Boolean {
-        return visibleByDefault.contains(chain) || type != WalletType.multicoin
+        return visibleByDefault.contains(chain) || type != WalletType.Multicoin
     }
 
     private suspend fun setVisibility(walletId: String, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {

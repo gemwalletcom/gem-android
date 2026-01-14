@@ -13,10 +13,10 @@ import wallet.core.jni.PrivateKey
 class WCCreateAccountOperator : CreateAccountOperator {
 
     override fun invoke(walletType: WalletType, data: String, chain: Chain): Account = when (walletType) {
-        WalletType.multicoin,
-        WalletType.single -> createFromPhrase(data, chain)
-        WalletType.private_key -> createFromPrivateKey(data, chain)
-        WalletType.view -> throw IllegalArgumentException()
+        WalletType.Multicoin,
+        WalletType.Single -> createFromPhrase(data, chain)
+        WalletType.PrivateKey -> createFromPrivateKey(data, chain)
+        WalletType.View -> throw IllegalArgumentException()
     }
 
     private fun createFromPhrase(data: String, chain: Chain): Account {
