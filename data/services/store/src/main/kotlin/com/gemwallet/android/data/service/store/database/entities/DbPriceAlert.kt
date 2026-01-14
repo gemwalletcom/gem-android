@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.model.PriceAlertInfo
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
 import kotlinx.coroutines.flow.Flow
@@ -20,13 +21,16 @@ data class DbPriceAlert(
     val enabled: Boolean,
 )
 
-fun DbPriceAlert.toDTO(): PriceAlert {
-    return PriceAlert(
-        assetId = assetId.toAssetId() ?: throw IllegalStateException(),
-        price = price,
-        priceDirection = priceDirection,
-        pricePercentChange = pricePercentChange,
-        currency = currency,
+fun DbPriceAlert.toDTO(): PriceAlertInfo {
+    return PriceAlertInfo(
+        id = id,
+        priceAlert = PriceAlert(
+            assetId = assetId.toAssetId() ?: throw IllegalStateException(),
+            price = price,
+            priceDirection = priceDirection,
+            pricePercentChange = pricePercentChange,
+            currency = currency,
+        )
     )
 }
 
@@ -42,8 +46,6 @@ fun PriceAlert.toRecord(): DbPriceAlert {
 }
 
 fun List<DbPriceAlert>.toDTO() = map { it.toDTO() }
-
-fun Flow<List<DbPriceAlert>>.toModels() = map { it.toDTO() }
 
 fun Flow<DbPriceAlert>.toDTO() = map { it.toDTO() }
 

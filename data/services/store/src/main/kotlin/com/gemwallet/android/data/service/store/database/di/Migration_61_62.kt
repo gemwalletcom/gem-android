@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.service.store.database.di
 
-import android.util.Log
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 

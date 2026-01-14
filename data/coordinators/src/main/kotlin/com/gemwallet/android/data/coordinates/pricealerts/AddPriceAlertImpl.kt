@@ -8,9 +8,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class AddPriceAlertImpl(
     private val gemApiClient: GemApiClient,

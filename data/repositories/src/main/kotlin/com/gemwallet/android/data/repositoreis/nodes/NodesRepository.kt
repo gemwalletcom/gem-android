@@ -11,7 +11,6 @@ import com.gemwallet.android.cases.nodes.getGemNode
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.NodesDao
 import com.gemwallet.android.data.service.store.database.entities.DbNode
-import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.findByString
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.hash

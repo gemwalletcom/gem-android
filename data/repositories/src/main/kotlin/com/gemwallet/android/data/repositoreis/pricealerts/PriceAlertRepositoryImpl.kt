@@ -8,11 +8,11 @@ import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
 import com.gemwallet.android.data.service.store.database.entities.toDTO
-import com.gemwallet.android.data.service.store.database.entities.toModels
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.model.PriceAlertInfo
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
@@ -49,11 +49,12 @@ class PriceAlertRepositoryImpl(
         return samePriceAlert.isNotEmpty()
     }
 
-    override fun getPriceAlerts(): Flow<List<PriceAlert>> {
-        return priceAlertsDao.getAlerts().toModels()
+    override fun getPriceAlerts(assetId: AssetId?): Flow<List<PriceAlertInfo>> {
+        return (assetId?.let { priceAlertsDao.getAlerts(it.toIdentifier()) } ?: priceAlertsDao.getAlerts())
+            .map { it.toDTO() }
     }
 
-    override fun getPriceAlert(assetId: AssetId): Flow<PriceAlert?> {
+    override fun getPriceAlert(assetId: AssetId): Flow<PriceAlertInfo?> {
         return priceAlertsDao.getAlert(assetId.toIdentifier()).filterNotNull().toDTO()
     }
 
@@ -62,11 +63,11 @@ class PriceAlertRepositoryImpl(
         val priceAlert = priceAlertsDao.getAlert(assetIdentifier).firstOrNull().let {
             if (it == null) {
                 priceAlertsDao.put(listOf(DbPriceAlert(assetId = assetIdentifier, currency = currency.string, enabled = true)))
-                listOf(PriceAlert(assetId, currency.string))
+                listOf(PriceAlertInfo(id = 0, PriceAlert(assetId, currency.string)))
             } else {
                 listOf(it.toDTO())
             }
-        }
+        }.map { it.priceAlert }
         priceAlertsDao.enabled(assetIdentifier, enabled)
 
         if (enabled) {
@@ -116,7 +117,7 @@ class PriceAlertRepositoryImpl(
         try {
             gemClient.includePriceAlert(
                 getDeviceId(),
-                getPriceAlerts().firstOrNull() ?: emptyList()
+                getPriceAlerts().map { it.map { it.priceAlert } }.firstOrNull() ?: emptyList()
             )
         } catch (_: Throwable) {}
         val local = priceAlertsDao.getAlerts().firstOrNull() ?: emptyList()

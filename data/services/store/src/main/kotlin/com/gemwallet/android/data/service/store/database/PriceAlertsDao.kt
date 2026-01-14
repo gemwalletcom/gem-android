@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
-import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +20,13 @@ interface PriceAlertsDao {
         """
     )
     fun getAlerts(): Flow<List<DbPriceAlert>>
+
+    @Query(
+        """
+        SELECT * FROM price_alerts WHERE enabled = 1 AND assetId = :assetId
+        """
+    )
+    fun getAlerts(assetId: String): Flow<List<DbPriceAlert>>
 
     @Query(
         """

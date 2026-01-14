@@ -24,7 +24,7 @@ fun PriceAlertsScreen(
     val context = LocalContext.current
 
     var selectingAsset by remember { mutableStateOf(false) }
-    val alertingAssets by viewModel.alertingAssets.collectAsStateWithLifecycle()
+    val data by viewModel.data.collectAsStateWithLifecycle()
     val enabled by viewModel.enabled.collectAsStateWithLifecycle()
     val syncState by viewModel.forceSync.collectAsStateWithLifecycle()
     val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
@@ -48,9 +48,10 @@ fun PriceAlertsScreen(
                 },
             )
             false -> PriceAlertScene(
-                alertingPrice = alertingAssets,
+                data = data,
                 enabled = enabled,
                 syncState = syncState,
+                isAssetView = viewModel.isAssetView(),
                 onEnablePriceAlerts = {
                     if (it && !pushEnabled) {
                         requestPushGrant = true

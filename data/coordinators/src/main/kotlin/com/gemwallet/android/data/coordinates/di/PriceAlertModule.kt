@@ -1,10 +1,11 @@
 package com.gemwallet.android.data.coordinates.di
 
 import com.gemwallet.android.application.pricealerts.coordinators.AddPriceAlert
-import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
-import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.coordinates.pricealerts.AddPriceAlertImpl
+import com.gemwallet.android.data.coordinates.pricealerts.GetPriceAlertsImpl
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import dagger.Module
@@ -27,6 +28,18 @@ object PriceAlertModule {
             gemApiClient = gemApiClient,
             getDeviceIdImpl = getDeviceId,
             priceAlertRepository = priceAlertRepository,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPriceAlerts(
+        priceAlertRepository: PriceAlertRepository,
+        assetsRepository: AssetsRepository,
+    ): GetPriceAlerts {
+        return GetPriceAlertsImpl(
+            priceAlertRepository = priceAlertRepository,
+            assetsRepository = assetsRepository,
         )
     }
 }

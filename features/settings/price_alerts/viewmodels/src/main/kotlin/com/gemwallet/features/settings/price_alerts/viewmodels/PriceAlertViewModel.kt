@@ -1,18 +1,18 @@
 package com.gemwallet.features.settings.price_alerts.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
-import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.pricealerts.PutPriceAlert
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
+import com.gemwallet.android.ext.toAssetId
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
@@ -26,12 +26,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PriceAlertViewModel @Inject constructor(
     getPriceAlerts: GetPriceAlerts,
@@ -43,6 +44,7 @@ class PriceAlertViewModel @Inject constructor(
     private val getPushEnabled: GetPushEnabled,
     private val switchPushEnabled: SwitchPushEnabled,
     private val walletsRepository: WalletsRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val pushEnabled = getPushEnabled.getPushEnabled()
@@ -52,21 +54,20 @@ class PriceAlertViewModel @Inject constructor(
 
     val enabled = MutableStateFlow(enablePriceAlert.isPriceAlertEnabled())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val alertingAssets = getPriceAlerts.getPriceAlerts().flatMapLatest { alerts ->
-        val ids = alerts.map { it.assetId }
-        assetsRepository.getTokensInfo(ids.map { it.toIdentifier() })
-            .map { items -> items.distinctBy { it.id() } }
-    }
-    .map { items -> items.map { AssetInfoUIModel(it) } }
-    .combine(forceSync) { items, _ ->
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(300)
-            forceSync.update { false }
+    val assetId = savedStateHandle.getStateFlow<String?>("assetId", null)
+        .mapLatest { it?.toAssetId() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val data = assetId.flatMapLatest { getPriceAlerts.getPriceAlerts(it) }
+        .mapLatest { getPriceAlerts.groupByTargetAndAsset(it) }
+        .combine(forceSync) { items, _ ->
+            viewModelScope.launch(Dispatchers.IO) {
+                delay(300)
+                forceSync.update { false }
+            }
+            items
         }
-        items
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     init {
         refresh(false)
@@ -75,6 +76,8 @@ class PriceAlertViewModel @Inject constructor(
     fun refresh(force: Boolean = true) {
         forceSync.update { force }
     }
+
+    fun isAssetView(): Boolean = assetId.value != null
 
     fun onEnablePriceAlerts(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -94,9 +97,10 @@ class PriceAlertViewModel @Inject constructor(
         }
     }
 
-    fun excludeAsset(assetId: AssetId) = viewModelScope.launch {
+    fun excludeAsset(priceAlertId: Int) = viewModelScope.launch {
         val currency = sessionRepository.getCurrentCurrency()
-        enablePriceAlert.setAssetPriceAlertEnabled(assetId, currency, false)
+        val priceAlert = data.value.values.flatten().firstOrNull { it.id == priceAlertId } ?: return@launch
+        enablePriceAlert.setAssetPriceAlertEnabled(priceAlert.assetId, currency, false)
     }
 
     fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) =

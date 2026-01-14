@@ -31,37 +31,40 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.domains.pricealerts.aggregates.PriceAlertDataAggregate
+import com.gemwallet.android.domains.pricealerts.aggregates.PriceAlertType
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.ActionIcon
-import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
-import com.gemwallet.android.ui.components.list_item.AssetListItem
+import com.gemwallet.android.ui.components.list_item.Badge
+import com.gemwallet.android.ui.components.list_item.ListItem
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.list_item.PriceInfo
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.SwipeableItemWithActions
 import com.gemwallet.android.ui.components.list_item.SwitchProperty
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingLarge
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriceAlertScene(
-    alertingPrice: List<AssetItemUIModel>,
+    data: Map<AssetId?, List<PriceAlertDataAggregate>>,
     enabled: Boolean,
     syncState: Boolean,
+    isAssetView: Boolean,
     onEnablePriceAlerts: (Boolean) -> Unit,
     onAdd: () -> Unit,
-    onExclude: (AssetId) -> Unit,
+    onExclude: (Int) -> Unit,
     onChart: (AssetId) -> Unit,
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    val reveableAssetId = remember { mutableStateOf<AssetId?>(null) }
+    val reveable = remember { mutableStateOf<Int?>(null) }
     val pullToRefreshState = rememberPullToRefreshState()
     Scene(
         title = stringResource(R.string.settings_price_alerts_title),
@@ -72,16 +75,15 @@ fun PriceAlertScene(
         },
         onClose = onCancel
     ) {
-        val isRefreshing = syncState
         PullToRefreshBox(
             modifier = Modifier.fillMaxSize(),
-            isRefreshing = isRefreshing,
+            isRefreshing = syncState,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = isRefreshing,
+                    isRefreshing = syncState,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -100,10 +102,11 @@ fun PriceAlertScene(
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
-                emptyAlertingAssets(alertingPrice.isEmpty())
+                emptyAlertingAssets(data.isEmpty())
                 assets(
-                    reveableAssetId = reveableAssetId,
-                    assets = alertingPrice,
+                    reveable = reveable,
+                    data = data,
+                    isAssetView = isAssetView,
                     onChart = onChart,
                     onExclude = onExclude,
                 )
@@ -130,63 +133,66 @@ private fun LazyListScope.emptyAlertingAssets(empty: Boolean) {
 }
 
 private fun LazyListScope.assets(
-    reveableAssetId: MutableState<AssetId?>,
-    assets: List<AssetItemUIModel>,
+    reveable: MutableState<Int?>,
+    data: Map<AssetId?, List<PriceAlertDataAggregate>>,
+    isAssetView: Boolean,
     onChart: (AssetId) -> Unit,
-    onExclude: (AssetId) -> Unit,
+    onExclude: (Int) -> Unit,
 ) {
-    itemsPositioned(assets, key = { index, item -> item.asset.id.toIdentifier()}) { position, item ->
+    data.entries.forEach { item ->
+        if (item.value.isEmpty()) return@forEach
+
+        item.key?.let {
+            item { SubheaderItem(if (isAssetView) stringResource(R.string.stake_active) else item.value.firstOrNull()?.title ?: "") }
+        }
+        assets(reveable, item.value, onChart, onExclude)
+    }
+}
+
+private fun LazyListScope.assets(
+    reveable: MutableState<Int?>,
+    data: List<PriceAlertDataAggregate>,
+    onChart: (AssetId) -> Unit,
+    onExclude: (Int) -> Unit,
+) {
+    itemsPositioned(data/*, key = { _, item -> item.id}*/) { position, item ->
         var minActionWidth by remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
 
         SwipeableItemWithActions(
-            isRevealed = reveableAssetId.value == item.asset.id,
+            isRevealed = reveable.value == item.id,
             actions = @Composable {
                 ActionIcon(
                     modifier = Modifier.widthIn(min = minActionWidth).heightIn(minActionWidth),
-                    onClick = { onExclude(item.asset.id) },
+                    onClick = { onExclude(item.id) },
                     backgroundColor = MaterialTheme.colorScheme.error,
                     icon = Icons.Default.Delete,
                 )
             },
-            onExpanded = { reveableAssetId.value = item.asset.id },
-            onCollapsed = { reveableAssetId.value = null },
+            onExpanded = { reveable.value = item.id },
+            onCollapsed = { reveable.value = null },
             listPosition = position,
         ) { position ->
-            AssetListItem(
+            ListItem(
                 modifier = Modifier
-                    .clickable(onClick = { onChart(item.asset.id) })
+                    .clickable(onClick = { onChart(item.assetId) })
                     .onSizeChanged {
                         minActionWidth = with (density) { it.height.toDp() }
                     },
-                asset = item,
-                support = {
-                    PriceInfo(
-                        price = item.price,
-                        style = MaterialTheme.typography.bodyMedium,
-                        internalPadding = 4.dp
-                    )
+                listPosition = position,
+                leading = @Composable { IconWithBadge(item.icon) },
+                title = @Composable { ListItemTitleText(item.title, { Badge(text = item.titleBadge) }) },
+                subtitle = {
+                    val (price, changes) = when (item.type) {
+                        PriceAlertType.Auto -> Pair(item.price, item.percentage)
+                        PriceAlertType.Over -> Pair(stringResource(R.string.price_alerts_direction_over), item.price)
+                        PriceAlertType.Under -> Pair(stringResource(R.string.price_alerts_direction_under), item.price)
+                        PriceAlertType.Increase -> Pair(stringResource(R.string.price_alerts_direction_increases_by), item.percentage)
+                        PriceAlertType.Decrease -> Pair(stringResource(R.string.price_alerts_direction_decreases_by), item.percentage)
+                    }
+                    PriceInfo(price, changes, item.priceState)
                 },
-                listPosition = position
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun PriceAlertScreenPreview() {
-    WalletTheme {
-        PriceAlertScene(
-            alertingPrice = emptyList(),
-            enabled = true,
-            syncState = false,
-            onEnablePriceAlerts = {},
-            onAdd = {},
-            onCancel = {},
-            onExclude = {},
-            onRefresh = {},
-            onChart = {}
-        )
     }
 }

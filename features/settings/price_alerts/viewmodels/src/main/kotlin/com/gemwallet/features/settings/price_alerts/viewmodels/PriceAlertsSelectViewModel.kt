@@ -1,6 +1,6 @@
 package com.gemwallet.features.settings.price_alerts.viewmodels
 
-import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
+import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -41,7 +41,7 @@ open class PriceAlertSelectSearch(
     getPriceAlerts: GetPriceAlerts,
 ) : SelectSearch {
 
-    val addedPriceAlerts = getPriceAlerts.getPriceAlerts().map { it.map { it.assetId } }
+    val addedPriceAlerts = getPriceAlerts.getPriceAlerts().map { items -> items.map { it.assetId } }
 
     override fun items(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
         return combine(filters, addedPriceAlerts) { filters, alerts -> Pair(filters,alerts) }

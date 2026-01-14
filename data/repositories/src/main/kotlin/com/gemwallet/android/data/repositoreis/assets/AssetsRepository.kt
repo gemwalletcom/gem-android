@@ -239,6 +239,7 @@ class AssetsRepository @Inject constructor(
 
     fun getTokensInfo(assetsId: List<String>): Flow<List<AssetInfo>> {
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
+            .map { items -> items.distinctBy { it.id() } }
     }
 
     fun search(query: String, tags: List<AssetTag>, byAllWallets: Boolean): Flow<List<AssetInfo>> {
