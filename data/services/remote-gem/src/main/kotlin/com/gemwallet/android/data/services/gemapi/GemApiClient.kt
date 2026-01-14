@@ -122,7 +122,7 @@ interface GemApiClient {
     suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): List<String>
 
     @POST("/v1/price_alerts/{device_id}")
-    suspend fun includePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): String
+    suspend fun includePriceAlert(@Path("device_id") deviceId: String, @Body alerts: List<PriceAlert>): String
 
     @HTTP(method = "DELETE", path = "/v1/price_alerts/{device_id}", hasBody = true)
     suspend fun excludePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): String

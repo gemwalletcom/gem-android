@@ -75,11 +75,6 @@ fun Spacer16() {
     Spacer(modifier = Modifier.size(space16))
 }
 
-@Composable
-fun Stub() {
-    Spacer(modifier = Modifier.size(0.dp))
-}
-
 fun LazyListScope.listSpacerBig() {
     item {
         Spacer16()

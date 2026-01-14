@@ -1,5 +1,5 @@
 package com.gemwallet.android.cases.device
 
-interface GetDeviceIdCase {
+interface GetDeviceId {
     fun getDeviceId(): String
 }

@@ -1,11 +1,9 @@
 package com.gemwallet.android.data.service.store.database.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
 import kotlinx.coroutines.flow.Flow
@@ -13,11 +11,11 @@ import kotlinx.coroutines.flow.map
 
 @Entity(tableName = "price_alerts")
 data class DbPriceAlert(
-    @PrimaryKey @ColumnInfo("asset_id") val assetId: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val assetId: String,
+    val currency: String,
     val price: Double? = null,
-    @ColumnInfo("price_percent_change")
     val pricePercentChange: Double? = null,
-    @ColumnInfo("price_direction")
     val priceDirection: PriceAlertDirection? = null,
     val enabled: Boolean,
 )
@@ -28,7 +26,7 @@ fun DbPriceAlert.toDTO(): PriceAlert {
         price = price,
         priceDirection = priceDirection,
         pricePercentChange = pricePercentChange,
-        currency = Currency.USD.string, // TODO: Add user selected
+        currency = currency,
     )
 }
 
@@ -39,6 +37,7 @@ fun PriceAlert.toRecord(): DbPriceAlert {
         pricePercentChange = pricePercentChange,
         priceDirection = priceDirection,
         enabled = true,
+        currency = currency,
     )
 }
 

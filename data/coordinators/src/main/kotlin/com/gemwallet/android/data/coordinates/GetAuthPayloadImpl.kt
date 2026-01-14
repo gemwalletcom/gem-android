@@ -4,7 +4,7 @@ import com.gemwallet.android.application.GetAuthPayload
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.math.toHexString
@@ -17,14 +17,14 @@ import java.util.Arrays
 
 class GetAuthPayloadImpl(
     private val gemApiClient: GemApiClient,
-    private val getDeviceIdCase: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
 ) : GetAuthPayload {
 
     override suspend fun getAuthPayload(wallet: Wallet, chain: Chain): AuthPayload {
         val account = wallet.getAccount(chain) ?: throw Exception() // TODO
-        val deviceId = getDeviceIdCase.getDeviceId()
+        val deviceId = getDeviceId.getDeviceId()
         val nonce = gemApiClient.getAuthNonce(deviceId)
         val message = uniffi.gemstone.createAuthMessage(
             chain = Chain.Ethereum.string,

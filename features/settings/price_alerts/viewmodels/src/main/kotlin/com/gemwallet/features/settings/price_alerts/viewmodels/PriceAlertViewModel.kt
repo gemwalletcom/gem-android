@@ -95,7 +95,8 @@ class PriceAlertViewModel @Inject constructor(
     }
 
     fun excludeAsset(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlert.setAssetPriceAlertEnabled(assetId, false)
+        val currency = sessionRepository.getCurrentCurrency()
+        enablePriceAlert.setAssetPriceAlertEnabled(assetId, currency, false)
     }
 
     fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) =

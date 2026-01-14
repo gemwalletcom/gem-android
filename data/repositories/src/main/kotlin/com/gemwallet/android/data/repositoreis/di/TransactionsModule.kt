@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.di
 import com.gemwallet.android.application.transactions.coordinators.GetChangedTransactions
 import com.gemwallet.android.application.transactions.coordinators.GetPendingTransactionsCount
 import com.gemwallet.android.blockchain.services.TransactionStatusService
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
@@ -91,14 +91,14 @@ object TransactionsModule {
     @Provides
     fun syncTransactionsService(
         gemApiClient: GemApiClient,
-        getDeviceIdCase: GetDeviceIdCase,
+        getDeviceId: GetDeviceId,
         putTransactions: PutTransactions,
         getTransactionUpdateTime: GetTransactionUpdateTime,
         assetsRepository: AssetsRepository,
     ): SyncTransactions {
         return SyncTransactionsService(
             gemApiClient = gemApiClient,
-            getDeviceIdCase = getDeviceIdCase,
+            getDeviceId = getDeviceId,
             putTransactions = putTransactions,
             getTransactionUpdateTime = getTransactionUpdateTime,
             assetsRepository = assetsRepository,

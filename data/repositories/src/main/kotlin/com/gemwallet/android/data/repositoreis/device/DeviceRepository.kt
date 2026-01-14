@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.GetSupportId
@@ -48,7 +48,7 @@ class DeviceRepository(
     private val requestPushToken: RequestPushToken,
     private val platformStore: PlatformStore,
     private val versionName: String,
-    private val getDeviceIdCase: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
     coroutineScope: CoroutineScope = CoroutineScope(
@@ -87,7 +87,7 @@ class DeviceRepository(
     override suspend fun syncDeviceInfo() {
         val pushToken = getPushToken()
         val pushEnabled = getPushEnabled().firstOrNull() ?: false
-        val deviceId = getDeviceIdCase.getDeviceId()
+        val deviceId = getDeviceId.getDeviceId()
         val device = Device(
             id = deviceId,
             platform = Platform.Android,
@@ -146,7 +146,7 @@ class DeviceRepository(
     }
 
     override suspend fun syncSubscription(wallets: List<Wallet>, added: Boolean) {
-        val deviceId = getDeviceIdCase.getDeviceId()
+        val deviceId = getDeviceId.getDeviceId()
         val subscriptionsIndex = buildSubscriptionIndex(wallets)
         val remoteSubscriptions = getRemoteSubscriptions(deviceId)
 
@@ -181,7 +181,7 @@ class DeviceRepository(
             gemApiClient.registerSupport(
                 NewSupportDevice(
                     supportDeviceId = supportId,
-                    deviceId = getDeviceIdCase.getDeviceId(),
+                    deviceId = getDeviceId.getDeviceId(),
                 )
             )
             context.dataStore.edit { it[Key.SupportId] = supportId }

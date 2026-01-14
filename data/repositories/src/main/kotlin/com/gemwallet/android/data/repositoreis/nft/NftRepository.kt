@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.nft
 
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 
 class NftRepository(
     private val gemApiClient: GemApiClient,
-    private val getDeviceId: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val nftDao: NftDao,
 ) : LoadNFTCase, GetListNftCase, GetAssetNft {
 

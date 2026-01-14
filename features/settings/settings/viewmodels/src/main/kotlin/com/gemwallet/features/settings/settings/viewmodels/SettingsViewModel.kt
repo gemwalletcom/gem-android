@@ -2,7 +2,7 @@ package com.gemwallet.features.settings.settings.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled
@@ -34,7 +34,7 @@ class SettingsViewModel @Inject constructor(
     private val userConfig: UserConfig,
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
-    private val getDeviceIdCase: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val switchPushEnabled: SwitchPushEnabled,
     private val getPushToken: GetPushToken,
     private val getPushEnabled: GetPushEnabled,
@@ -66,7 +66,7 @@ class SettingsViewModel @Inject constructor(
             it.copy(
                 currency = sessionRepository.session().firstOrNull()?.currency ?: Currency.USD,
                 developEnabled = userConfig.developEnabled(),
-                deviceId = getDeviceIdCase.getDeviceId(),
+                deviceId = getDeviceId.getDeviceId(),
                 pushToken = getPushToken.getPushToken()
             )
         }

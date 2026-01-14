@@ -4,7 +4,7 @@ import com.gemwallet.android.application.transactions.coordinators.GetChangedTra
 import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.blockchain.services.PerpetualService
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.PriceWebSocketClient
@@ -37,7 +37,7 @@ object AssetsModule {
         balancesService: BalancesService,
         getChangedTransactions: GetChangedTransactions,
         searchTokensCase: SearchTokensCase,
-        getDeviceIdCase: GetDeviceIdCase,
+        getDeviceId: GetDeviceId,
         priceClient: PriceWebSocketClient,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
@@ -49,7 +49,7 @@ object AssetsModule {
         getChangedTransactions = getChangedTransactions,
         balancesService = balancesService,
         searchTokensCase = searchTokensCase,
-        getDeviceIdCase = getDeviceIdCase,
+        getDeviceId = getDeviceId,
         priceClient = priceClient
     )
 

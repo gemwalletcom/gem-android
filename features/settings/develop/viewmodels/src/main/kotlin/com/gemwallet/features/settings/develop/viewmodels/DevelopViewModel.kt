@@ -2,7 +2,7 @@ package com.gemwallet.features.settings.develop.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.wallet.core.primitives.PlatformStore
@@ -14,14 +14,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DevelopViewModel @Inject constructor(
-    private val getDeviceIdCase: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val getPushTokenCase: GetPushToken,
     private val clearPendingTransactions: ClearPendingTransactions,
     val platformStore: PlatformStore
 ) : ViewModel() {
 
     fun getDeviceId(): String {
-        return getDeviceIdCase.getDeviceId()
+        return getDeviceId.getDeviceId()
     }
 
     fun getPushToken(): String {

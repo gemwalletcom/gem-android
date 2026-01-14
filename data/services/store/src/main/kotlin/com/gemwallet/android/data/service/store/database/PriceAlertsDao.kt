@@ -22,14 +22,14 @@ interface PriceAlertsDao {
 
     @Query(
         """
-        SELECT * FROM price_alerts WHERE asset_id = :assetId
+        SELECT * FROM price_alerts WHERE assetId = :assetId
         """
     )
     fun getAlert(assetId: String): Flow<DbPriceAlert?>
 
     @Query(
         """
-        UPDATE price_alerts SET enabled = :enabled WHERE asset_id = :assetId
+        UPDATE price_alerts SET enabled = :enabled WHERE assetId = :assetId
         """
     )
     suspend fun enabled(assetId: String, enabled: Boolean)

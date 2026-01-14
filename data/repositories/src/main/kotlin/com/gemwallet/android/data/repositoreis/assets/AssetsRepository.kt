@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.assets.AddRecentActivity
 import com.gemwallet.android.cases.assets.GetRecent
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.tokens.toPriorityQuery
@@ -84,7 +84,7 @@ class AssetsRepository @Inject constructor(
     private val balancesService: BalancesService,
     getChangedTransactions: GetChangedTransactions,
     private val searchTokensCase: SearchTokensCase,
-    private val getDeviceIdCase: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val priceClient: PriceWebSocketClient,
     private val updateBalances: UpdateBalances = UpdateBalances(balancesDao, balancesService),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
@@ -309,7 +309,7 @@ class AssetsRepository @Inject constructor(
         }
 
         val availableAssetsId = try {
-            gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index)
+            gemApi.getAssets(getDeviceId.getDeviceId(), wallet.index)
         } catch (_: Throwable) {
             return@launch
         }

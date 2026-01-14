@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
@@ -13,14 +13,14 @@ import javax.inject.Inject
 
 class SyncTransactionsService @Inject constructor(
     private val gemApiClient: GemApiClient,
-    private val getDeviceIdCase: GetDeviceIdCase,
+    private val getDeviceId: GetDeviceId,
     private val putTransactions: PutTransactions,
     private val getTransactionUpdateTime: GetTransactionUpdateTime,
     private val assetsRepository: AssetsRepository,
 ) : SyncTransactions {
 
     override suspend fun syncTransactions(wallet: Wallet) {
-        val deviceId = getDeviceIdCase.getDeviceId()
+        val deviceId = getDeviceId.getDeviceId()
         val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000L
         val response = runCatching {
             val result: List<Transaction>? = try {

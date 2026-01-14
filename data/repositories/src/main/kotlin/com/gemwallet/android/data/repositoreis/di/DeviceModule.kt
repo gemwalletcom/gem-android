@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.SetPushToken
@@ -11,7 +11,7 @@ import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
-import com.gemwallet.android.data.repositoreis.device.GetDeviceId
+import com.gemwallet.android.data.repositoreis.device.GetDeviceIdImpl
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.model.BuildInfo
@@ -29,8 +29,8 @@ object DeviceModule {
 
     @Provides
     @Singleton
-    fun provideDeviceIdCase(@ApplicationContext context: Context): GetDeviceIdCase
-        = GetDeviceId(ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)))
+    fun provideDeviceId(@ApplicationContext context: Context): GetDeviceId
+        = GetDeviceIdImpl(ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)))
 
     @Provides
     @Singleton
@@ -38,7 +38,7 @@ object DeviceModule {
         @ApplicationContext context: Context,
         buildInfo: BuildInfo,
         gemApiClient: GemApiClient,
-        getDeviceIdCase: GetDeviceIdCase,
+        getDeviceId: GetDeviceId,
         enablePriceAlert: EnablePriceAlert,
         getCurrentCurrencyCase: GetCurrentCurrencyCase,
     ): DeviceRepository {
@@ -49,7 +49,7 @@ object DeviceModule {
             requestPushToken = buildInfo.requestPushToken,
             platformStore = buildInfo.platformStore,
             versionName = buildInfo.versionName,
-            getDeviceIdCase = getDeviceIdCase,
+            getDeviceId = getDeviceId,
             enablePriceAlert = enablePriceAlert,
             getCurrentCurrencyCase = getCurrentCurrencyCase,
         )

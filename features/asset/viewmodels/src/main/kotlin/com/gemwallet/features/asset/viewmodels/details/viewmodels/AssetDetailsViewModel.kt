@@ -150,7 +150,7 @@ class AssetDetailsViewModel @Inject constructor(
     }
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlert.setAssetPriceAlertEnabled(assetId, priceAlertEnabled.value != true)
+        enablePriceAlert.setAssetPriceAlertEnabled(assetId, session.value?.currency ?: Currency.USD, priceAlertEnabled.value != true)
     }
 
     fun pin() = viewModelScope.launch(Dispatchers.IO) {
