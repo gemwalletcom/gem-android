@@ -6,5 +6,5 @@ import com.wallet.core.primitives.PriceAlertDirection
 
 interface AddPriceAlert {
 
-    fun addPriceAlert(assetId: AssetId, currency: Currency, price: Double? = null, percentage: Double? = null, direction: PriceAlertDirection? = null)
+    suspend fun addPriceAlert(assetId: AssetId, currency: Currency, price: Double? = null, percentage: Double? = null, direction: PriceAlertDirection? = null)
 }

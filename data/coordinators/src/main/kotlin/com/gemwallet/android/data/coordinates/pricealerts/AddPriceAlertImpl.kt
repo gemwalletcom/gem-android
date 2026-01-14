@@ -16,10 +16,9 @@ class AddPriceAlertImpl(
     private val gemApiClient: GemApiClient,
     private val getDeviceIdImpl: GetDeviceId,
     private val priceAlertRepository: PriceAlertRepository,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : AddPriceAlert {
 
-    override fun addPriceAlert(
+    override suspend fun addPriceAlert(
         assetId: AssetId,
         currency: Currency,
         price: Double?,
@@ -33,14 +32,15 @@ class AddPriceAlertImpl(
             pricePercentChange = percentage,
             priceDirection = direction,
         )
-        scope.launch {
-            priceAlertRepository.addPriceAlert(priceAlert)
-            try {
-                gemApiClient.includePriceAlert(
-                    deviceId = getDeviceIdImpl.getDeviceId(),
-                    listOf(priceAlert),
-                )
-            } catch (_: Throwable) {}
+        if (priceAlertRepository.hasSamePriceAlert(priceAlert)) {
+            return
         }
+        priceAlertRepository.addPriceAlert(priceAlert)
+        try {
+            gemApiClient.includePriceAlert(
+                deviceId = getDeviceIdImpl.getDeviceId(),
+                listOf(priceAlert),
+            )
+        } catch (_: Throwable) {}
     }
 }

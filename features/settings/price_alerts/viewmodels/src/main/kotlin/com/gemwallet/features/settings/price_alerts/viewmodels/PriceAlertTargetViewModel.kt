@@ -14,6 +14,7 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlertDirection
 import com.wallet.core.primitives.PriceAlertNotificationType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -83,13 +85,15 @@ class PriceAlertTargetViewModel @Inject constructor(
             PriceAlertNotificationType.PricePercentChange -> Triple(null, value, direction.value)
             PriceAlertNotificationType.Auto -> Triple(null, null, null)
         }
-        addPriceAlert.addPriceAlert(
-            assetId = assetId.value ?: return,
-            currency = currency.value,
-            price = price,
-            percentage = percentage,
-            direction = direction,
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            addPriceAlert.addPriceAlert(
+                assetId = assetId.value ?: return@launch,
+                currency = currency.value,
+                price = price,
+                percentage = percentage,
+                direction = direction,
+            )
+        }
     }
 
 }

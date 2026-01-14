@@ -5,4 +5,6 @@ import com.wallet.core.primitives.PriceAlert
 interface PriceAlertRepository {
 
     suspend fun addPriceAlert(priceAlert: PriceAlert)
+
+    suspend fun hasSamePriceAlert(priceAlert: PriceAlert): Boolean
 }

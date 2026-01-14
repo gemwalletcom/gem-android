@@ -38,6 +38,17 @@ class PriceAlertRepositoryImpl(
         priceAlertsDao.put(listOf(priceAlert.toRecord()))
     }
 
+    override suspend fun hasSamePriceAlert(priceAlert: PriceAlert): Boolean {
+        val samePriceAlert = priceAlertsDao.findSamePriceAlert(
+            assetId = priceAlert.assetId.toIdentifier(),
+            currency = priceAlert.currency,
+            price = priceAlert.price,
+            priceDirection = priceAlert.priceDirection,
+            pricePercentChange = priceAlert.pricePercentChange
+        )
+        return samePriceAlert.isNotEmpty()
+    }
+
     override fun getPriceAlerts(): Flow<List<PriceAlert>> {
         return priceAlertsDao.getAlerts().toModels()
     }
