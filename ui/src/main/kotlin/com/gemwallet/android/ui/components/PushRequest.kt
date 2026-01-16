@@ -25,7 +25,6 @@ fun PushRequest(
     val permissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
     if (permissionState.status.isGranted) {
         onNotificationEnable()
-        onDismiss()
     } else {
         AlertDialog(
             onDismissRequest = onDismiss,

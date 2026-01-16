@@ -80,7 +80,7 @@ class SettingsViewModel @Inject constructor(
     fun notificationEnable() {
         val pushEnabled = !pushEnabled.value
         viewModelScope.launch(Dispatchers.IO) {
-            switchPushEnabled.switchPushEnabledCase(
+            switchPushEnabled.switchPushEnabled(
                 pushEnabled,
                 walletsRepository.getAll().firstOrNull() ?: emptyList()
             )

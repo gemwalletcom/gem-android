@@ -11,7 +11,7 @@ interface GetPriceAlerts {
         val result = mutableMapOf<AssetId?, List<PriceAlertDataAggregate>>()
 
         val withoutTarget = items.filter { !it.hasTarget }
-        val withTarget = (items - withoutTarget).groupBy { it.assetId }
+        val withTarget = (items - withoutTarget.toSet()).groupBy { it.assetId }
 
         result[null] = withoutTarget
         result.putAll(withTarget)

@@ -8,10 +8,10 @@ import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.device.SyncSubscription
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
 import com.gemwallet.android.data.repositoreis.device.GetDeviceIdImpl
+import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.model.BuildInfo
@@ -39,7 +39,7 @@ object DeviceModule {
         buildInfo: BuildInfo,
         gemApiClient: GemApiClient,
         getDeviceId: GetDeviceId,
-        enablePriceAlert: EnablePriceAlert,
+        priceAlertRepository: PriceAlertRepository,
         getCurrentCurrencyCase: GetCurrentCurrencyCase,
     ): DeviceRepository {
         return DeviceRepository(
@@ -50,7 +50,7 @@ object DeviceModule {
             platformStore = buildInfo.platformStore,
             versionName = buildInfo.versionName,
             getDeviceId = getDeviceId,
-            enablePriceAlert = enablePriceAlert,
+            priceAlertRepository = priceAlertRepository,
             getCurrentCurrencyCase = getCurrentCurrencyCase,
         )
     }

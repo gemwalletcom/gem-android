@@ -12,7 +12,7 @@ import com.gemwallet.features.settings.aboutus.presents.AboutUsScreen
 import com.gemwallet.features.settings.currency.presents.CurrenciesScene
 import com.gemwallet.features.settings.develop.presents.DevelopScene
 import com.gemwallet.features.settings.networks.presents.NetworksScreen
-import com.gemwallet.features.settings.price_alerts.presents.PriceAlertsScreen
+import com.gemwallet.features.settings.price_alerts.presents.PriceAlertsNavScreen
 import com.gemwallet.features.settings.security.presents.SecurityScene
 import com.gemwallet.features.settings.settings.presents.views.PreferencesScene
 import com.gemwallet.features.settings.settings.presents.views.SettingsScene
@@ -142,7 +142,7 @@ fun NavGraphBuilder.settingsScreen(
     }
 
     composable<PriceAlertsRoute> {
-        PriceAlertsScreen(onChart = onChart, onCancel = onCancel)
+        PriceAlertsNavScreen(onChart = onChart, onCancel = onCancel)
     }
 
     composable<PreferencesRoute> {

@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.domains.pricealerts.values.PriceAlertsStateEvent
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
@@ -46,7 +48,7 @@ fun AssetDetailsScreen(
         uiState is AssetInfoUIState.Idle && uiModel != null -> AssetDetailsScene(
             uiState = uiModel ?: return,
             transactions = transactions,
-            priceAlertEnabled = priceAlertEnabled,
+            priceAlertEnabled = priceAlertEnabled is PriceAlertsStateEvent.Enable,
             syncState = (uiState as AssetInfoUIState.Idle).sync,
             isOperationEnabled = isOperationEnabled,
             onRefresh = viewModel::refresh,
@@ -65,6 +67,10 @@ fun AssetDetailsScreen(
             onCancel = onCancel,
         )
         uiState is AssetInfoUIState.Loading || uiModel == null -> LoadingScene(stringResource(R.string.common_loading), onCancel)
+    }
+
+    if (priceAlertEnabled is PriceAlertsStateEvent.PushRequested) {
+        PushRequest(viewModel::pushGranted, viewModel::pushRejected)
     }
 }
 

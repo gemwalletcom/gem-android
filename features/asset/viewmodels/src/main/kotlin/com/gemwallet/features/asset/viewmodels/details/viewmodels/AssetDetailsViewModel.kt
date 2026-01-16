@@ -3,15 +3,15 @@ package com.gemwallet.features.asset.viewmodels.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.pricealerts.coordinators.PriceAlertsStateCoordinator
 import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.cases.banners.HasMultiSign
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
-import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.domains.pricealerts.values.PriceAlertsStateEvent
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
@@ -63,14 +63,19 @@ class AssetDetailsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val getTransactions: GetTransactions,
-    private val getPriceAlerts: GetPriceAlerts,
-    private val enablePriceAlert: EnablePriceAlert,
+    private val priceAlertsStateCoordinator: PriceAlertsStateCoordinator,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
     private val hasMultiSign: HasMultiSign,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val assetId = savedStateHandle.getStateFlow(assetIdArg, "").map { it.toAssetId() }
+        .onEach { assetId ->
+            assetId ?: return@onEach
+            priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.Request(assetId))
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     private val assetInfo = assetId
         .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
         .flatMapLatest { assetId ->
@@ -99,10 +104,8 @@ class AssetDetailsViewModel @Inject constructor(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val priceAlertEnabled = assetId.flatMapLatest {
-            getPriceAlerts.isAssetPriceAlertEnabled(it ?: return@flatMapLatest emptyFlow())
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val priceAlertEnabled = priceAlertsStateCoordinator.priceAlertState
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val transactions = assetId.flatMapLatest { getTransactions.getTransactions(it) }
         .map { it.toImmutableList() }
@@ -150,7 +153,20 @@ class AssetDetailsViewModel @Inject constructor(
     }
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlert.setAssetPriceAlertEnabled(assetId, session.value?.currency ?: Currency.USD, priceAlertEnabled.value != true)
+        val event = when (priceAlertEnabled.value) {
+            is PriceAlertsStateEvent.Disable -> PriceAlertsStateEvent.Enable(assetId)
+            is PriceAlertsStateEvent.Enable -> PriceAlertsStateEvent.Disable(assetId)
+            else -> return@launch
+        }
+        priceAlertsStateCoordinator.changePriceAlertState(event)
+    }
+
+    fun pushGranted() {
+        priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.PushGranted(assetId.value ?: return))
+    }
+
+    fun pushRejected() {
+        priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.PushRejected(assetId.value ?: return))
     }
 
     fun pin() = viewModelScope.launch(Dispatchers.IO) {

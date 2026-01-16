@@ -5,7 +5,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.application.pricealerts.coordinators.AddPriceAlert
+import com.gemwallet.android.application.pricealerts.coordinators.IncludePriceAlert
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.model.format
@@ -31,7 +31,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PriceAlertTargetViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
-    private val addPriceAlert: AddPriceAlert,
+    private val includePriceAlert: IncludePriceAlert,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -86,7 +86,7 @@ class PriceAlertTargetViewModel @Inject constructor(
             PriceAlertNotificationType.Auto -> Triple(null, null, null)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            addPriceAlert.addPriceAlert(
+            includePriceAlert.includePriceAlert(
                 assetId = assetId.value ?: return@launch,
                 currency = currency.value,
                 price = price,

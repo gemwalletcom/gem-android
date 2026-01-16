@@ -1,6 +1,7 @@
 package com.gemwallet.android.di
 
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
+import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts
 import com.gemwallet.android.blockchain.clients.algorand.AlgorandSignClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignClient
@@ -103,6 +104,7 @@ object DataModule {
         syncTransactions: SyncTransactions,
         syncSubscription: SyncSubscription,
         syncPerpetuals: SyncPerpetuals,
+        syncPriceAlerts: SyncPriceAlerts,
     ): SyncService {
         return SyncService(
             sessionRepository = sessionRepository,
@@ -111,6 +113,7 @@ object DataModule {
             buyRepository = buyRepository,
             syncSubscription = syncSubscription,
             syncPerpetuals = syncPerpetuals,
+            syncPriceAlerts = syncPriceAlerts,
         )
     }
 }

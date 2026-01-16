@@ -15,9 +15,9 @@ import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.device.SyncSubscription
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
+import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.model
@@ -49,7 +49,7 @@ class DeviceRepository(
     private val platformStore: PlatformStore,
     private val versionName: String,
     private val getDeviceId: GetDeviceId,
-    private val enablePriceAlert: EnablePriceAlert,
+    private val priceAlertRepository: PriceAlertRepository,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
     coroutineScope: CoroutineScope = CoroutineScope(
         SupervisorJob() + CoroutineExceptionHandler { _, _ -> /*Log.e("DEVICE", "Err:", err)*/ } + Dispatchers.IO
@@ -97,7 +97,7 @@ class DeviceRepository(
             token = pushToken,
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
-            isPriceAlertsEnabled = enablePriceAlert.isPriceAlertEnabled(),
+            isPriceAlertsEnabled = priceAlertRepository.isPriceAlertsEnabled().firstOrNull(),
             version = versionName,
             currency = getCurrentCurrencyCase.getCurrentCurrency().string,
             subscriptionsVersion = getSubscriptionVersion(),
@@ -122,7 +122,7 @@ class DeviceRepository(
             .map { preferences -> preferences[Key.SupportId] }
     }
 
-    override suspend fun switchPushEnabledCase(enabled: Boolean, wallets: List<Wallet>) {
+    override suspend fun switchPushEnabled(enabled: Boolean, wallets: List<Wallet>) {
         context.dataStore.edit { preferences ->
             preferences[Key.PushEnabled] = enabled
         }

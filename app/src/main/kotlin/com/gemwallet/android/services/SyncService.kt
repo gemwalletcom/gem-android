@@ -2,6 +2,7 @@ package com.gemwallet.android.services
 
 import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
+import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
@@ -21,12 +22,14 @@ class SyncService @Inject constructor(
     private val buyRepository: BuyRepository,
     private val syncSubscription: SyncSubscription,
     private val syncPerpetuals: SyncPerpetuals,
+    private val syncPriceAlerts: SyncPriceAlerts,
 ) {
 
     suspend fun sync() = withContext(Dispatchers.IO) {
         listOf(
             async { syncTransactions.syncTransactions(sessionRepository.session().firstOrNull()?.wallet ?: return@async) },
-            async { buyRepository.sync() }
+            async { buyRepository.sync() },
+            async { syncPriceAlerts.syncPriceAlerts() },
         ).awaitAll()
         syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
 

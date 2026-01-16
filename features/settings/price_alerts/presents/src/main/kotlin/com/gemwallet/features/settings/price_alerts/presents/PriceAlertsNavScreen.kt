@@ -10,13 +10,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.domains.pricealerts.values.PriceAlertsStateEvent
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.features.settings.price_alerts.viewmodels.PriceAlertViewModel
 import com.wallet.core.primitives.AssetId
 
 @Composable
-fun PriceAlertsScreen(
+fun PriceAlertsNavScreen(
     onChart: (AssetId) -> Unit,
     onCancel: () -> Unit,
     viewModel: PriceAlertViewModel = hiltViewModel(),
@@ -24,19 +25,17 @@ fun PriceAlertsScreen(
     val context = LocalContext.current
 
     var selectingAsset by remember { mutableStateOf(false) }
-    val data by viewModel.data.collectAsStateWithLifecycle()
-    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
-    val syncState by viewModel.forceSync.collectAsStateWithLifecycle()
-    val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
 
-    var requestPushGrant by remember { mutableStateOf(false) }
+    val data by viewModel.data.collectAsStateWithLifecycle()
+    val priceAlertState by viewModel.priceAlertState.collectAsStateWithLifecycle()
+    val syncState by viewModel.forceSync.collectAsStateWithLifecycle()
 
     AnimatedContent(selectingAsset, label = "") { selecting ->
         when (selecting) {
             true -> PriceAlertSelectScreen(
                 onCancel = { selectingAsset = false },
                 onSelect = {
-                    viewModel.addAsset(it) {
+                    viewModel.includeAsset(it) {
                         Toast.makeText(
                             context,
                             context.getString(R.string.price_alerts_enabled_for, it.name),
@@ -49,16 +48,10 @@ fun PriceAlertsScreen(
             )
             false -> PriceAlertScene(
                 data = data,
-                enabled = enabled,
+                enabled = priceAlertState is PriceAlertsStateEvent.Enable,
                 syncState = syncState,
-                isAssetView = viewModel.isAssetView(),
-                onEnablePriceAlerts = {
-                    if (it && !pushEnabled) {
-                        requestPushGrant = true
-                    } else {
-                        viewModel.onEnablePriceAlerts(it)
-                    }
-                },
+                isAssetView = viewModel.isAssetManage(),
+                onEnablePriceAlerts = viewModel::togglePriceAlerts,
                 onChart = onChart,
                 onExclude = viewModel::excludeAsset,
                 onRefresh = viewModel::refresh,
@@ -67,7 +60,8 @@ fun PriceAlertsScreen(
             )
         }
     }
-    if (requestPushGrant) {
-        PushRequest(viewModel::notificationEnable) { requestPushGrant = false }
+
+    if (priceAlertState is PriceAlertsStateEvent.PushRequested) {
+        PushRequest(viewModel::pushGranted, viewModel::pushRejected)
     }
 }
