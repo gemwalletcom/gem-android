@@ -49,6 +49,7 @@ fun NavGraphBuilder.assetScreen(
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
     onConfirm: (ConfirmParams) -> Unit,
+    onPriceAlerts: (AssetId) -> Unit,
 ) {
     composable<AssetRoute>(
         deepLinks = listOf(
@@ -66,6 +67,7 @@ fun NavGraphBuilder.assetScreen(
             openNetwork = openNetwork,
             onStake = onStake,
             onConfirm = onConfirm,
+            onPriceAlerts = onPriceAlerts
         )
     }
 }

@@ -6,12 +6,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import com.gemwallet.features.settings.aboutus.presents.AboutUsScreen
 import com.gemwallet.features.settings.currency.presents.CurrenciesScene
 import com.gemwallet.features.settings.develop.presents.DevelopScene
 import com.gemwallet.features.settings.networks.presents.NetworksScreen
+import com.gemwallet.features.settings.price_alerts.presents.PriceAlertTargetNavScreen
 import com.gemwallet.features.settings.price_alerts.presents.PriceAlertsNavScreen
 import com.gemwallet.features.settings.security.presents.SecurityScene
 import com.gemwallet.features.settings.settings.presents.views.PreferencesScene
@@ -43,7 +45,10 @@ object AboutusRoute
 object NetworksRoute
 
 @Serializable
-object PriceAlertsRoute
+data class PriceAlertsRoute(val assetId: String? = null)
+
+@Serializable
+data class AddPriceAlertTargetRoute(val assetId: String)
 
 @Serializable
 object SupportRoute
@@ -75,8 +80,12 @@ fun NavController.navigateToNetworksScreen(navOptions: NavOptions? = null) {
     navigate(NetworksRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
-fun NavController.navigateToPriceAlertsScreen(navOptions: NavOptions? = null) {
-    navigate(PriceAlertsRoute, navOptions ?: navOptions { launchSingleTop = true })
+fun NavController.navigateToPriceAlertsScreen(assetId: AssetId? = null, navOptions: NavOptions? = null) {
+    navigate(PriceAlertsRoute(assetId?.toIdentifier()), navOptions ?: navOptions { launchSingleTop = true })
+}
+
+fun NavController.navigateToAddPriceAlertTargetScreen(assetId: AssetId, navOptions: NavOptions? = null) {
+    navigate(AddPriceAlertTargetRoute(assetId.toIdentifier()), navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToSupport(navOptions: NavOptions? = null) {
@@ -96,6 +105,7 @@ fun NavGraphBuilder.settingsScreen(
     onAboutUs: () -> Unit,
     onNetworks: () -> Unit,
     onPriceAlerts: () -> Unit,
+    onAddPriceAlertTarget: (AssetId) -> Unit,
     onChart: (AssetId) -> Unit,
     onSupport: () -> Unit,
     onPerpetual: () -> Unit,
@@ -142,7 +152,11 @@ fun NavGraphBuilder.settingsScreen(
     }
 
     composable<PriceAlertsRoute> {
-        PriceAlertsNavScreen(onChart = onChart, onCancel = onCancel)
+        PriceAlertsNavScreen(onChart = onChart, onAddPriceAlertTarget = onAddPriceAlertTarget, onCancel = onCancel)
+    }
+
+    composable<AddPriceAlertTargetRoute> {
+        PriceAlertTargetNavScreen(onCancel = onCancel)
     }
 
     composable<PreferencesRoute> {

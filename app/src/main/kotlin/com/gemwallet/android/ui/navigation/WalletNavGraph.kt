@@ -49,6 +49,7 @@ import com.gemwallet.android.ui.navigation.routes.confirm
 import com.gemwallet.android.ui.navigation.routes.fiatScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAboutUsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAddAssetScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToAddPriceAlertTargetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAmountScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetChartScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
@@ -152,7 +153,8 @@ fun WalletNavGraph(
             onChart = navController::navigateToAssetChartScreen,
             openNetwork = navController::navigateToAssetScreen,
             onStake = navController::navigateToStake,
-            onConfirm = navController::navigateToConfirmScreen
+            onConfirm = navController::navigateToConfirmScreen,
+            onPriceAlerts = navController::navigateToPriceAlertsScreen
         )
 
         assetChartScreen(
@@ -289,6 +291,7 @@ fun WalletNavGraph(
             onNetworks = navController::navigateToNetworksScreen,
             onChart = navController::navigateToAssetChartScreen,
             onPriceAlerts = navController::navigateToPriceAlertsScreen,
+            onAddPriceAlertTarget = navController::navigateToAddPriceAlertTargetScreen,
             onSupport = navController::navigateToSupport,
             onPerpetual = navController::navigateToPerpetualsScreen,
             onReferral = navController::navigateToReferralScreen,

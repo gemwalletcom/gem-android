@@ -19,6 +19,7 @@ import com.wallet.core.primitives.AssetId
 @Composable
 fun PriceAlertsNavScreen(
     onChart: (AssetId) -> Unit,
+    onAddPriceAlertTarget: (AssetId) -> Unit,
     onCancel: () -> Unit,
     viewModel: PriceAlertViewModel = hiltViewModel(),
 ) {
@@ -29,6 +30,7 @@ fun PriceAlertsNavScreen(
     val data by viewModel.data.collectAsStateWithLifecycle()
     val priceAlertState by viewModel.priceAlertState.collectAsStateWithLifecycle()
     val syncState by viewModel.forceSync.collectAsStateWithLifecycle()
+    val assetId by viewModel.assetId.collectAsStateWithLifecycle()
 
     AnimatedContent(selectingAsset, label = "") { selecting ->
         when (selecting) {
@@ -47,6 +49,7 @@ fun PriceAlertsNavScreen(
                 },
             )
             false -> PriceAlertScene(
+                assetId = assetId,
                 data = data,
                 enabled = priceAlertState is PriceAlertsStateEvent.Enable,
                 syncState = syncState,
@@ -56,7 +59,8 @@ fun PriceAlertsNavScreen(
                 onExclude = viewModel::excludeAsset,
                 onRefresh = viewModel::refresh,
                 onCancel = onCancel,
-                onAdd = { selectingAsset = true }
+                onAdd = { selectingAsset = true },
+                onAddTarget = onAddPriceAlertTarget,
             )
         }
     }

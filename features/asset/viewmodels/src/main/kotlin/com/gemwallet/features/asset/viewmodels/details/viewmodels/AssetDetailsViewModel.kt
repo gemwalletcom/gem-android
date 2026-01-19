@@ -3,7 +3,10 @@ package com.gemwallet.features.asset.viewmodels.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.pricealerts.coordinators.GetAssetPriceAlertState
+import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.application.pricealerts.coordinators.PriceAlertsStateCoordinator
+import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts
 import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.cases.banners.HasMultiSign
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
@@ -64,6 +67,8 @@ class AssetDetailsViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val getTransactions: GetTransactions,
     private val priceAlertsStateCoordinator: PriceAlertsStateCoordinator,
+    private val syncPriceAlerts: SyncPriceAlerts,
+    private val getPriceAlerts: GetPriceAlerts,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
     private val hasMultiSign: HasMultiSign,
     savedStateHandle: SavedStateHandle,
@@ -107,6 +112,11 @@ class AssetDetailsViewModel @Inject constructor(
     val priceAlertEnabled = priceAlertsStateCoordinator.priceAlertState
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val priceAlertsCount = assetId.filterNotNull()
+        .flatMapLatest { getPriceAlerts.getPriceAlerts(it) }
+        .map { it.size }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
     val transactions = assetId.flatMapLatest { getTransactions.getTransactions(it) }
         .map { it.toImmutableList() }
         .flowOn(Dispatchers.IO)
@@ -141,6 +151,7 @@ class AssetDetailsViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
+            syncPriceAlerts.syncPriceAlerts()
             assetsRepository.syncAssetInfo(
                 assetId = assetId,
                 wallet = session.value?.wallet ?: return@launch,

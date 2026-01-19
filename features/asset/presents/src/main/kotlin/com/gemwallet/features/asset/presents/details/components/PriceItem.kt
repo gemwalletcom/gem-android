@@ -19,11 +19,14 @@ import com.wallet.core.primitives.AssetType
 
 internal fun LazyListScope.price(
     uiState: AssetInfoUIModel,
+    priceAlertsCount: Int,
     onChart: (AssetId) -> Unit,
+    onPriceAlerts: (AssetId) -> Unit
 ) {
     item {
         PropertyItem(
-            modifier = Modifier.clickable { onChart(uiState.asset.id) }
+            modifier = Modifier
+                .clickable { onChart(uiState.asset.id) }
                 .testTag("assetChart"),
             title = { PropertyTitleText(R.string.asset_price) },
             data = {
@@ -40,11 +43,28 @@ internal fun LazyListScope.price(
                     }
                 )
             },
-            listPosition = if (uiState.tokenType == AssetType.NATIVE) {
+            listPosition = if (uiState.tokenType == AssetType.NATIVE && priceAlertsCount == 0) {
                 ListPosition.Single
             } else {
                 ListPosition.First
             }
         )
+    }
+
+    if (priceAlertsCount > 0) {
+        item {
+            PropertyItem(
+                modifier = Modifier
+                    .clickable { onPriceAlerts(uiState.asset.id) }
+                    .testTag("assetChart"),
+                title = { PropertyTitleText(R.string.settings_price_alerts_title) },
+                data = { PropertyDataText(text = "$priceAlertsCount", badge = { DataBadgeChevron() }) },
+                listPosition = if (uiState.tokenType == AssetType.NATIVE) {
+                    ListPosition.Last
+                } else {
+                    ListPosition.Middle
+                }
+            )
+        }
     }
 }

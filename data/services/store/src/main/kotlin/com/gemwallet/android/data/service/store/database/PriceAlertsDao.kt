@@ -43,9 +43,9 @@ interface PriceAlertsDao {
         """SELECT * FROM price_alerts
             WHERE assetId = :assetId
                 AND currency = :currency
-                AND price = :price
-                AND priceDirection = :priceDirection
-                AND pricePercentChange = :pricePercentChange
+                AND (price = :price OR (:price IS NULL AND price IS NULL))
+                AND (priceDirection = :priceDirection OR (:priceDirection IS NULL AND priceDirection IS NULL))
+                AND (pricePercentChange = :pricePercentChange OR (:pricePercentChange IS NULL AND pricePercentChange IS NULL))
         """
     )
     suspend fun findSamePriceAlert(assetId: String, currency: String, price: Double?, priceDirection: PriceAlertDirection?, pricePercentChange: Double?): List<DbPriceAlert>

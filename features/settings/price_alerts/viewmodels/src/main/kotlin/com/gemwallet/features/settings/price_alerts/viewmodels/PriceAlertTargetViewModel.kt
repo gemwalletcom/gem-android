@@ -37,7 +37,7 @@ class PriceAlertTargetViewModel @Inject constructor(
 
     val value = TextFieldState()
 
-    val assetId = savedStateHandle.getStateFlow<String?>("asset_id", null)
+    val assetId = savedStateHandle.getStateFlow<String?>("assetId", null)
         .filterNotNull()
         .map { it.toAssetId() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

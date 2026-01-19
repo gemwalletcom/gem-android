@@ -28,12 +28,14 @@ fun AssetDetailsScreen(
     onChart: (AssetId) -> Unit,
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
-    onConfirm: (ConfirmParams) -> Unit
+    onConfirm: (ConfirmParams) -> Unit,
+    onPriceAlerts: (AssetId) -> Unit,
 ) {
     val viewModel: AssetDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val transactions by viewModel.transactions.collectAsStateWithLifecycle()
     val priceAlertEnabled by viewModel.priceAlertEnabled.collectAsStateWithLifecycle()
+    val priceAlertsCount by viewModel.priceAlertsCount.collectAsStateWithLifecycle()
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
     val isOperationEnabled by viewModel.isOperationEnabled.collectAsStateWithLifecycle()
 
@@ -49,6 +51,7 @@ fun AssetDetailsScreen(
             uiState = uiModel ?: return,
             transactions = transactions,
             priceAlertEnabled = priceAlertEnabled is PriceAlertsStateEvent.Enable,
+            priceAlertsCount = priceAlertsCount,
             syncState = (uiState as AssetInfoUIState.Idle).sync,
             isOperationEnabled = isOperationEnabled,
             onRefresh = viewModel::refresh,
@@ -60,7 +63,8 @@ fun AssetDetailsScreen(
             onChart = onChart,
             openNetwork = openNetwork,
             onStake = onStake,
-            onPriceAlert = viewModel::enablePriceAlert,
+            toggkePriceAlert = viewModel::enablePriceAlert,
+            onPriceAlerts = onPriceAlerts,
             onConfirm = onConfirm,
             onPin = viewModel::pin,
             onAdd = viewModel::add,

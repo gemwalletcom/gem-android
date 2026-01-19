@@ -53,12 +53,14 @@ import com.wallet.core.primitives.AssetId
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriceAlertScene(
+    assetId: AssetId? = null,
     data: Map<AssetId?, List<PriceAlertDataAggregate>>,
     enabled: Boolean,
     syncState: Boolean,
     isAssetView: Boolean,
     onEnablePriceAlerts: (Boolean) -> Unit,
     onAdd: () -> Unit,
+    onAddTarget: (AssetId) -> Unit,
     onExclude: (Int) -> Unit,
     onChart: (AssetId) -> Unit,
     onRefresh: () -> Unit,
@@ -69,7 +71,9 @@ fun PriceAlertScene(
     Scene(
         title = stringResource(R.string.settings_price_alerts_title),
         actions = @Composable {
-            IconButton(onClick = onAdd) {
+            IconButton(onClick = if (assetId == null) onAdd else {
+                { onAddTarget(assetId) }
+            }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "")
             }
         },
@@ -162,7 +166,9 @@ private fun LazyListScope.assets(
             isRevealed = reveable.value == item.id,
             actions = @Composable {
                 ActionIcon(
-                    modifier = Modifier.widthIn(min = minActionWidth).heightIn(minActionWidth),
+                    modifier = Modifier
+                        .widthIn(min = minActionWidth)
+                        .heightIn(minActionWidth),
                     onClick = { onExclude(item.id) },
                     backgroundColor = MaterialTheme.colorScheme.error,
                     icon = Icons.Default.Delete,
@@ -176,7 +182,7 @@ private fun LazyListScope.assets(
                 modifier = Modifier
                     .clickable(onClick = { onChart(item.assetId) })
                     .onSizeChanged {
-                        minActionWidth = with (density) { it.height.toDp() }
+                        minActionWidth = with(density) { it.height.toDp() }
                     },
                 listPosition = position,
                 leading = @Composable { IconWithBadge(item.icon) },

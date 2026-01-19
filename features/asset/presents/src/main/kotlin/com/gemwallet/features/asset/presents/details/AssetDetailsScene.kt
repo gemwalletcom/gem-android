@@ -3,7 +3,6 @@ package com.gemwallet.features.asset.presents.details
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -22,10 +21,10 @@ import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggre
 import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.list_item.energyItem
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.list_item.transaction.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
-import com.gemwallet.android.ui.models.getListPosition
 import com.gemwallet.android.ui.open
 import com.gemwallet.features.asset.presents.details.components.AssetDetailsMenu
 import com.gemwallet.features.asset.presents.details.components.AssetHeadItem
@@ -47,6 +46,7 @@ internal fun AssetDetailsScene(
     uiState: AssetInfoUIModel,
     transactions: List<TransactionDataAggregate>,
     priceAlertEnabled: Boolean,
+    priceAlertsCount: Int,
     syncState: AssetInfoUIState.SyncState,
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
@@ -58,7 +58,8 @@ internal fun AssetDetailsScene(
     onChart: (AssetId) -> Unit,
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
-    onPriceAlert: (AssetId) -> Unit,
+    toggkePriceAlert: (AssetId) -> Unit,
+    onPriceAlerts: (AssetId) -> Unit,
     onConfirm: (ConfirmParams) -> Unit,
     onPin: () -> Unit,
     onAdd: () -> Unit,
@@ -84,7 +85,7 @@ internal fun AssetDetailsScene(
                 uiState = uiState,
                 priceAlertEnabled = priceAlertEnabled,
                 snackBar = snackBar,
-                onPriceAlert = onPriceAlert,
+                onPriceAlert = toggkePriceAlert,
             )
         },
         onClose = onCancel,
@@ -122,14 +123,14 @@ internal fun AssetDetailsScene(
                 item { BannerItem(uiState.assetInfo, onStake, onConfirm) }
                 manageAssetItem(uiState.assetInfo, onPin, onAdd)
                 status(uiState.asset, uiState.assetInfo.rank)
-                price(uiState, onChart)
+                price(uiState, priceAlertsCount, onChart = onChart, onPriceAlerts = onPriceAlerts)
                 network(uiState, openNetwork)
                 balancesHeader(uiState.accountInfoUIModel)
-                itemsIndexed(uiState.accountInfoUIModel.balances) { index, item ->
+                itemsPositioned(uiState.accountInfoUIModel.balances) { position, item ->
                     BalancePropertyItem(
                         title = item.type.label,
                         balance = item.value,
-                        listPosition = uiState.accountInfoUIModel.balances.getListPosition(index),
+                        listPosition = position,
                         onAction = when (item.type) {
                             AssetInfoUIModel.BalanceViewType.Available -> null
                             AssetInfoUIModel.BalanceViewType.Stake -> {
