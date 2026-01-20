@@ -53,9 +53,8 @@ class PriceAlertsStateCoordinatorImpl(
         when (event) {
             is Request -> {
                 when {
-                    !pushState
-                            || !priceAlertsEnabled
-                            || event.assetId != null && !assetState -> Disable(event.assetId)
+                    !pushState || !priceAlertsEnabled
+                            || (event.assetId != null && !assetState) -> Disable(event.assetId)
                     else -> Enable(event.assetId)
                 }
             }

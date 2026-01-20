@@ -59,7 +59,6 @@ object PriceAlertModule {
     }
 
     @Provides
-    @Singleton
     fun providePriceAlertsStateCoordinator(
         getPushEnabled: GetPushEnabled,
         priceAlertRepository: PriceAlertRepository,
