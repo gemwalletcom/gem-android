@@ -64,6 +64,7 @@ object PriceAlertModule {
         getPushEnabled: GetPushEnabled,
         priceAlertRepository: PriceAlertRepository,
         includePriceAlert: IncludePriceAlert,
+        excludePriceAlert: ExcludePriceAlert,
         syncDeviceInfo: SyncDeviceInfo,
         switchPushEnabled: SwitchPushEnabled,
         walletsRepository: WalletsRepository,
@@ -72,6 +73,7 @@ object PriceAlertModule {
             getPushEnabled = getPushEnabled,
             priceAlertRepository = priceAlertRepository,
             includePriceAlert = includePriceAlert,
+            excludePriceAlert = excludePriceAlert,
             syncDeviceInfo = syncDeviceInfo,
             switchPushEnabled = switchPushEnabled,
             walletsRepository = walletsRepository,
@@ -82,12 +84,14 @@ object PriceAlertModule {
     @Singleton
     fun providePriceAlertExclude(
         gemApiClient: GemApiClient,
+        sessionRepository: SessionRepository,
         getDeviceId: GetDeviceId,
         priceAlertRepository: PriceAlertRepository,
     ): ExcludePriceAlert {
         return ExcludePriceAlertImpl(
             getDeviceId = getDeviceId,
             gemApiClient = gemApiClient,
+            sessionRepository = sessionRepository,
             priceAlertRepository = priceAlertRepository,
         )
     }

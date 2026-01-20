@@ -18,6 +18,7 @@ data class DbPriceAlert(
     val price: Double? = null,
     val pricePercentChange: Double? = null,
     val priceDirection: PriceAlertDirection? = null,
+    val lastNotifiedAt: Long? = null,
     val enabled: Boolean,
 )
 
@@ -30,6 +31,7 @@ fun DbPriceAlert.toDTO(): PriceAlertInfo {
             priceDirection = priceDirection,
             pricePercentChange = pricePercentChange,
             currency = currency,
+            lastNotifiedAt = lastNotifiedAt,
         )
     )
 }
@@ -42,6 +44,7 @@ fun PriceAlert.toRecord(): DbPriceAlert {
         priceDirection = priceDirection,
         enabled = true,
         currency = currency,
+        lastNotifiedAt = lastNotifiedAt,
     )
 }
 

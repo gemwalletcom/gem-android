@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.coordinates.pricealerts
 
+import com.gemwallet.android.application.pricealerts.coordinators.ExcludePriceAlert
 import com.gemwallet.android.application.pricealerts.coordinators.IncludePriceAlert
 import com.gemwallet.android.application.pricealerts.coordinators.PriceAlertsStateCoordinator
 import com.gemwallet.android.cases.device.GetPushEnabled
@@ -17,7 +18,6 @@ import com.gemwallet.android.domains.pricealerts.values.PriceAlertsStateEvent.Re
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
@@ -32,6 +32,7 @@ class PriceAlertsStateCoordinatorImpl(
     private val getPushEnabled: GetPushEnabled,
     private val priceAlertRepository: PriceAlertRepository,
     private val includePriceAlert: IncludePriceAlert,
+    private val excludePriceAlert: ExcludePriceAlert,
     private val syncDeviceInfo: SyncDeviceInfo,
     private val switchPushEnabled: SwitchPushEnabled,
     private val walletsRepository: WalletsRepository,
@@ -87,8 +88,12 @@ class PriceAlertsStateCoordinatorImpl(
                 this.event.update { Request(event.assetId) }
             }
             is Disable -> {
-                priceAlertRepository.togglePriceAlerts(false)
-                syncDeviceInfo.syncDeviceInfo()
+                if (event.assetId == null) {
+                    priceAlertRepository.togglePriceAlerts(false)
+                    syncDeviceInfo.syncDeviceInfo()
+                } else {
+                    excludePriceAlert.excludePriceAlert(event.assetId!!)
+                }
 
                 this.event.update { Request(event.assetId) }
             }

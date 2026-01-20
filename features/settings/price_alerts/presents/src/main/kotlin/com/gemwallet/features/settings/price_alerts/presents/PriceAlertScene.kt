@@ -94,17 +94,19 @@ fun PriceAlertScene(
             }
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
-                    SwitchProperty(
-                        text = stringResource(R.string.settings_enable_value, ""),
-                        checked = enabled,
-                        onCheckedChange = onEnablePriceAlerts
-                    )
-                    Text(
-                        modifier = Modifier.padding(horizontal = paddingLarge),
-                        text = stringResource(R.string.price_alerts_get_notified_explain_message),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
+                if (!isAssetView) {
+                    item {
+                        SwitchProperty(
+                            text = stringResource(R.string.settings_enable_value, ""),
+                            checked = enabled,
+                            onCheckedChange = onEnablePriceAlerts
+                        )
+                        Text(
+                            modifier = Modifier.padding(horizontal = paddingLarge),
+                            text = stringResource(R.string.price_alerts_get_notified_explain_message),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
                 }
                 emptyAlertingAssets(data.isEmpty())
                 assets(

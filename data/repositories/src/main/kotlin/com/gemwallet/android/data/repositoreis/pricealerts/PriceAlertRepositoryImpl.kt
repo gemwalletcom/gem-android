@@ -47,11 +47,15 @@ class PriceAlertRepositoryImpl(
             .map { it.toDTO() }
     }
 
+    override suspend fun getEnablePriceAlerts(): List<PriceAlertInfo> {
+        return priceAlertsDao.getEnablePriceAlerts().toDTO()
+    }
+
     override fun getAssetPriceAlert(assetId: AssetId): Flow<PriceAlertInfo?> {
         return priceAlertsDao.getAssetPriceAlert(assetId.toIdentifier()).mapLatest { it?.toDTO() }
     }
 
-    override suspend fun hasSamePriceAlert(priceAlert: PriceAlert): Boolean {
+    override suspend fun getSamePriceAlert(priceAlert: PriceAlert): PriceAlertInfo? {
         val samePriceAlert = priceAlertsDao.findSamePriceAlert(
             assetId = priceAlert.assetId.toIdentifier(),
             currency = priceAlert.currency,
@@ -59,7 +63,7 @@ class PriceAlertRepositoryImpl(
             priceDirection = priceAlert.priceDirection,
             pricePercentChange = priceAlert.pricePercentChange
         )
-        return samePriceAlert.isNotEmpty()
+        return samePriceAlert?.toDTO()
     }
 
     override suspend fun addPriceAlert(priceAlert: PriceAlert) {
@@ -70,6 +74,10 @@ class PriceAlertRepositoryImpl(
         priceAlertsDao.enabled(priceAlertId, false)
     }
 
+    override suspend fun enable(priceAlertId: Int) {
+        priceAlertsDao.enabled(priceAlertId, true)
+    }
+
     override suspend fun update(items: List<PriceAlert>) {
         val items = items.map { priceAlert ->
             priceAlertsDao.findSamePriceAlert(
@@ -78,7 +86,7 @@ class PriceAlertRepositoryImpl(
                 price = priceAlert.price,
                 priceDirection = priceAlert.priceDirection,
                 pricePercentChange = priceAlert.pricePercentChange
-            ).firstOrNull()?.let {
+            )?.let {
                 if (it.enabled) {
                     it.copy(enabled = priceAlert.lastNotifiedAt == null)
                 }

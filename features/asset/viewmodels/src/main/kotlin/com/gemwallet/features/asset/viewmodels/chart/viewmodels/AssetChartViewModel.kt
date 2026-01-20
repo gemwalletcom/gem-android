@@ -3,6 +3,7 @@ package com.gemwallet.features.asset.viewmodels.chart.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.domains.asset.chain
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -30,10 +33,17 @@ import javax.inject.Inject
 class AssetChartViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
+    private val getPriceAlerts: GetPriceAlerts,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val assetIdStr = savedStateHandle.getStateFlow<String?>(assetIdArg, null)
+
+    val priceAlertsCount = assetIdStr.mapNotNull { it?.toAssetId() }
+        .flatMapLatest { getPriceAlerts.getPriceAlerts(it) }
+        .map { it.size }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
     private val assetInfo = assetIdStr.flatMapLatest { assetId ->
             val assetId = assetId?.toAssetId() ?: return@flatMapLatest emptyFlow()
             assetsRepository.getTokenInfo(assetId)

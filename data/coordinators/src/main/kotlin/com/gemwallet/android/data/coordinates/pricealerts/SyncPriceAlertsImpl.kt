@@ -19,17 +19,16 @@ class SyncPriceAlertsImpl(
         val deviceId = getDeviceId.getDeviceId()
 
         scope.launch {
-            val local = priceAlertRepository.getPriceAlerts().firstOrNull() ?: emptyList()
-            try {
-                gemApiClient.includePriceAlert(deviceId, local.map { it.priceAlert })
-            } catch (_: Throwable) {}
+            val all = priceAlertRepository.getEnablePriceAlerts()
 
             val remote = try {
                 gemApiClient.getPriceAlerts(deviceId)
             } catch (_: Throwable) { return@launch }
 
             val toExclude = remote.filter { remote ->
-                local.map { it.priceAlert }.firstOrNull { local ->
+                remote.lastNotifiedAt ?: true
+
+                all.map { it.priceAlert }.firstOrNull { local ->
                     local.assetId == remote.assetId
                             && local.price == remote.price
                             && local.priceDirection == remote.priceDirection
@@ -38,11 +37,20 @@ class SyncPriceAlertsImpl(
                 } == null
             }
 
-            try {
-                gemApiClient.excludePriceAlert(deviceId, toExclude)
-            } catch (_: Throwable) { }
             val toUpdate = (remote - toExclude.toSet())
             priceAlertRepository.update(toUpdate)
+
+            if (toExclude.isNotEmpty()) {
+                try {
+                    gemApiClient.excludePriceAlert(deviceId, toExclude)
+                } catch (_: Throwable) {
+                }
+            }
+
+            try {
+                val local = priceAlertRepository.getPriceAlerts().firstOrNull() ?: emptyList()
+                gemApiClient.includePriceAlert(deviceId, local.map { it.priceAlert })
+            } catch (_: Throwable) {}
         }
     }
 }

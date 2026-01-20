@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -36,16 +37,20 @@ import com.gemwallet.features.asset.viewmodels.chart.models.AssetMarketUIModel
 import com.gemwallet.features.asset.viewmodels.chart.models.MarketInfoUIModel
 import com.gemwallet.features.asset.viewmodels.chart.viewmodels.AssetChartViewModel
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.Currency
 import uniffi.gemstone.Explorer
 
 @Composable
 fun AssetChartScene(
-    viewModel: AssetChartViewModel = hiltViewModel(),
     onCancel: () -> Unit,
+    onPriceAlerts: (AssetId) -> Unit,
+    onAddPriceAlertTarget: (AssetId) -> Unit,
+    viewModel: AssetChartViewModel = hiltViewModel(),
 ) {
     val marketUIModelState by viewModel.marketUIModel.collectAsStateWithLifecycle()
+    val priceAlertsCount by viewModel.priceAlertsCount.collectAsStateWithLifecycle()
 
     val marketModel = marketUIModelState
     if (marketModel == null) {
@@ -60,6 +65,28 @@ fun AssetChartScene(
     ) {
         LazyColumn {
             item { Chart() }
+            item {
+                if (priceAlertsCount > 0) {
+                    PropertyItem(
+                        modifier = Modifier
+                            .clickable { onPriceAlerts(marketModel.asset.id) }
+                            .testTag("assetChart"),
+                        title = { PropertyTitleText(R.string.settings_price_alerts_title) },
+                        data = { PropertyDataText(text = "$priceAlertsCount", badge = { DataBadgeChevron() }) },
+                        listPosition = ListPosition.Single,
+                    )
+                } else {
+                    PropertyItem(
+                        modifier = Modifier
+                            .clickable { onAddPriceAlertTarget(marketModel.asset.id) }
+                            .testTag("assetChart"),
+                        title = { PropertyTitleText(R.string.price_alerts_set_alert_title) },
+                        data = { PropertyDataText(text = "", badge = { DataBadgeChevron() }) },
+                        listPosition = ListPosition.Single,
+                    )
+                }
+
+            }
             assetMarket(marketModel.currency, marketModel.asset, marketModel.marketInfo, marketModel.explorerName)
             links(marketModel.assetLinks)
         }

@@ -32,9 +32,9 @@ class IncludePriceAlertImpl(
             pricePercentChange = percentage,
             priceDirection = direction,
         )
-        if (!priceAlertRepository.hasSamePriceAlert(priceAlert)) {
-            priceAlertRepository.addPriceAlert(priceAlert)
-        }
+        priceAlertRepository.getSamePriceAlert(priceAlert)?.let {
+            priceAlertRepository.enable(it.id)
+        } ?: priceAlertRepository.addPriceAlert(priceAlert)
 
         try {
             gemApiClient.includePriceAlert(

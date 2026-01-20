@@ -23,11 +23,18 @@ interface PriceAlertsDao {
         SELECT * FROM price_alerts WHERE enabled = 1
         """
     )
+    fun getEnablePriceAlerts(): List<DbPriceAlert>
+
+    @Query(
+        """
+        SELECT * FROM price_alerts WHERE enabled = 1
+        """
+    )
     fun getAlerts(): Flow<List<DbPriceAlert>>
 
     @Query(
         """
-        SELECT * FROM price_alerts WHERE enabled = 1 AND assetId = :assetId
+        SELECT * FROM price_alerts WHERE enabled = 1 AND lastNotifiedAt IS NULL AND assetId = :assetId
         """
     )
     fun getAlerts(assetId: String): Flow<List<DbPriceAlert>>
@@ -48,7 +55,7 @@ interface PriceAlertsDao {
                 AND (pricePercentChange = :pricePercentChange OR (:pricePercentChange IS NULL AND pricePercentChange IS NULL))
         """
     )
-    suspend fun findSamePriceAlert(assetId: String, currency: String, price: Double?, priceDirection: PriceAlertDirection?, pricePercentChange: Double?): List<DbPriceAlert>
+    suspend fun findSamePriceAlert(assetId: String, currency: String, price: Double?, priceDirection: PriceAlertDirection?, pricePercentChange: Double?): DbPriceAlert?
 
     @Query(
         """

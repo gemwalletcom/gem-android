@@ -73,10 +73,14 @@ fun NavGraphBuilder.assetScreen(
 }
 
 fun NavGraphBuilder.assetChartScreen(
+    onPriceAlerts: (AssetId) -> Unit,
+    onAddPriceAlertTarget: (AssetId) -> Unit,
     onCancel: () -> Unit,
 ) {
     composable< AssetChartRoute> {
         AssetChartScene(
+            onPriceAlerts = onPriceAlerts,
+            onAddPriceAlertTarget = onAddPriceAlertTarget,
             onCancel = onCancel,
         )
     }

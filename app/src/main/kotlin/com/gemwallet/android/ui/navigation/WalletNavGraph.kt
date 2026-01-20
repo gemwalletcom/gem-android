@@ -158,7 +158,9 @@ fun WalletNavGraph(
         )
 
         assetChartScreen(
-            onCancel = onCancel
+            onPriceAlerts = navController::navigateToPriceAlertsScreen,
+            onAddPriceAlertTarget = navController::navigateToAddPriceAlertTargetScreen,
+            onCancel = onCancel,
         )
 
         assetsManageScreen(
