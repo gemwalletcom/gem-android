@@ -2,10 +2,12 @@
 
 package com.gemwallet.features.settings.settings.presents.views
 
+import android.net.Uri
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -41,6 +43,9 @@ import com.kevinnzou.web.rememberWebViewState
 import com.kevinnzou.web.rememberWebViewStateWithHTMLData
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
+import java.io.ByteArrayInputStream
+
+
 
 @Composable
 fun SupportChatScreen(
@@ -103,7 +108,9 @@ fun SupportChatScreen(
                 )
             }
             if (!isReady.value) {
-                Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -121,9 +128,13 @@ private fun GemWebView(
     isReady: MutableState<Boolean>,
     isCancel: MutableState<Boolean>,
 ) {
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         WebView(
-            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
             state = state,
             navigator = navigator,
             onCreated = { webView ->
@@ -135,6 +146,41 @@ private fun GemWebView(
             },
             captureBackPresses = false,
             client = object : AccompanistWebViewClient() {
+
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    val url = Uri.parse(url) ?: return false
+                    if ("support.gemwallet.com" == url.host && ("https" == url.scheme || "wss" == url.scheme)) {
+                        return true
+                    }
+                    return false
+                }
+
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    return shouldOverrideUrlLoading(view, request?.url?.toString() ?: return false)
+                }
+
+                override fun shouldInterceptRequest(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): WebResourceResponse? {
+                    val url = request?.url
+                    return if (url != null
+                        && ("https" == url.scheme || "wss" == url.scheme)
+                        && ("support.gemwallet.com" == url.host || "docs.gemwallet.com" == url.host)
+                    ) {
+                        null
+                    } else {
+                        return WebResourceResponse(
+                            "text/plain",
+                            "UTF-8",
+                            ByteArrayInputStream("".toByteArray())
+                        )
+                    }
+                }
+
                 override fun onReceivedError(
                     view: WebView,
                     request: WebResourceRequest?,
@@ -148,11 +194,7 @@ private fun GemWebView(
                     super.onProgressChanged(view, newProgress)
 
                     if (selectedType == SupportType.HelpCenter) {
-                        if (newProgress == 100) {
-                            isReady.value = true
-                        } else {
-                            isReady.value = false
-                        }
+                        isReady.value = newProgress == 100
                     }
                 }
             }
