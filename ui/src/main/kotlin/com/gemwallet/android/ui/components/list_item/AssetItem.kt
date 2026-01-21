@@ -26,6 +26,7 @@ import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.gemwallet.android.ui.theme.Spacer2
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.wallet.core.primitives.Asset
 
 @Composable
@@ -118,7 +119,7 @@ fun PriceInfo(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
     isHighlightPercentage: Boolean = false,
-    internalPadding: Dp = 16.dp,
+    internalPadding: Dp = paddingHalfSmall,
 ) {
     PriceInfo(
         price.fiatFormatted,
@@ -139,7 +140,7 @@ fun PriceInfo(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
     isHighlightPercentage: Boolean = false,
-    internalPadding: Dp = 16.dp,
+    internalPadding: Dp = paddingHalfSmall,
 ) {
     val color = priceColor(state)
     Row(
@@ -160,7 +161,7 @@ fun PriceInfo(
                 Modifier.background(color.copy(alpha = 0.15f), MaterialTheme.shapes.small)
             } else {
                 Modifier
-            }.padding(horizontal = 4.dp),
+            },//.padding(horizontal = 4.dp),
             text = changes,
             color = color,
             style = style,
