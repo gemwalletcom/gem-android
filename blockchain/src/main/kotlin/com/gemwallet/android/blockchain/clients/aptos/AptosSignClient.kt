@@ -59,7 +59,7 @@ class AptosSignClient(
             isMaxValue = params.useMaxAmount,
             metadata = metadata,
         )
-        return listOf(gemSigner.signTransfer(gemLoadInput, privateKey).toByteArray())
+        return listOf(gemSigner.signTokenTransfer(gemLoadInput, privateKey).toByteArray())
     }
 
     override suspend fun signSwap(
@@ -80,7 +80,7 @@ class AptosSignClient(
             isMaxValue = params.useMaxAmount,
             metadata = metadata,
         )
-        return listOf(gemSigner.signTransfer(gemLoadInput, privateKey).toByteArray())
+        return gemSigner.signSwap(gemLoadInput, privateKey).map { it.toByteArray() }
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
