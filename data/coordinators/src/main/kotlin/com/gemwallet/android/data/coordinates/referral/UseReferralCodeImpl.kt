@@ -16,7 +16,7 @@ import retrofit2.HttpException
 
 class UseReferralCodeImpl(
     private val gemApiClient: GemApiClient,
-    private val getAuthPayload: GetAuthPayload
+    private val getAuthPayload: GetAuthPayload,
 ) : UseReferralCode {
 
 

@@ -59,10 +59,7 @@ class TokensRepository (
 
     override suspend fun search(assetId: AssetId): Boolean {
         val tokenId = assetId.tokenId ?: return false
-        val asset = tokenService.getTokenData(assetId)
-        if (asset == null) {
-            return search(tokenId)
-        }
+        val asset = tokenService.getTokenData(assetId) ?: return search(tokenId)
         val record = AssetBasic(asset = asset, score = AssetScore(0), properties = AssetProperties(
             isEnabled = false,
             isBuyable = false,

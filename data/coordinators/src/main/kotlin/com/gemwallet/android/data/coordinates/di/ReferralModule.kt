@@ -9,6 +9,9 @@ import com.gemwallet.android.data.coordinates.referral.CreateReferralImpl
 import com.gemwallet.android.data.coordinates.referral.GetRewardsImpl
 import com.gemwallet.android.data.coordinates.referral.RedeemImpl
 import com.gemwallet.android.data.coordinates.referral.UseReferralCodeImpl
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import dagger.Module
 import dagger.Provides
@@ -44,12 +47,18 @@ object ReferralModule {
     @Provides
     @Singleton
     fun provideRedeem(
+        sessionRepository: SessionRepository,
         gemApiClient: GemApiClient,
-        getAuthPayload: GetAuthPayload
+        getAuthPayload: GetAuthPayload,
+        tokensRepository: TokensRepository,
+        assetsRepository: AssetsRepository,
     ): Redeem {
         return RedeemImpl(
+            sessionRepository = sessionRepository,
             gemApiClient = gemApiClient,
-            getAuthPayload = getAuthPayload
+            getAuthPayload = getAuthPayload,
+            tokensRepository = tokensRepository,
+            assetsRepository = assetsRepository,
         )
     }
 
