@@ -107,4 +107,16 @@ class WalletsRepository @Inject constructor(
     }
 
     private fun newWalletId() = UUID.randomUUID().toString()
+
+    companion object {
+        fun generateWalletId(walletType: WalletType, chain: Chain, accountAddress: String): String {
+            require(accountAddress.isNotEmpty()) { "Account address cannot be empty" }
+            return when (walletType) {
+                WalletType.Multicoin -> "${walletType.string}_$accountAddress"
+                WalletType.Single,
+                WalletType.PrivateKey,
+                WalletType.View -> "${walletType.string}_${chain.string}_$accountAddress"
+            }
+        }
+    }
 }
