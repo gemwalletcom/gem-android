@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.stakeChain
 import com.gemwallet.android.ext.claimed
 import com.gemwallet.android.ext.freezed
@@ -91,7 +92,7 @@ class StakeViewModel @Inject constructor(
             StakeAction.Freeze.takeIf { assetInfo?.stakeChain?.freezed() == true },
             StakeAction.Unfreeze.takeIf { assetInfo?.stakeChain?.freezed() == true },
             rewardsAmount
-                .takeIf { assetInfo?.stakeChain?.claimed() == true && rewardsAmount > BigInteger.ZERO }
+                .takeIf { assetInfo?.chain?.claimed == true && rewardsAmount > BigInteger.ZERO }
                 ?.let { StakeAction.Rewards(assetInfo?.asset?.format(Crypto(rewardsAmount)) ?: "") },
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())

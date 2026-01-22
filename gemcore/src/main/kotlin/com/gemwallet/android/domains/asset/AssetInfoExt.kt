@@ -5,6 +5,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.StakeChain
 import uniffi.gemstone.Config
 import java.math.BigDecimal
@@ -21,6 +22,9 @@ val AssetInfo.title: String
 
 val AssetInfo.stakeChain: StakeChain? // TODO: Out to StakeExt
     get() = asset.stakeChain
+
+val AssetInfo.chain: Chain
+    get() = asset.chain
 
 val AssetInfo.lockTime: Int?  // TODO: Out to StakeExt
     get() = owner?.chain?.string?.let {
