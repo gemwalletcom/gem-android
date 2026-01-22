@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.wallets
 
+import com.gemwallet.android.application.wallet.coordinators.WalletIdGenerator
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +25,7 @@ class WalletsRepository @Inject constructor(
     private val walletsDao: WalletsDao,
     private val accountsDao: AccountsDao,
     private val createAccount: CreateAccountOperator,
+    private val walletIdGenerator: WalletIdGenerator,
 ) {
 
     suspend fun getNextWalletNumber(): Int {
@@ -36,7 +37,7 @@ class WalletsRepository @Inject constructor(
     suspend fun addWatch(walletName: String, address: String, chain: Chain): Wallet =
         putWallet(
             Wallet(
-                id = newWalletId(),
+                id = walletIdGenerator.generateWalletId(WalletType.View, chain, address),
                 name = walletName,
                 type = WalletType.View,
                 accounts = listOf(
@@ -53,14 +54,24 @@ class WalletsRepository @Inject constructor(
             )
         )
 
-    suspend fun addControlled(walletName: String, data: String, type: WalletType, chain: Chain?, source: WalletSource): Wallet {
+    suspend fun addControlled(
+        walletName: String,
+        data: String,
+        type: WalletType,
+        chain: Chain?,
+        source: WalletSource
+    ): Wallet {
         val accounts = mutableListOf<Account>()
-        val chains = if ((type == WalletType.Single || type == WalletType.PrivateKey) && chain != null) listOf(chain) else Chain.entries
+        val chains =
+            if ((type == WalletType.Single || type == WalletType.PrivateKey) && chain != null) listOf(
+                chain
+            ) else Chain.entries
         for (item in chains) {
             accounts.add(createAccount(type, data, item))
         }
+        val priorityAccount = walletIdGenerator.getPriorityAccount(accounts)
         val wallet = Wallet(
-            id = newWalletId(),
+            id = walletIdGenerator.generateWalletId(type, priorityAccount!!.chain, priorityAccount.address),
             name = walletName,
             type = type,
             accounts = accounts,
@@ -104,19 +115,5 @@ class WalletsRepository @Inject constructor(
         walletsDao.insert(wallet.toRecord())
         accountsDao.insert(wallet.accounts.map { it.toRecord(wallet.id) })
         wallet
-    }
-
-    private fun newWalletId() = UUID.randomUUID().toString()
-
-    companion object {
-        fun generateWalletId(walletType: WalletType, chain: Chain, accountAddress: String): String {
-            require(accountAddress.isNotEmpty()) { "Account address cannot be empty" }
-            return when (walletType) {
-                WalletType.Multicoin -> "${walletType.string}_$accountAddress"
-                WalletType.Single,
-                WalletType.PrivateKey,
-                WalletType.View -> "${walletType.string}_${chain.string}_$accountAddress"
-            }
-        }
     }
 }
