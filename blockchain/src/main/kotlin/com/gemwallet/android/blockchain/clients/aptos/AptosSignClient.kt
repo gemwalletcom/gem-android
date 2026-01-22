@@ -10,7 +10,6 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.StakeType
 import uniffi.gemstone.GemChainSigner
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemStakeType
