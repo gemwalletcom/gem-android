@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
@@ -36,7 +37,7 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Singleton
     @Provides
-    fun provideRoom(@ApplicationContext context: Context): GemDatabase = Room.databaseBuilder(
+    fun provideRoom(@ApplicationContext context: Context, passwordStore: PasswordStore): GemDatabase = Room.databaseBuilder(
             context = context,
             klass = GemDatabase::class.java,
             name = "gem.db",
@@ -101,6 +102,7 @@ object DatabaseModule {
         .addMigrations(Migration_60_61)
         .addMigrations(Migration_61_62)
         .addMigrations(Migration_62_63)
+        .addMigrations(Migration_63_64(context, passwordStore))
         .build()
 
     @Singleton
