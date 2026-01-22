@@ -72,8 +72,7 @@ fun SwapperProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
         SwapperProvider.UNISWAP_V4,
         SwapperProvider.UNISWAP_V3 -> "uniswap"
-        SwapperProvider.PANCAKESWAP_V3,
-        SwapperProvider.PANCAKESWAP_APTOS_V2 -> "pancakeswap"
+        SwapperProvider.PANCAKESWAP_V3 -> "pancakeswap"
         SwapperProvider.THORCHAIN -> "thorchain"
         SwapperProvider.JUPITER -> "jupiter"
         SwapperProvider.ACROSS -> "across"
@@ -82,13 +81,13 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.CETUS_AGGREGATOR, SwapperProvider.CETUS -> "cetus"
         SwapperProvider.STONFI_V2 -> "stonfi"
         SwapperProvider.MAYAN -> "mayan"
-        SwapperProvider.RESERVOIR -> "reservoir"
         SwapperProvider.CHAINFLIP -> "chainflip"
         SwapperProvider.RELAY -> "relay"
         SwapperProvider.AERODROME -> "aerodrome"
         SwapperProvider.HYPERLIQUID -> "hyperliquid"
         SwapperProvider.NEAR_INTENTS -> "near"
         SwapperProvider.ORCA -> "orca"
+        SwapperProvider.PANORA -> "panora"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

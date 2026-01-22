@@ -20,11 +20,6 @@ class HyperCoreSignClient(
 ) : SignClient {
 
     private val hyperCore = GemChainSigner(chain.string)
-//    private val factory = HyperCoreModelFactory()
-//    private val agentNamePrefix = "gemwallet_"
-//    private val referralCode = "GEMWALLET"
-//    private val builderAddress = "0x0d9dab1a248f63b0a48965ba8435e4de7497a3dc"
-    private val nativeSpotToken = "HYPE:0x0d01dc56dcaaca66ad901c959b4011ec"
 
     override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
@@ -33,7 +28,6 @@ class HyperCoreSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-//        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = params.asset.decimals, showSymbol = false)
         val metadata = (chainData as HyperCoreChainData).toGem()
         val gemLoadInput = GemTransactionLoadInput(
             inputType = GemTransactionInputType.Transfer(params.asset.toGem()),
