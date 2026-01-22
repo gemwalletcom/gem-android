@@ -2,8 +2,6 @@ package com.gemwallet.android.data.service.store.database.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.AssetsDao
@@ -23,8 +21,6 @@ import com.gemwallet.android.data.service.store.database.SessionDao
 import com.gemwallet.android.data.service.store.database.StakeDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
-import com.gemwallet.android.data.service.store.database.entities.SESSION_REQUEST
-import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
