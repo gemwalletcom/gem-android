@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.redelegated
 import com.gemwallet.android.model.AmountParams
@@ -109,7 +110,7 @@ class DelegationViewModel @Inject constructor(
             DelegationState.Active -> listOfNotNull(
                 DelegationActions.StakeAction,
                 DelegationActions.UnstakeAction,
-                stakeChain.takeIf { it.redelegated() }?.let { DelegationActions.RedelegateAction }
+                assetInfo.chain.takeIf { it.redelegated }?.let { DelegationActions.RedelegateAction },
             )
             DelegationState.AwaitingWithdrawal -> listOf( DelegationActions.WithdrawalAction )
             DelegationState.Pending,
