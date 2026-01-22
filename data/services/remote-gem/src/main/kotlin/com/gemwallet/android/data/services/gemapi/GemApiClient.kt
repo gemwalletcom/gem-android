@@ -29,6 +29,8 @@ import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SupportDevice
+import com.wallet.core.primitives.WalletSubscription
+import com.wallet.core.primitives.WalletSubscriptionChains
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -91,14 +93,14 @@ interface GemApiClient {
     @PUT("/v1/devices/{device_id}")
     suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device
 
-    @GET("/v1/subscriptions/{device_id}")
-    suspend fun getSubscriptions(@Path("device_id") deviceId: String): List<Subscription>?
+    @GET("/v2/subscriptions/{device_id}")
+    suspend fun getSubscriptions(@Path("device_id") deviceId: String): List<WalletSubscriptionChains>?
 
-    @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
-    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
+    @HTTP(method = "DELETE", path = "/v2/subscriptions/{device_id}", hasBody = true)
+    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<WalletSubscription>): Int
 
-    @POST("/v1/subscriptions/{device_id}")
-    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
+    @POST("/v2/subscriptions/{device_id}")
+    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<WalletSubscription>): Int
 
     @GET("/v1/charts/{asset_id}")
     suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Charts
