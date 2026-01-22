@@ -2,6 +2,7 @@ package com.gemwallet.android.data.repositoreis.wallets
 
 import com.gemwallet.android.application.wallet.coordinators.WalletIdGenerator
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
+import com.gemwallet.android.cases.wallet.ImportError
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
 import com.gemwallet.android.data.service.store.database.entities.toDTO
@@ -34,10 +35,16 @@ class WalletsRepository @Inject constructor(
 
     fun getAll() = walletsDao.getAll().toDTO()
 
-    suspend fun addWatch(walletName: String, address: String, chain: Chain): Wallet =
-        putWallet(
+    suspend fun addWatch(walletName: String, address: String, chain: Chain): Wallet {
+        val walletId = walletIdGenerator.generateWalletId(WalletType.View, chain, address)
+        val hasWallet = getWallet(walletId).firstOrNull()
+        if (hasWallet != null) {
+            throw ImportError.DuplicatedWallet(hasWallet)
+        }
+
+        return putWallet(
             Wallet(
-                id = walletIdGenerator.generateWalletId(WalletType.View, chain, address),
+                id = walletId,
                 name = walletName,
                 type = WalletType.View,
                 accounts = listOf(
@@ -53,6 +60,7 @@ class WalletsRepository @Inject constructor(
                 source = WalletSource.Import,
             )
         )
+    }
 
     suspend fun addControlled(
         walletName: String,
@@ -70,8 +78,15 @@ class WalletsRepository @Inject constructor(
             accounts.add(createAccount(type, data, item))
         }
         val priorityAccount = walletIdGenerator.getPriorityAccount(accounts)
+        val walletId = walletIdGenerator.generateWalletId(type, priorityAccount!!.chain, priorityAccount.address)
+
+        val hasWallet = getWallet(walletId).firstOrNull()
+        if (hasWallet != null) {
+            throw ImportError.DuplicatedWallet(hasWallet)
+        }
+
         val wallet = Wallet(
-            id = walletIdGenerator.generateWalletId(type, priorityAccount!!.chain, priorityAccount.address),
+            id = walletId,
             name = walletName,
             type = type,
             accounts = accounts,

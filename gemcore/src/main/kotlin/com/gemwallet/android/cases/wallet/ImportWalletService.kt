@@ -27,4 +27,6 @@ sealed class ImportError(message: String = "") : Exception(message) {
     data object InvalidAddress : ImportError()
 
     class CreateError(message: String) : ImportError(message)
+
+    class DuplicatedWallet(val wallet: Wallet) : ImportError("Duplicated wallet")
 }

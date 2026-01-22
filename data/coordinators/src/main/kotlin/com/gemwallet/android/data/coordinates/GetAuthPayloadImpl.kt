@@ -2,7 +2,7 @@ package com.gemwallet.android.data.coordinates
 
 import com.gemwallet.android.application.GetAuthPayload
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
-import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.services.gemapi.GemApiClient

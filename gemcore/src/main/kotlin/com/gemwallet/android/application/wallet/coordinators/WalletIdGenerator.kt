@@ -5,7 +5,15 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
 interface WalletIdGenerator {
-    fun generateWalletId(type: WalletType, priorityChain: Chain, priorityAddress: String): String
+    fun generateWalletId(type: WalletType, priorityChain: Chain, priorityAddress: String): String {
+        require(priorityAddress.isNotEmpty()) { "Account address cannot be empty" }
+        return when (type) {
+            WalletType.Multicoin -> "${type.string}_$priorityAddress"
+            WalletType.Single,
+            WalletType.PrivateKey,
+            WalletType.View -> "${type.string}_${priorityChain.string}_$priorityAddress"
+        }
+    }
 
     fun getPriorityAccount(accounts: List<Account>): Account? {
         require(accounts.isNotEmpty()) { "Accounts list cannot be empty" }
