@@ -95,6 +95,7 @@ class Migration_63_64(context: Context, private val passwordStore: PasswordStore
         if (sessionCursor.moveToNext()) {
             val walletId = sessionCursor.getString(0)
             val newWalletId = newWalletIds.firstNotNullOfOrNull { it.value == walletId } ?: newWalletIds.keys.first()
+            db.execSQL("UPDATE session SET walletId = ? WHERE session = 1", arrayOf(newWalletId))
         }
 
         for (walletId in walletIdsToDelete) {
