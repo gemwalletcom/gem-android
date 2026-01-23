@@ -92,11 +92,13 @@ class Migration_63_64(context: Context, private val passwordStore: PasswordStore
         }
 
         val sessionCursor = db.query("SELECT wallet_id FROM session WHERE id = 1")
-        if (sessionCursor.moveToNext()) {
+        val sessionWalletId: String = if (sessionCursor.moveToNext()) {
             val walletId = sessionCursor.getString(0)
-            val newWalletId = newWalletIds.firstNotNullOfOrNull { it.value == walletId } ?: newWalletIds.keys.first()
-            db.execSQL("UPDATE session SET walletId = ? WHERE session = 1", arrayOf(newWalletId))
+            newWalletIds.firstNotNullOfOrNull {  entry ->entry.takeIf { it.value == walletId }?.key } ?: newWalletIds.keys.first()
+        } else {
+            newWalletIds.keys.first()
         }
+        db.execSQL("UPDATE session SET wallet_id = ? WHERE id = 1", arrayOf(sessionWalletId))
 
         for (walletId in walletIdsToDelete) {
             db.execSQL("DELETE FROM wallets WHERE id = ?", arrayOf(walletId))
