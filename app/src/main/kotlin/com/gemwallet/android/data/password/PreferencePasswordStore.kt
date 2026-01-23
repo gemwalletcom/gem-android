@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.math.toHexString
 import java.security.SecureRandom
 
@@ -33,6 +33,12 @@ class PreferencePasswordStore(
             ?: throw IllegalAccessError("Password doesn't found")
 
         return password
+    }
+
+    override fun putPassword(walletId: String, password: String) {
+        getStore().edit(commit = true) {
+            putString(walletId, password)
+        }
     }
 
     private fun getStore(): SharedPreferences {

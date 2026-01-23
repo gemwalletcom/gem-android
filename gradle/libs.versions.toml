@@ -93,6 +93,7 @@ widgets-material3 = { module = "androidx.glance:glance-material3", version.ref =
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
 #Google play review and notifications
 play-review = { module = "com.google.android.play:review", version.ref = "review" }

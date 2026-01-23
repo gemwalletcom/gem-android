@@ -317,6 +317,7 @@ fun ErrorMessage(error: ImportError?) {
         ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
         ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
         ImportError.InvalidationPrivateKey -> "Invalid private key"
+        is ImportError.DuplicatedWallet -> "Duplicated wallet"
         null -> return
     }
     Text(text = text, color = MaterialTheme.colorScheme.error)

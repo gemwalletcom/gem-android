@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.operators.walletcore
 
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
-import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.application.PasswordStore
 import java.io.File
 
 class WCDeleteKeyStoreOperator(

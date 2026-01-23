@@ -81,7 +81,14 @@ class PriceAlertTargetViewModel @Inject constructor(
             return
         }
         val (price, percentage, direction) = when (type.value) {
-            PriceAlertNotificationType.Price -> Triple(value, null, null)
+            PriceAlertNotificationType.Price -> Triple(
+                value,
+                null,
+                when (currentPriceValue.value > value) {
+                    true -> PriceAlertDirection.Down
+                    false -> PriceAlertDirection.Up
+                }
+            )
             PriceAlertNotificationType.PricePercentChange -> Triple(null, value, direction.value)
             PriceAlertNotificationType.Auto -> Triple(null, null, null)
         }

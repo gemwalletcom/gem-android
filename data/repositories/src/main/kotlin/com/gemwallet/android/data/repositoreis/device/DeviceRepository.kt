@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
@@ -22,12 +21,15 @@ import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
+import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.NewSupportDevice
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
-import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.Wallet
+import com.wallet.core.primitives.WalletSource
+import com.wallet.core.primitives.WalletSubscription
+import com.wallet.core.primitives.WalletSubscriptionChains
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +38,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import wallet.core.jni.AnyAddress
 import java.util.Locale
 import java.util.UUID
 import kotlin.math.max
@@ -147,26 +148,21 @@ class DeviceRepository(
 
     override suspend fun syncSubscription(wallets: List<Wallet>, added: Boolean) {
         val deviceId = getDeviceId.getDeviceId()
-        val subscriptionsIndex = buildSubscriptionIndex(wallets)
+        val localSubscriptions = localSubscriptions(wallets)
         val remoteSubscriptions = getRemoteSubscriptions(deviceId)
 
-        val toAddSubscriptions = subscriptionsIndex.toMutableMap()
-        remoteSubscriptions.forEach {
-            toAddSubscriptions.remove("${it.chain.string}_${it.address}_${it.wallet_index}")
+        val toRemove = remoteSubscriptions.filter { remote ->
+            localSubscriptions.firstOrNull { it.wallet_id == remote.wallet_id && it.subscriptions.size == remote.chains.size } == null
+        }.map { WalletSubscription(wallet_id = it.wallet_id, WalletSource.Create, subscriptions = emptyList()) }
+
+        val toAdd = localSubscriptions.filter { local ->
+            remoteSubscriptions.firstOrNull { it.wallet_id == local.wallet_id && local.subscriptions.size == it.chains.size } == null
         }
 
-        val toRemoveSubscription = if (added) {
-            emptyList()
-        } else {
-            remoteSubscriptions.filter {
-                !subscriptionsIndex.contains("${it.chain.string}_${it.address}_${it.wallet_index}")
-            }
-        }
+        addSubscriptions(deviceId, toAdd)
+        removeSubscriptions(deviceId, toRemove)
 
-        addSubscriptions(deviceId, toAddSubscriptions.values.toList())
-        removeSubscriptions(deviceId, toRemoveSubscription)
-
-        if (toAddSubscriptions.isNotEmpty() || toRemoveSubscription.isNotEmpty()) {
+        if (toAdd.isNotEmpty() || toRemove.isNotEmpty()) {
             increaseSubscriptionVersion()
             syncDeviceInfo()
         }
@@ -209,7 +205,7 @@ class DeviceRepository(
         } catch (_: Throwable) { }
     }
 
-    private suspend fun getRemoteSubscriptions(deviceId: String): List<Subscription> {
+    private suspend fun getRemoteSubscriptions(deviceId: String): List<WalletSubscriptionChains> {
         return try {
             gemApiClient.getSubscriptions(deviceId) ?: throw Exception()
         } catch (_: Exception) {
@@ -217,7 +213,7 @@ class DeviceRepository(
         }
     }
 
-    private suspend fun addSubscriptions(deviceId: String, subscriptions: List<Subscription>) {
+    private suspend fun addSubscriptions(deviceId: String, subscriptions: List<WalletSubscription>) {
         if (subscriptions.isEmpty()) {
             return
         }
@@ -226,7 +222,7 @@ class DeviceRepository(
         } catch (_: Throwable) { }
     }
 
-    private suspend fun removeSubscriptions(deviceId: String, subscriptions: List<Subscription>) {
+    private suspend fun removeSubscriptions(deviceId: String, subscriptions: List<WalletSubscription>) {
         if (subscriptions.isEmpty()) {
             return
         }
@@ -235,19 +231,17 @@ class DeviceRepository(
         } catch (_: Throwable) { }
     }
 
-    private fun buildSubscriptionIndex(wallets: List<Wallet>): Map<String, Subscription> {
-        val subscriptionsIndex = mutableMapOf<String, Subscription>()
-        wallets.forEach { wallet ->
-            wallet.accounts.forEach { account ->
-                val checksum = AnyAddress(account.address, WCChainTypeProxy().invoke(account.chain)).description()
-                subscriptionsIndex["${account.chain.string}_${checksum}_${wallet.index}"] = Subscription(
-                    chain = account.chain,
-                    address = checksum,
-                    wallet_index = wallet.index,
-                )
+    private fun localSubscriptions(wallets: List<Wallet>): List<WalletSubscription> {
+        return wallets.map { wallet ->
+            val subscriptions =  wallet.accounts.map { account ->
+                ChainAddress(account.chain, account.address)
             }
+            WalletSubscription(
+                wallet_id = wallet.id,
+                source = wallet.source,
+                subscriptions = subscriptions
+            )
         }
-        return subscriptionsIndex
     }
 
     private fun getSubscriptionVersion(): Int {

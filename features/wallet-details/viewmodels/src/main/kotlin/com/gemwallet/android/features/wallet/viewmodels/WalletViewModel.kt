@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
-import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.cases.wallet.DeleteWallet
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository

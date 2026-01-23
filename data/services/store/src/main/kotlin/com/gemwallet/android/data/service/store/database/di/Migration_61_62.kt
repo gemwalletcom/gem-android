@@ -5,6 +5,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 object Migration_61_62 : Migration(61, 62) {
     override fun migrate(db: SupportSQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(false)
         db.execSQL("""
                 UPDATE wallets SET type='View' WHERE type='view'
             """.trimIndent()

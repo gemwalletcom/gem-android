@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.wallets
 
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
-import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.operators.StorePhraseOperator
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
@@ -98,7 +98,12 @@ class PhraseAddressImportWalletService(
                 else -> Result.failure(ImportError.InvalidationSecretPhrase)
             }
         }
-        val wallet = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain, source)
+        val wallet = try {
+            walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain, source)
+        } catch (err: ImportError.DuplicatedWallet) {
+            return Result.success(err.wallet)
+        }
+
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, cleanedData, password)
         return if (storeResult.isSuccess) {
@@ -116,6 +121,8 @@ class PhraseAddressImportWalletService(
         return try {
             val wallet = walletsRepository.addWatch(walletName, data, chain)
             Result.success(wallet)
+        } catch (err: ImportError.DuplicatedWallet) {
+            Result.success(err.wallet)
         } catch (err: Exception) {
             Result.failure(ImportError.CreateError(err.message ?: "Unknown error"))
         }
@@ -132,7 +139,13 @@ class PhraseAddressImportWalletService(
         } catch (_: Throwable) {
             return Result.failure(ImportError.InvalidationPrivateKey)
         }
-        val wallet = walletsRepository.addControlled(walletName, key, WalletType.PrivateKey, chain, source = WalletSource.Import)
+
+        val wallet = try {
+            walletsRepository.addControlled(walletName, key, WalletType.PrivateKey, chain, source = WalletSource.Import)
+        } catch (err: ImportError.DuplicatedWallet) {
+            return Result.success(err.wallet)
+        }
+
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, key, password)
         return if (storeResult.isSuccess) {
