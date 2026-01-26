@@ -150,14 +150,14 @@ private fun LazyListScope.assets(
         item.key?.let {
             item { SubheaderItem(if (isAssetView) stringResource(R.string.stake_active) else item.value.firstOrNull()?.title ?: "") }
         }
-        assets(reveable, item.value, onChart, onExclude)
+        assets(reveable, item.value, onChart.takeIf { !isAssetView }, onExclude)
     }
 }
 
 private fun LazyListScope.assets(
     reveable: MutableState<Int?>,
     data: List<PriceAlertDataAggregate>,
-    onChart: (AssetId) -> Unit,
+    onChart: ((AssetId) -> Unit)?,
     onExclude: (Int) -> Unit,
 ) {
     itemsPositioned(data/*, key = { _, item -> item.id}*/) { position, item ->
@@ -181,8 +181,8 @@ private fun LazyListScope.assets(
             listPosition = position,
         ) { position ->
             ListItem(
-                modifier = Modifier
-                    .clickable(onClick = { onChart(item.assetId) })
+                modifier = (onChart?.let { Modifier
+                    .clickable(onClick = { onChart(item.assetId) }) } ?: Modifier)
                     .onSizeChanged {
                         minActionWidth = with(density) { it.height.toDp() }
                     },
