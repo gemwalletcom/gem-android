@@ -23,7 +23,7 @@ internal fun ShowSecretData(
         return
     }
     PropertyItem(
-        modifier = Modifier.Companion.clickable { onAuthRequest(onPhraseShow) },
+        modifier = Modifier.clickable { onAuthRequest(onPhraseShow) },
         title = {
             PropertyTitleText(
                 text = stringResource(

@@ -147,6 +147,7 @@ class MainActivity : FragmentActivity(), AuthRequester {
             biometricPrompt.authenticate(promptInfo)
         } else if (state.authState == AuthState.Success) {
             onSuccessAuth?.invoke()
+            onSuccessAuth = null
         }
         LaunchedEffect(intent) {
             try {
@@ -280,6 +281,7 @@ class MainActivity : FragmentActivity(), AuthRequester {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 onSuccessAuth?.invoke()
                 viewModel.onAuth(AuthState.Success)
+                onSuccessAuth = null
             }
 
             override fun onAuthenticationFailed() {
@@ -293,18 +295,10 @@ class MainActivity : FragmentActivity(), AuthRequester {
             .build()
     }
 
-    fun auth(authRequest: AuthRequest) {
-        if (viewModel.isAuthRequired(authRequest)) {
-            viewModel.requestAuth(authRequest)
-        } else {
-            onSuccessAuth?.invoke()
-        }
-    }
-
     override fun requestAuth(auth: AuthRequest, onSuccess: () -> Unit) {
-        if (enabledSysAuth()) {
+        if (enabledSysAuth() && viewModel.isAuthRequired(auth)) {
             onSuccessAuth = onSuccess
-            auth(auth)
+            viewModel.requestAuth(auth)
         } else {
             onSuccess()
         }
