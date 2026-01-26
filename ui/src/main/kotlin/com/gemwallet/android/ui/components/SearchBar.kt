@@ -45,7 +45,7 @@ fun SearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
-                    .padding(start = 48.dp, top = 10.dp, end = 40.dp, bottom = 10.dp)
+                    .padding(start = 42.dp, top = 10.dp, end = 40.dp, bottom = 10.dp)
                 ,
                 textStyle = TextStyle.Default.copy(
                     fontSize = 18.sp,
@@ -60,7 +60,7 @@ fun SearchBar(
                 Text(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .padding(start = 48.dp, end = 32.dp),
+                        .padding(start = 42.dp, end = 32.dp),
                     maxLines = 1,
                     text = stringResource(id = android.R.string.search_go),
                     color = MaterialTheme.colorScheme.secondary,
