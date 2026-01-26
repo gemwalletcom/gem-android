@@ -52,16 +52,18 @@ class PhraseAddressImportWalletService(
         walletName: String,
         data: String
     ): Result<Wallet> {
-        val result = when (importType.walletType) {
-            WalletType.Multicoin -> handlePhrase(importType, walletName, data, WalletSource.Import)
-            WalletType.Single -> handlePhrase(importType, walletName, data, WalletSource.Import)
-            WalletType.View -> handleAddress(importType.chain!!, walletName, data)
-            WalletType.PrivateKey -> handlePrivateKey(importType.chain!!, walletName, data)
+        val wallet = try {
+            when (importType.walletType) {
+                WalletType.Multicoin -> handlePhrase(importType, walletName, data, WalletSource.Import)
+                WalletType.Single -> handlePhrase(importType, walletName, data, WalletSource.Import)
+                WalletType.View -> handleAddress(importType.chain!!, walletName, data)
+                WalletType.PrivateKey -> handlePrivateKey(importType.chain!!, walletName, data)
+            }
+        } catch (err: ImportError.DuplicatedWallet) {
+            return Result.success(err.wallet)
+        } catch (err: Throwable) {
+            return Result.failure(err)
         }
-        if (result.isFailure) {
-            return result
-        }
-        val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
 
         setupWallet(wallet)
         assetsRepository.importAssets(wallet)
@@ -72,10 +74,11 @@ class PhraseAddressImportWalletService(
 
     override suspend fun createWallet(walletName: String, data: String): Result<Wallet> =
         withContext(Dispatchers.IO) {
-            val result = handlePhrase(ImportType(WalletType.Multicoin), walletName, data, WalletSource.Create)
-            if (result.isFailure) return@withContext result
-            val wallet =
-                result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
+            val wallet = try {
+                handlePhrase(ImportType(WalletType.Multicoin), walletName, data, WalletSource.Create)
+            } catch (err: Throwable) {
+                return@withContext Result.failure(err)
+            }
 
             setupWallet(wallet)
 
@@ -88,47 +91,43 @@ class PhraseAddressImportWalletService(
         syncSubscription.syncSubscription(listOf(wallet), true)
     }
 
-    private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String, source: WalletSource): Result<Wallet> {
+    private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String, source: WalletSource): Wallet {
         val cleanedData = rawData.trim().split("\\s+".toRegex()).joinToString(" ") { it.trim() }
         val validateResult = phraseValidate(cleanedData)
         if (validateResult.isFailure || validateResult.getOrNull() != true) {
             val error = validateResult.exceptionOrNull() ?: InvalidPhrase
-            return when (error) {
-                is InvalidWords -> Result.failure(ImportError.InvalidWords(error.words))
-                else -> Result.failure(ImportError.InvalidationSecretPhrase)
+            throw when (error) {
+                is InvalidWords -> ImportError.InvalidWords(error.words)
+                else -> ImportError.InvalidationSecretPhrase
             }
         }
-        val wallet = try {
-            walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain, source)
-        } catch (err: ImportError.DuplicatedWallet) {
-            return Result.success(err.wallet)
-        }
+        val wallet = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain, source)
 
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, cleanedData, password)
         return if (storeResult.isSuccess) {
-            Result.success(wallet)
+            wallet
         } else {
             walletsRepository.removeWallet(wallet.id)
-            Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
+            throw storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error")
         }
     }
 
-    private suspend fun handleAddress(chain: Chain, walletName: String, data: String): Result<Wallet> {
+    private suspend fun handleAddress(chain: Chain, walletName: String, data: String): Wallet {
         if (addressValidate(data, chain).getOrNull() != true) {
-            return Result.failure(ImportError.InvalidAddress)
+            throw ImportError.InvalidAddress
         }
         return try {
             val wallet = walletsRepository.addWatch(walletName, data, chain)
-            Result.success(wallet)
+            wallet
         } catch (err: ImportError.DuplicatedWallet) {
-            Result.success(err.wallet)
+            err.wallet
         } catch (err: Exception) {
-            Result.failure(ImportError.CreateError(err.message ?: "Unknown error"))
+            throw ImportError.CreateError(err.message ?: "Unknown error")
         }
     }
 
-    private suspend fun handlePrivateKey(chain: Chain, walletName: String, data: String): Result<Wallet> {
+    private suspend fun handlePrivateKey(chain: Chain, walletName: String, data: String): Wallet {
         val key = try {
             val data = decodePrivateKey(chain, data.trim())
 
@@ -137,22 +136,22 @@ class PhraseAddressImportWalletService(
             }
             data.toHexString()
         } catch (_: Throwable) {
-            return Result.failure(ImportError.InvalidationPrivateKey)
+            throw ImportError.InvalidationPrivateKey
         }
 
         val wallet = try {
             walletsRepository.addControlled(walletName, key, WalletType.PrivateKey, chain, source = WalletSource.Import)
         } catch (err: ImportError.DuplicatedWallet) {
-            return Result.success(err.wallet)
+            return err.wallet
         }
 
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, key, password)
         return if (storeResult.isSuccess) {
-            Result.success(wallet)
+            wallet
         } else {
             walletsRepository.removeWallet(wallet.id)
-            Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
+            throw storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error")
         }
     }
 
