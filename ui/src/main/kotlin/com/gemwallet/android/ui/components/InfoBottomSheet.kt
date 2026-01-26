@@ -54,7 +54,7 @@ sealed class InfoSheetEntity(
         title = R.string.transfer_network_fee,
         description = R.string.info_network_fee_description,
         infoUrl = { Config().getDocsUrl(DocsUrl.NetworkFees) },
-        descriptionArgs = listOf(networkTitle, networkSymbol),
+        descriptionArgs = listOf("**$networkTitle**", "**$networkSymbol**"),
     )
 
     class NetworkBalanceRequiredInfo(chain: Chain, value: String, actionLabel: String, action: () -> Unit) : InfoSheetEntity(
