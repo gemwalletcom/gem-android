@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -167,7 +168,7 @@ fun PriceAlertTargetScene(
                         }
                     }
                     BasicTextField(
-                        modifier = Modifier.width(IntrinsicSize.Min),
+                        modifier = Modifier.width(IntrinsicSize.Min).focusRequester(focusRequester),
                         state = value,
                         lineLimits = TextFieldLineLimits.SingleLine,
                         textStyle = MaterialTheme.typography.displaySmall.copy(
