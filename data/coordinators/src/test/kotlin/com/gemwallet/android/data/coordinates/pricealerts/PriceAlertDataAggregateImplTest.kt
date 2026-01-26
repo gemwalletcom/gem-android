@@ -245,7 +245,7 @@ class PriceAlertDataAggregateImplTest {
         )
         val aggregate = createAggregate(priceAlert = priceAlert)
 
-        assertEquals("+3.50%", aggregate.percentage)
+        assertEquals("3.50%", aggregate.percentage)
     }
 
     @Test
@@ -271,7 +271,7 @@ class PriceAlertDataAggregateImplTest {
         )
         val aggregate = createAggregate(priceAlert = priceAlert)
 
-        assertEquals("+125.67%", aggregate.percentage)
+        assertEquals("125.67%", aggregate.percentage)
     }
 
     @Test
@@ -281,7 +281,7 @@ class PriceAlertDataAggregateImplTest {
         )
         val aggregate = createAggregate(priceAlert = priceAlert)
 
-        assertEquals(PriceAlertType.Increase, aggregate.type)
+        assertEquals(PriceAlertType.Auto, aggregate.type)
     }
 
     @Test
@@ -291,7 +291,7 @@ class PriceAlertDataAggregateImplTest {
         )
         val aggregate = createAggregate(priceAlert = priceAlert)
 
-        assertEquals(PriceAlertType.Decrease, aggregate.type)
+        assertEquals(PriceAlertType.Auto, aggregate.type)
     }
 
     @Test
@@ -306,7 +306,7 @@ class PriceAlertDataAggregateImplTest {
             priceAlert = priceAlert,
         )
 
-        assertEquals(PriceAlertType.Over, aggregate.type)
+        assertEquals(PriceAlertType.Auto, aggregate.type)
     }
 
     @Test
@@ -314,7 +314,7 @@ class PriceAlertDataAggregateImplTest {
         val assetPrice = createAssetPriceInfo(price = 45000.0)
         val priceAlert = createPriceAlert(
             price = 40000.0,
-            priceDirection = null,
+            priceDirection = PriceAlertDirection.Down,
         )
         val aggregate = createAggregate(
             assetPrice = assetPrice,
@@ -347,7 +347,7 @@ class PriceAlertDataAggregateImplTest {
             priceAlert = priceAlert,
         )
 
-        assertEquals(PriceAlertType.Decrease, aggregate.type)
+        assertEquals(PriceAlertType.Under, aggregate.type)
     }
 
     @Test

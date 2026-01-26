@@ -92,13 +92,18 @@ class PriceAlertDataAggregateImpl(
 
     override val type: PriceAlertType get() {
         val alertPrice = priceAlert.price
+        val percentage = priceAlert.pricePercentChange
 
         return when {
-            priceAlert.priceDirection == PriceAlertDirection.Up -> PriceAlertType.Increase
-            priceAlert.priceDirection == PriceAlertDirection.Down -> PriceAlertType.Decrease
-            alertPrice != null -> when {
-                alertPrice > assetPrice.price.price -> PriceAlertType.Over
-                else -> PriceAlertType.Under
+            percentage != null -> when (priceAlert.priceDirection) {
+                PriceAlertDirection.Up -> PriceAlertType.Increase
+                PriceAlertDirection.Down -> PriceAlertType.Decrease
+                null -> PriceAlertType.Auto
+            }
+            alertPrice != null -> when (priceAlert.priceDirection) {
+                PriceAlertDirection.Up -> PriceAlertType.Over
+                PriceAlertDirection.Down -> PriceAlertType.Under
+                null -> PriceAlertType.Auto
             }
             else -> PriceAlertType.Auto
         }
