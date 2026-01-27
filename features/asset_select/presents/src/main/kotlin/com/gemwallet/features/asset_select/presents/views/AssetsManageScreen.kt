@@ -40,6 +40,7 @@ fun AssetsManageScreen(
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val pinned by viewModel.pinned.collectAsStateWithLifecycle()
     val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
+    val recent by viewModel.recent.collectAsStateWithLifecycle()
 
     val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
@@ -74,7 +75,7 @@ fun AssetsManageScreen(
         pinned = pinned,
         popular = emptyList<AssetItemUIModel>().toImmutableList(),
         unpinned = unpinned,
-        recent = emptyList<AssetItemUIModel>().toImmutableList(),
+        recent = recent,
         state = uiStates,
         isAddAvailable = isAddAssetAvailable,
         availableChains = availableChains,
