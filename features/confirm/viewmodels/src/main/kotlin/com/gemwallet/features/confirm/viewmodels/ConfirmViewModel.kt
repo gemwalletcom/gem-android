@@ -209,7 +209,7 @@ class ConfirmViewModel @Inject constructor(
                         && assetInfo.asset.isMemoSupport()
                         && it.isNotEmpty()
             }?.let { ConfirmProperty.Memo(it) })
-            add(ConfirmProperty.Network(assetInfo.asset))
+            add(ConfirmProperty.Network(assetInfo.chain.asset()))
         }.filterNotNull()
     }
     .flowOn(Dispatchers.Default)
