@@ -1,13 +1,10 @@
 package com.gemwallet.features.transfer_amount.presents.components
 
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
+import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.TransactionType
@@ -25,13 +22,7 @@ internal fun LazyListScope.validatorView(
         ValidatorItem(
             data = validatorState,
             listPosition = ListPosition.Single,
-            trailingIcon = {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowForwardIos,
-                    contentDescription = "select_validator",
-                    tint = MaterialTheme.colorScheme.secondary
-                )
-            },
+            trailingIcon = { DataBadgeChevron() },
             onClick = when (txType) {
                 TransactionType.StakeUndelegate -> null
                 else -> {

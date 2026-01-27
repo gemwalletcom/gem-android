@@ -1,16 +1,13 @@
 package com.gemwallet.android.features.activities.presents.details.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
@@ -22,7 +19,7 @@ internal fun TransactionExplorer(explorerName: String, uri: String) {
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     PropertyItem(
-        modifier = Modifier.Companion.clickable { uriHandler.open(context, uri) },
+        modifier = Modifier.clickable { uriHandler.open(context, uri) },
         title = {
             PropertyTitleText(
                 stringResource(
@@ -34,13 +31,7 @@ internal fun TransactionExplorer(explorerName: String, uri: String) {
         data = {
             PropertyDataText(
                 text = "",
-                badge = {
-                    Icon(
-                        Icons.AutoMirrored.Default.ArrowForwardIos,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
+                badge = { DataBadgeChevron() }
             )
         },
         listPosition = ListPosition.Single

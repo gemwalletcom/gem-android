@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.paddingMiddle
 import com.gemwallet.android.ui.theme.trailingIconMedium
+import com.gemwallet.android.ui.theme.trailingIconSmall
 
 @Composable
 fun PropertyItem(
@@ -60,14 +62,8 @@ fun PropertyItem(
         title = { PropertyTitleText(text = action, trailing = { AsyncImage(actionIconModel, 24.dp) }) },
         data = {
             PropertyDataText(
-                data ?: "",
-                badge = {
-                    Icon(
-                        Icons.AutoMirrored.Default.ArrowForwardIos,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
+                text = data ?: "",
+                badge = { DataBadgeChevron() }
             )
         },
         listPosition = listPosition,
@@ -211,7 +207,7 @@ fun DataBadgeChevron(isShowChevron: Boolean = true, content: (@Composable RowSco
         }
         if (isShowChevron) {
             Icon(
-                modifier = Modifier.offset(8.dp),
+                modifier = Modifier.offset(8.dp).size(trailingIconSmall),
                 painter = rememberVectorPainter(image = Icons.AutoMirrored.Default.ArrowForwardIos),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.secondary
