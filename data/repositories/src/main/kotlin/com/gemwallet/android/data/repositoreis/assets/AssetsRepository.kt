@@ -368,16 +368,21 @@ class AssetsRepository @Inject constructor(
         assetId: AssetId,
         visibility: Boolean,
     ) = withContext(Dispatchers.IO) {
-        runCatching {
-            assetsDao.linkAssetToWallet(
-                DbAssetWallet(
-                    walletId = walletId,
-                    assetId = assetId.toIdentifier(),
-                    accountAddress = owner.address
+        val assetInfo = getAssetInfo(assetId).firstOrNull()
+        if (assetInfo?.walletId != walletId) {
+            runCatching {
+                assetsDao.linkAssetToWallet(
+                    DbAssetWallet(
+                        walletId = walletId,
+                        assetId = assetId.toIdentifier(),
+                        accountAddress = owner.address
+                    )
                 )
-            )
+            }
         }
-        setVisibility(walletId, assetId, visibility)
+        if (assetInfo?.metadata?.isEnabled != visibility) {
+            setVisibility(walletId, assetId, visibility)
+        }
         if (visibility) {
             updateBalances(assetId)
             priceClient.addAssetId(assetId)
