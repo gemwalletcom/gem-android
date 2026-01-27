@@ -33,7 +33,7 @@ fun PreferencesScene(
     val context = LocalContext.current
 
     Scene(
-        title = stringResource(id = (R.string.settings_security)),
+        title = stringResource(id = (R.string.settings_preferences_title)),
         onClose = onCancel,
     ) {
         LazyColumn {
