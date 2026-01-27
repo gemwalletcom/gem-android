@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.activities.presents.details.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
@@ -21,6 +22,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.paddingSmall
 
 @Composable
 fun DestinationPropertyItem(property: TransactionDetailsValue.Destination, listPosition: ListPosition) {
@@ -31,15 +33,21 @@ fun DestinationPropertyItem(property: TransactionDetailsValue.Destination, listP
         is TransactionDetailsValue.Destination.Sender -> R.string.transaction_sender
         is TransactionDetailsValue.Destination.Provider -> R.string.common_provider
     }
+    val isCopied = when (property) {
+        is TransactionDetailsValue.Destination.Provider -> false
+        else -> true
+    }
 
     PropertyItem(
         title = { PropertyTitleText(title) },
         data = {
             Row(
                 modifier = Modifier
-                    .clickable { clipboardManager.setPlainText(context, property.data) }
+                    .clickable(enabled = isCopied) { clipboardManager.setPlainText(context, property.data) }
                     .weight(1f),
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(paddingSmall)
+            ) {
                 Text(
                     modifier = Modifier.weight(1f),
                     text = property.data,
@@ -49,12 +57,13 @@ fun DestinationPropertyItem(property: TransactionDetailsValue.Destination, listP
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Spacer8()
-                Icon(
-                    imageVector = Icons.Default.ContentCopy,
-                    tint = MaterialTheme.colorScheme.secondary,
-                    contentDescription = ""
-                )
+                if (isCopied) {
+                    Icon(
+                        imageVector = Icons.Default.ContentCopy,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        contentDescription = ""
+                    )
+                }
             }
         },
         listPosition = listPosition,

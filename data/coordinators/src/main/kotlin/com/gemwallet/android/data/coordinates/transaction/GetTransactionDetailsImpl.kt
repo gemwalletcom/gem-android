@@ -19,9 +19,9 @@ import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
+import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
+import uniffi.gemstone.GemSwapper
+import uniffi.gemstone.SwapperProviderType
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetTransactionDetailsImpl(
@@ -39,6 +41,7 @@ class GetTransactionDetailsImpl(
     private val transactionRepository: TransactionRepository,
     private val assetsRepository: AssetsRepository,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
+    private val gemSwapper: GemSwapper,
 ) : GetTransactionDetails {
 
     override fun getTransactionDetails(id: String): Flow<TransactionDetailsAggregate?> {
@@ -52,11 +55,15 @@ class GetTransactionDetailsImpl(
                     TransactionDetailsValue.Explorer(url, name)
                 }
                 assetsRepository.getAssetsInfo(ids).mapLatest { assets ->
+                    val swapMetadata = data.transaction.getSwapMetadata()
+                    val provider = gemSwapper.getProviders().firstOrNull { it.protocolId ==  swapMetadata?.provider }
                     TransactionDetailsAggregateImpl(
                         data = data,
                         associatedAssets = assets,
                         explorer = explorerInfo,
                         currency = session.currency,
+                        swapProvider = provider,
+                        swapMetadata = swapMetadata,
                     )
                 }
             }
@@ -68,8 +75,10 @@ class GetTransactionDetailsImpl(
 class TransactionDetailsAggregateImpl(
     private val data: TransactionExtended,
     private val associatedAssets: List<AssetInfo>,
+    private val swapMetadata: TransactionSwapMetadata? = null,
     override val explorer: TransactionDetailsValue.Explorer,
     override val currency: Currency,
+    swapProvider: SwapperProviderType? = null,
 ) : TransactionDetailsAggregate {
 
     override val id: String = data.transaction.id
@@ -78,9 +87,7 @@ class TransactionDetailsAggregateImpl(
     override val type: TransactionType = data.transaction.type
     override val direction: TransactionDirection = data.transaction.direction
     override val state: TransactionState = data.transaction.state
-
-    private val swapMetadata = data.transaction.getSwapMetadata()
-    private val swapProvider = SwapProvider.entries.firstOrNull { it.string == swapMetadata?.provider }
+    private val swapProvider = swapProvider?.name
 
     override val amount: TransactionDetailsValue.Amount
         get() {
@@ -171,7 +178,7 @@ class TransactionDetailsAggregateImpl(
         TransactionType.StakeUnfreeze,
         TransactionType.PerpetualModifyPosition,
         TransactionType.StakeWithdraw -> null
-        TransactionType.Swap -> swapProvider?.let { TransactionDetailsValue.Destination.Provider(it) }
+        TransactionType.Swap -> this@TransactionDetailsAggregateImpl.swapProvider?.let { TransactionDetailsValue.Destination.Provider(it) }
         TransactionType.Transfer,
         TransactionType.TransferNFT -> when (data.transaction.direction) {
             TransactionDirection.SelfTransfer,

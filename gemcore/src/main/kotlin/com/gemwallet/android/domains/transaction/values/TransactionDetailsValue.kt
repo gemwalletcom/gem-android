@@ -4,7 +4,6 @@ import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.NFTAsset
-import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionState
 
 sealed interface TransactionDetailsValue {
@@ -40,7 +39,7 @@ sealed interface TransactionDetailsValue {
     sealed class Destination(val data: String) : TransactionDetailsValue {
         class Sender(data: String) : Destination(data)
         class Recipient(data: String) : Destination(data)
-        class Provider(data: SwapProvider) : Destination(data.name)
+        class Provider(name: String) : Destination(name)
     }
 
     class Status(val data: TransactionState) : TransactionDetailsValue

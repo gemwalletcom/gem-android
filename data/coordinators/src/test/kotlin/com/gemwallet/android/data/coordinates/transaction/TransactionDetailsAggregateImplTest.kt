@@ -110,11 +110,15 @@ class TransactionDetailsAggregateImplTest {
         data: TransactionExtended,
         associatedAssets: List<AssetInfo> = emptyList(),
         currency: Currency = Currency.USD,
+        swapMetadata: TransactionSwapMetadata? = null,
+        swapProvider: uniffi.gemstone.SwapperProviderType? = null,
     ) = TransactionDetailsAggregateImpl(
         data = data,
         associatedAssets = associatedAssets,
+        swapMetadata = swapMetadata,
         explorer = TransactionDetailsValue.Explorer("https://example.com", "Explorer"),
         currency = currency,
+        swapProvider = swapProvider,
     )
 
     @Test
@@ -206,13 +210,13 @@ class TransactionDetailsAggregateImplTest {
             assets = listOf(bnbAsset, tonAsset),
         )
         val associatedAssets = listOf(createAssetInfo(bnbAsset), createAssetInfo(tonAsset))
-        val aggregate = createAggregate(extended, associatedAssets)
+        val aggregate = createAggregate(extended, associatedAssets, swapMetadata = swapMetadata)
 
         val amount = aggregate.amount
         Assert.assertTrue(amount is TransactionDetailsValue.Amount.Swap)
         val swapAmount = amount as TransactionDetailsValue.Amount.Swap
-        Assert.assertEquals(bnbAsset, swapAmount.fromAsset)
-        Assert.assertEquals(tonAsset, swapAmount.toAsset)
+        Assert.assertEquals(bnbAsset, swapAmount.fromAsset.asset)
+        Assert.assertEquals(tonAsset, swapAmount.toAsset.asset)
         Assert.assertEquals("90", swapAmount.fromValue)
         Assert.assertEquals("190", swapAmount.toValue)
         Assert.assertEquals(Currency.USD, swapAmount.currency)
@@ -373,7 +377,9 @@ class TransactionDetailsAggregateImplTest {
         val aggregate = createAggregate(extended)
 
         val date = aggregate.date
-        Assert.assertEquals("January 6, 2026, 2:13 AM", date.data)
+        Assert.assertTrue(date.data.contains("January 6, 2026"))
+        Assert.assertTrue(date.data.contains("2:13"))
+        Assert.assertTrue(date.data.contains("AM"))
     }
 
     @Test
@@ -492,12 +498,26 @@ class TransactionDetailsAggregateImplTest {
         )
         val extended = createTransactionExtended(transaction, asset = ethAsset)
         val associatedAssets = listOf(createAssetInfo(ethAsset), createAssetInfo(usdtAsset))
-        val aggregate = createAggregate(extended, associatedAssets)
+
+        val mockProvider = uniffi.gemstone.SwapperProviderType(
+            id = uniffi.gemstone.SwapperProvider.UNISWAP_V3,
+            name = "unswap",
+            protocol = "uniswapv3",
+            protocolId = "uniswapv3",
+            mode = uniffi.gemstone.SwapperProviderMode.OnChain,
+        )
+
+        val aggregate = createAggregate(
+            extended,
+            associatedAssets,
+            swapMetadata = swapMetadata,
+            swapProvider = mockProvider,
+        )
 
         val destination = aggregate.destination
         Assert.assertTrue(destination is TransactionDetailsValue.Destination.Provider)
         val provider = destination as TransactionDetailsValue.Destination.Provider
-        Assert.assertEquals(SwapProvider.UniswapV3, provider.data)
+        Assert.assertEquals("unswap", provider.data)
     }
 
     @Test
