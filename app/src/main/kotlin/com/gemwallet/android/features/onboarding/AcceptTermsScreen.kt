@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.outlined.Info
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -131,9 +133,10 @@ private fun LazyListScope.termItem(
 ) {
     item {
         Card(
-            modifier = Modifier.clickable(onClick = onClick),
+            modifier = Modifier.clip(shape = RoundedCornerShape(paddingDefault)).clickable(onClick = onClick),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-            elevation = CardDefaults.cardElevation(paddingHalfSmall)
+            elevation = CardDefaults.cardElevation(paddingHalfSmall),
+            shape = RoundedCornerShape(paddingDefault),
         ) {
             Row(modifier = Modifier.defaultPadding()) {
                 Icon(
