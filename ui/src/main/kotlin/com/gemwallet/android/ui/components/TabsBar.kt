@@ -32,6 +32,9 @@ fun <T> TabsBar(
     onSelect: (T) -> Unit,
     itemContent: @Composable RowScope.(T) -> Unit
 ) {
+    if (tabs.isEmpty()) {
+        return
+    }
     val density = LocalDensity.current
     val itemsWidth = remember { mutableStateMapOf<Int, Dp>() }
 

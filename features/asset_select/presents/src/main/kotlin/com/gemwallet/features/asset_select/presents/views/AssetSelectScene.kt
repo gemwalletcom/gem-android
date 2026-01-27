@@ -205,22 +205,19 @@ fun AssetSelectScene(
         }
         LazyColumn(state = listState) {
             item {
-                Box {
-                    TabsBar(tags, selectedTag, onTagSelect) { item ->
-                        Text(
-                            stringResource(
-                                when (item) {
-                                    AssetTag.Trending -> R.string.assets_tags_trending
-                                    AssetTag.TrendingFiatPurchase -> R.string.assets_tags_trending
-                                    AssetTag.Gainers -> R.string.assets_tags_gainers
-                                    AssetTag.Losers -> R.string.assets_tags_losers
-                                    AssetTag.New -> R.string.assets_tags_new
-                                    AssetTag.Stablecoins -> R.string.assets_tags_stablecoins
-                                    null -> R.string.common_all
-                                }
-                            ),
-                        )
+                TabsBar(tags, selectedTag, onTagSelect) { item ->
+                    val stringId = when (item) {
+                        AssetTag.Trending -> R.string.assets_tags_trending
+                        AssetTag.TrendingFiatPurchase -> R.string.assets_tags_trending
+                        AssetTag.Gainers -> R.string.assets_tags_gainers
+                        AssetTag.Losers -> R.string.assets_tags_losers
+                        AssetTag.New -> R.string.assets_tags_new
+                        AssetTag.Stablecoins -> R.string.assets_tags_stablecoins
+                        null -> R.string.common_all
                     }
+                    Text(
+                        stringResource(stringId),
+                    )
                 }
             }
             recent(recent, onSelect)
