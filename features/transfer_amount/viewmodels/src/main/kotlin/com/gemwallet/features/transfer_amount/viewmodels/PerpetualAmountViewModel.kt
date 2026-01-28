@@ -53,9 +53,9 @@ class PerpetualAmountViewModel @Inject constructor(
         .filterNotNull()
         .flatMapLatest { getPerpetual.getPerpetual(it) }
         .onEach {
-            val assetId = getAssetId(it?.asset?.chain ?: return@onEach)
-            tokenRepository.search(assetId)
             val session = sessionRepository.session().firstOrNull() ?: return@onEach
+            val assetId = getAssetId(it?.asset?.chain ?: return@onEach)
+            tokenRepository.search(assetId, session.currency)
             val owner = session.wallet.getAccount(assetId.chain) ?: return@onEach
             assetsRepository.switchVisibility(session.wallet.id, owner, assetId, false)
         }

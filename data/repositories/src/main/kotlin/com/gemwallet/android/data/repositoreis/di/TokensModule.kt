@@ -5,6 +5,7 @@ import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
+import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import dagger.Module
 import dagger.Provides
@@ -20,11 +21,13 @@ object TokensModule {
     @Singleton
     fun provideTokensRepository(
         assetsDao: AssetsDao,
+        pricesDao: PricesDao,
         assetsPriorityDao: AssetsPriorityDao,
         gateway: GemGateway,
         gemApiClient: GemApiClient,
 ): TokensRepository = TokensRepository(
         assetsDao = assetsDao,
+        pricesDao = pricesDao,
         assetsPriorityDao = assetsPriorityDao,
         gemApiClient = gemApiClient,
         tokenService = TokenService(

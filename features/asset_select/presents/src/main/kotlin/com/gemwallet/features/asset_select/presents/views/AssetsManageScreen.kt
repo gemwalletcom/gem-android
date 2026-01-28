@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.components.list_item.getBalanceInfo
 import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.models.ListPosition
@@ -65,8 +67,22 @@ fun AssetsManageScreen(
         },
         titleBadge = ::getAssetBadge,
         support = {
-            if (it.asset.id.type() == AssetSubtype.NATIVE) null else {
-                { ListItemSupportText(it.asset.id.chain.asset().name) }
+            if (manageable) {
+                if (it.asset.id.type() == AssetSubtype.NATIVE) null else {
+                    { ListItemSupportText(it.asset.id.chain.asset().name) }
+                }
+            } else {
+                if (it.price.fiatFormatted.isEmpty()) {
+                    null
+                } else {
+                    @Composable {
+                        PriceInfo(
+                            price = it.price,
+                            style = MaterialTheme.typography.bodyMedium,
+                            internalPadding = 4.dp
+                        )
+                    }
+                }
             }
         },
         query = viewModel.queryState,

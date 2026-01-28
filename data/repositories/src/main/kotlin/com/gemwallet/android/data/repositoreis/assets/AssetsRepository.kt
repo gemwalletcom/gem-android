@@ -211,8 +211,8 @@ class AssetsRepository @Inject constructor(
         .flowOn(Dispatchers.IO)
 
 
-    suspend fun searchToken(assetId: AssetId): Boolean {
-        return searchTokensCase.search(assetId)
+    suspend fun searchToken(assetId: AssetId, currency: Currency): Boolean {
+        return searchTokensCase.search(assetId, currency)
     }
 
     suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
@@ -304,7 +304,7 @@ class AssetsRepository @Inject constructor(
         balancesJob.await()
     }
 
-    fun importAssets(wallet: Wallet) = scope.launch(Dispatchers.IO) {
+    fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
         importStatus.update { items ->
             items.toMutableMap().apply { put(wallet.id, true) }
         }
@@ -317,7 +317,7 @@ class AssetsRepository @Inject constructor(
         val assetIds = availableAssetsId.mapNotNull { it.toAssetId() }
         val tokenIds = assetIds.filter { it.type() != AssetSubtype.NATIVE }
 
-        searchTokensCase.search(tokenIds)
+        searchTokensCase.search(tokenIds, currency)
         assetIds.map { assetId ->
             async {
                 val asset = assetsDao.getAsset(assetId.toIdentifier())?.toDTO() ?: return@async null

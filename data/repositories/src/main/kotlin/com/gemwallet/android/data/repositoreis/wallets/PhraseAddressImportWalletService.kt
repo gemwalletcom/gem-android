@@ -26,7 +26,6 @@ import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import wallet.core.jni.Base32
@@ -44,7 +43,6 @@ class PhraseAddressImportWalletService(
     private val syncSubscription: SyncSubscription,
     private val addressStatusService: AddressStatusService,
     private val addBanner: AddBanner,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : ImportWalletService {
 
     override suspend fun importWallet(
@@ -66,7 +64,7 @@ class PhraseAddressImportWalletService(
         }
 
         setupWallet(wallet)
-        assetsRepository.importAssets(wallet)
+        assetsRepository.importAssets(wallet, sessionRepository.getCurrentCurrency())
         checkAddresses(wallet)
 
         return Result.success(wallet)

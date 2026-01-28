@@ -84,7 +84,7 @@ class AddAssetViewModel @Inject constructor(
 
             emit(TokenSearchState.Loading)
 
-            val success = assetsRepository.searchToken(AssetId(chain, address))
+            val success = assetsRepository.searchToken(AssetId(chain, address), sessionRepository.getCurrentCurrency())
 
             emit(
                 if (success) {
