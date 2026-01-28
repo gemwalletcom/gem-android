@@ -78,6 +78,8 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         data: Bundle,
         uri: Uri? = null
     ) {
+        val channelId = channelId ?: "default"
+        val title = title ?: "GemWallet"
         val intent = Intent(applicationContext, MainActivity::class.java)
             .putExtras(data)
             .setData(uri)
@@ -87,7 +89,7 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
             0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE,
         )
-        val builder = NotificationCompat.Builder(applicationContext, channelId ?: "default")
+        val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_gem_notification)
             .setContentTitle(title)
             .setContentText(subtitle)

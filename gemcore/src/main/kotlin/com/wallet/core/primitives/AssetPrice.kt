@@ -18,8 +18,10 @@ data class AssetMarket (
 	val maxSupply: Double? = null,
 	val allTimeHigh: Double? = null,
 	val allTimeHighDate: SerializedDate? = null,
+	val allTimeHighChangePercentage: Double? = null,
 	val allTimeLow: Double? = null,
-	val allTimeLowDate: SerializedDate? = null
+	val allTimeLowDate: SerializedDate? = null,
+	val allTimeLowChangePercentage: Double? = null
 )
 
 @Serializable

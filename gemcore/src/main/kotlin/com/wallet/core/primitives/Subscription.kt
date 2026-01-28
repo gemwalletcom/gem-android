@@ -17,7 +17,7 @@ data class Subscription (
 @Serializable
 data class WalletSubscription (
 	val wallet_id: String,
-	val source: WalletSource,
+	val source: WalletSource? = null,
 	val subscriptions: List<ChainAddress>
 )
 

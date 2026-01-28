@@ -8,17 +8,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class Notification (
-	val wallet_id: String,
-	val notification_type: NotificationType,
-	val is_read: Boolean,
-	val metadata: String?? = null,
-	val created_at: SerializedDate,
-)
-
-@Serializable
-data class NotificationRewardsMetadata (
-	val username: String,
-	val points: Int
+data class InAppNotification (
+	val walletId: String,
+	val readAt: SerializedDate? = null,
+	val createdAt: SerializedDate,
+	val item: CoreListItem
 )
 

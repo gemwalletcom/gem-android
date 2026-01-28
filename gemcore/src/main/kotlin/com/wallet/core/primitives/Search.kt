@@ -10,7 +10,7 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class SearchResponse (
 	val assets: List<AssetBasic>,
-	val perpetuals: List<Perpetual>,
+	val perpetuals: List<PerpetualSearchData>,
 	val nfts: List<NFTCollection>
 )
 

@@ -65,7 +65,9 @@ class TokensRepository (
             isBuyable = false,
             isSellable = false,
             isSwapable = false,
-            isStakeable = false
+            isStakeable = false,
+            isEarnable = false,
+            hasImage = true,
         ))
         .toRecord()
         runCatching { assetsDao.insert(record) }

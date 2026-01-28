@@ -18,6 +18,7 @@ enum class WalletSource(val string: String) {
 @Serializable
 data class Wallet (
 	val id: String,
+	val externalId: String? = null,
 	val name: String,
 	val index: Int,
 	val type: WalletType,

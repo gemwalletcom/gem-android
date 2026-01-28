@@ -34,6 +34,8 @@ data class RewardRedemptionOption (
 enum class RedemptionStatus(val string: String) {
 	@SerialName("pending")
 	Pending("pending"),
+	@SerialName("processing")
+	Processing("processing"),
 	@SerialName("completed")
 	Completed("completed"),
 	@SerialName("failed")
@@ -113,6 +115,8 @@ enum class RewardEventType(val string: String) {
 	Joined("joined"),
 	@SerialName("disabled")
 	Disabled("disabled"),
+	@SerialName("redeemed")
+	Redeemed("redeemed"),
 }
 
 @Serializable

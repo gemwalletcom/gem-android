@@ -12,6 +12,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.GemGateway
+import kotlin.Boolean
+import kotlin.Double
 
 class TokenService(
     private val gateway: GemGateway,
@@ -41,7 +43,9 @@ class TokenService(
                     isBuyable = false,
                     isSellable = false,
                     isSwapable = false,
-                    isStakeable = false
+                    isStakeable = false,
+                    isEarnable = false,
+                    hasImage = true,
                 )
             )
         }

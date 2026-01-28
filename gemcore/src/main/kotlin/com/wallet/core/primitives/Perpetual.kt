@@ -132,6 +132,12 @@ data class PerpetualReduceData (
 )
 
 @Serializable
+data class PerpetualSearchData (
+	val perpetual: Perpetual,
+	val asset: Asset
+)
+
+@Serializable
 data class TPSLOrderData (
 	val direction: PerpetualDirection,
 	val takeProfit: String? = null,

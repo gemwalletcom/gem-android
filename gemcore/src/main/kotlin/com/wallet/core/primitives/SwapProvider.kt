@@ -17,8 +17,8 @@ enum class SwapProvider(val string: String) {
 	PancakeswapV3("pancakeswap_v3"),
 	@SerialName("aerodrome")
 	Aerodrome("aerodrome"),
-	@SerialName("pancakeswap_aptos_v2")
-	PancakeswapAptosV2("pancakeswap_aptos_v2"),
+	@SerialName("panora")
+	Panora("panora"),
 	@SerialName("thorchain")
 	Thorchain("thorchain"),
 	@SerialName("jupiter")
@@ -35,8 +35,6 @@ enum class SwapProvider(val string: String) {
 	StonfiV2("stonfi_v2"),
 	@SerialName("mayan")
 	Mayan("mayan"),
-	@SerialName("reservoir")
-	Reservoir("reservoir"),
 	@SerialName("chainflip")
 	Chainflip("chainflip"),
 	@SerialName("near_intents")

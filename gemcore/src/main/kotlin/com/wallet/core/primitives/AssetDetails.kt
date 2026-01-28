@@ -14,14 +14,18 @@ data class AssetProperties (
 	val isSellable: Boolean,
 	val isSwapable: Boolean,
 	val isStakeable: Boolean,
-	val stakingApr: Double? = null
+	val stakingApr: Double? = null,
+	val isEarnable: Boolean,
+	val earnApr: Double? = null,
+	val hasImage: Boolean
 )
 
 @Serializable
 data class AssetBasic (
 	val asset: Asset,
 	val properties: AssetProperties,
-	val score: AssetScore
+	val score: AssetScore,
+	val price: Price? = null
 )
 
 @Serializable
