@@ -20,6 +20,7 @@ sealed interface PushNotificationData {
     @Serializable
     data class Transaction (
         val walletIndex: Int,
+        val walletId: String,
         val assetId: String,
         val transactionId: String,
     ): PushNotificationData

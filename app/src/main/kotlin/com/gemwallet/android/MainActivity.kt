@@ -396,8 +396,15 @@ class MainViewModel @Inject constructor(
     }
 
 
-    suspend fun onWallet(walletIndex: Int) {
-        walletIndex.takeIf { it > 0 }?.let { walletIndex ->
+    suspend fun onWallet(walletIndex: Int, walletId: String) {
+        walletId.takeIf { it.isNotEmpty() }?.let { walletId ->
+            if (sessionRepository.session().firstOrNull()?.wallet?.id != walletId) {
+                walletsRepository.getAll().firstOrNull()?.firstOrNull { it.id == walletId }?.let {
+                    sessionRepository.setWallet(it)
+                }
+            }
+        }
+        walletIndex.takeIf { it > 0 }?.let { walletIndex -> // TODO: WalletID Migration remove when back will ready
             if (sessionRepository.session().firstOrNull()?.wallet?.index != walletIndex) {
                 walletsRepository.getAll().firstOrNull()?.firstOrNull { it.index == walletIndex }?.let {
                     sessionRepository.setWallet(it)
@@ -407,10 +414,14 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleIntent(intent: Intent) = viewModelScope.launch(Dispatchers.IO) {
-        //Handle push notification if app in background or unloaded
-        val intent = if (intent.hasExtra("walletIndex")) {
+        // Handle push notification if app in background or unloaded
+        val intent = if (intent.hasExtra("walletId")) {
+            val walletId = intent.getStringExtra("walletId") ?: ""
+            onWallet(-1, walletId)
+            intent
+        } else if (intent.hasExtra("walletIndex")) { // TODO: WalletID Migration remove when back will ready
             val walletIndex = intent.getIntExtra("walletIndex", -1)
-            onWallet(walletIndex)
+            onWallet(walletIndex, "")
             intent
         } else if (intent.extras != null) {
             val data = parseNotificationData(intent.getStringExtra("type"), intent.getStringExtra("data"))
@@ -425,7 +436,7 @@ class MainViewModel @Inject constructor(
                     }
 
                     is PushNotificationData.Transaction -> {
-                        onWallet(data.walletIndex)
+                        onWallet(data.walletIndex, data.walletId)
                         Intent().apply {
                             setData("$assetRouteUri/${data.assetId}".toUri())
                         }
