@@ -1,16 +1,23 @@
 package com.gemwallet.features.settings.price_alerts.presents
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,8 +53,10 @@ import com.gemwallet.android.ui.components.list_item.SwipeableItemWithActions
 import com.gemwallet.android.ui.components.list_item.SwitchProperty
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.headerIconSize
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingLarge
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,7 +117,7 @@ fun PriceAlertScene(
                         )
                     }
                 }
-                emptyAlertingAssets(data.isEmpty())
+                emptyAlertingAssets(data.values.flatten().isEmpty())
                 assets(
                     reveable = reveable,
                     data = data,
@@ -126,14 +135,34 @@ private fun LazyListScope.emptyAlertingAssets(empty: Boolean) {
         return
     }
     item {
-        Spacer16()
-        Spacer16()
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.price_alerts_state_empty_title),
-            textAlign = TextAlign.Center,
-        )
-        Spacer16()
+        Box(modifier = Modifier.fillMaxWidth().fillParentMaxHeight(0.7f)) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(paddingHalfSmall),
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(headerIconSize)
+                        .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f), CircleShape)
+                        .padding(paddingSmall),
+                    imageVector = Icons.Default.Notifications,
+                    tint = MaterialTheme.colorScheme.secondary,
+                    contentDescription = ""
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.price_alerts_state_empty_title),
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.secondary,
+                    text = stringResource(R.string.price_alerts_state_empty_description),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }
 
