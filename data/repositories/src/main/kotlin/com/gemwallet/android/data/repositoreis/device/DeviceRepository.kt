@@ -45,6 +45,7 @@ import java.util.Locale
 import java.util.UUID
 import kotlin.collections.contains
 import kotlin.math.max
+import retrofit2.HttpException
 
 class DeviceRepository(
     private val context: Context,
@@ -216,14 +217,39 @@ class DeviceRepository(
         } catch (_: Throwable) { }
     }
 
+    private suspend fun isDeviceRegisteredLocally(): Boolean {
+        return context.dataStore.data
+            .map { preferences -> preferences[Key.DeviceRegistered] == true }
+            .firstOrNull() ?: false
+    }
+
+    private suspend fun setDeviceRegisteredLocally(registered: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[Key.DeviceRegistered] = registered
+        }
+    }
+
     private suspend fun callRegisterDevice(device: Device) {
         try {
-            val isRegistered = gemApiClient.isDeviceRegistered(device.id)
-            if (!isRegistered) {
-                gemApiClient.registerDevice(device)
-                return
+            val locallyRegistered = isDeviceRegisteredLocally()
+            if (!locallyRegistered) {
+                val isRegistered = gemApiClient.isDeviceRegistered(device.id)
+                if (!isRegistered) {
+                    gemApiClient.registerDevice(device)
+                    setDeviceRegisteredLocally(true)
+                    return
+                }
+                setDeviceRegisteredLocally(true)
             }
-            val remoteDeviceInfo = gemApiClient.getDevice(device.id) ?: return
+            val remoteDeviceInfo = try {
+                gemApiClient.getDevice(device.id)
+            } catch (e: HttpException) {
+                if (e.code() == 404) {
+                    setDeviceRegisteredLocally(false)
+                    return callRegisterDevice(device)
+                }
+                return
+            } ?: return
             if (remoteDeviceInfo.hasChanges(device)) {
                 val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
                 setSubscriptionVersion(subVersion)
@@ -354,6 +380,7 @@ class DeviceRepository(
     private object Key {
         val PushEnabled = booleanPreferencesKey("push_enabled")
         val SupportId = stringPreferencesKey("support-id")
+        val DeviceRegistered = booleanPreferencesKey("device_registered")
     }
 
     companion object {
