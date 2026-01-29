@@ -71,10 +71,10 @@ interface GemApiClient {
     @GET("/v1/fiat/off_ramp/assets")
     suspend fun getOffRampAssets(): FiatAssets
 
-    @GET("/v1/transactions/device/{device_id}")
+    @GET("/v1/devices/{device_id}/wallets/{wallet_id}/transactions")
     suspend fun getTransactions(
         @Path("device_id") deviceId: String,
-        @Query("wallet_index") walletIndex: Int,
+        @Path("wallet_id") walletId: String,
         @Query("from_timestamp") from: Long
     ): List<Transaction>
 
@@ -86,6 +86,9 @@ interface GemApiClient {
 
     @GET("/v1/devices/{device_id}")
     suspend fun getDevice(@Path("device_id") deviceId: String): Device?
+
+    @GET("/v1/devices/{device_id}/is_registered")
+    suspend fun isDeviceRegistered(@Path("device_id") deviceId: String): Boolean
 
     @POST("/v1/support/add_device")
     suspend fun registerSupport(@Body request: NewSupportDevice): SupportDevice
@@ -102,13 +105,13 @@ interface GemApiClient {
     @POST("/v1/subscriptions/{device_id}")
     suspend fun addOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
-    @GET("/v2/subscriptions/{device_id}")
+    @GET("/v1/devices/{device_id}/subscriptions")
     suspend fun getSubscriptions(@Path("device_id") deviceId: String): List<WalletSubscriptionChains>?
 
-    @HTTP(method = "DELETE", path = "/v2/subscriptions/{device_id}", hasBody = true)
+    @HTTP(method = "DELETE", path = "/v1/devices/{device_id}/subscriptions", hasBody = true)
     suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<WalletSubscription>): Int
 
-    @POST("/v2/subscriptions/{device_id}")
+    @POST("/v1/devices/{device_id}/subscriptions")
     suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<WalletSubscription>): Int
 
     @GET("/v1/charts/{asset_id}")
@@ -130,20 +133,20 @@ interface GemApiClient {
         @Query("tags") tags: String,
     ): List<AssetBasic>
 
-    @GET("/v1/assets/device/{device_id}")
-    suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): List<String>
+    @GET("/v1/devices/{device_id}/wallets/{wallet_id}/assets")
+    suspend fun getAssets(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String, @Query("from_timestamp") fromTimestamp: Int = 0): List<String>
 
-    @POST("/v1/price_alerts/{device_id}")
+    @POST("/v1/devices/{device_id}/price_alerts")
     suspend fun includePriceAlert(@Path("device_id") deviceId: String, @Body alerts: List<PriceAlert>): String
 
-    @HTTP(method = "DELETE", path = "/v1/price_alerts/{device_id}", hasBody = true)
+    @HTTP(method = "DELETE", path = "/v1/devices/{device_id}/price_alerts", hasBody = true)
     suspend fun excludePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): String
 
-    @GET("/v1/price_alerts/{device_id}")
+    @GET("/v1/devices/{device_id}/price_alerts")
     suspend fun getPriceAlerts(@Path("device_id") deviceId: String): List<PriceAlert>
 
-    @GET("/v2/nft/assets/device/{device_id}")
-    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): List<NFTData>
+    @GET("/v1/devices/{device_id}/wallets/{wallet_id}/nft_assets")
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String): List<NFTData>
 
     @POST("/v2/scan/transaction")
     suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): ScanTransaction

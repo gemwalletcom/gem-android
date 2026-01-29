@@ -217,22 +217,20 @@ class DeviceRepository(
     }
 
     private suspend fun callRegisterDevice(device: Device) {
-        val remoteDeviceInfo = try {
-            gemApiClient.getDevice(device.id)
-        } catch (_: Throwable) {
-            null
-        }
         try {
-            when {
-                remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
-                remoteDeviceInfo.hasChanges(device) -> {
-                    val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
-                    setSubscriptionVersion(subVersion)
-                    gemApiClient.updateDevice(
-                        device.id,
-                        device.copy(subscriptionsVersion = subVersion)
-                    )
-                }
+            val isRegistered = gemApiClient.isDeviceRegistered(device.id)
+            if (!isRegistered) {
+                gemApiClient.registerDevice(device)
+                return
+            }
+            val remoteDeviceInfo = gemApiClient.getDevice(device.id) ?: return
+            if (remoteDeviceInfo.hasChanges(device)) {
+                val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
+                setSubscriptionVersion(subVersion)
+                gemApiClient.updateDevice(
+                    device.id,
+                    device.copy(subscriptionsVersion = subVersion)
+                )
             }
         } catch (_: Throwable) { }
     }

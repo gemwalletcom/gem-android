@@ -24,7 +24,7 @@ class SyncTransactionsService @Inject constructor(
         val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000L
         val response = runCatching {
             val result: List<Transaction>? = try {
-                gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime)
+                gemApiClient.getTransactions(deviceId, wallet.id, lastSyncTime)
             } catch (_: Throwable) {
                 null
             }
