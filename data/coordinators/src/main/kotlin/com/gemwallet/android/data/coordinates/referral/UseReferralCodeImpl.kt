@@ -20,11 +20,13 @@ class UseReferralCodeImpl(
 ) : UseReferralCode {
 
 
-    override suspend fun useReferralCode(code: String, wallet: Wallet): Boolean {
+    override suspend fun useReferralCode(code: String, wallet: Wallet, deviceId: String): Boolean {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
         val auth = getAuthPayload.getAuthPayload(wallet, account.chain)
         return try {
             gemApiClient.useReferralCode(
+                deviceId = deviceId,
+                walletId = wallet.id,
                 body = AuthenticatedRequest(
                     auth = auth,
                     data = ReferralCode(code)

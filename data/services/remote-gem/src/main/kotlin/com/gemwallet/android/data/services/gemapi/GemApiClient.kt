@@ -18,7 +18,8 @@ import com.wallet.core.primitives.FiatQuoteUrlRequest
 import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
-import com.wallet.core.primitives.NewSupportDevice
+import com.wallet.core.primitives.ReferralLeaderboard
+import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.RedemptionRequest
 import com.wallet.core.primitives.RedemptionResult
@@ -29,6 +30,7 @@ import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SupportDevice
+import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.WalletSubscription
 import com.wallet.core.primitives.WalletSubscriptionChains
 import retrofit2.http.Body
@@ -90,8 +92,8 @@ interface GemApiClient {
     @GET("/v1/devices/{device_id}/is_registered")
     suspend fun isDeviceRegistered(@Path("device_id") deviceId: String): Boolean
 
-    @POST("/v1/support/add_device")
-    suspend fun registerSupport(@Body request: NewSupportDevice): SupportDevice
+    @POST("/v1/devices/{device_id}/support")
+    suspend fun registerSupport(@Path("device_id") deviceId: String, @Body request: SupportDeviceRequest): SupportDevice
 
     @PUT("/v1/devices/{device_id}")
     suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device
@@ -154,15 +156,24 @@ interface GemApiClient {
     @GET("/v1/devices/{device_id}/auth/nonce")
     suspend fun getAuthNonce(@Path("device_id")deviceId: String): AuthNonce
 
-    @GET("/v1/rewards/{address}")
-    suspend fun getRewards(@Path("address") address: String): Rewards
+    @GET("/v1/devices/{device_id}/wallets/{wallet_id}/rewards")
+    suspend fun getRewards(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String): Rewards
 
-    @POST("/v1/rewards/referrals/create")
-    suspend fun createReferral(@Body body: AuthenticatedRequest<ReferralCode>): Rewards
+    @GET("/v1/devices/{device_id}/wallets/{wallet_id}/rewards/events")
+    suspend fun getRewardsEvents(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String): List<RewardEvent>
 
-    @POST("/v1/rewards/referrals/use")
-    suspend fun useReferralCode(@Body body: AuthenticatedRequest<ReferralCode>): List<RewardEvent>
+    @GET("/v1/devices/{device_id}/rewards/leaderboard")
+    suspend fun getRewardsLeaderboard(@Path("device_id") deviceId: String): ReferralLeaderboard
 
-    @POST("/v1/rewards/{address}/redeem")
-    suspend fun redeem(@Path("address") address: String, @Body request: AuthenticatedRequest<RedemptionRequest>): RedemptionResult
+    @GET("/v1/devices/{device_id}/rewards/redemptions/{code}")
+    suspend fun getRedemptionOption(@Path("device_id") deviceId: String, @Path("code") code: String): RewardRedemptionOption
+
+    @POST("/v1/devices/{device_id}/wallets/{wallet_id}/rewards/referrals/create")
+    suspend fun createReferral(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String, @Body body: AuthenticatedRequest<ReferralCode>): Rewards
+
+    @POST("/v1/devices/{device_id}/wallets/{wallet_id}/rewards/referrals/use")
+    suspend fun useReferralCode(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String, @Body body: AuthenticatedRequest<ReferralCode>): List<RewardEvent>
+
+    @POST("/v1/devices/{device_id}/wallets/{wallet_id}/rewards/redeem")
+    suspend fun redeem(@Path("device_id") deviceId: String, @Path("wallet_id") walletId: String, @Body request: AuthenticatedRequest<RedemptionRequest>): RedemptionResult
 }

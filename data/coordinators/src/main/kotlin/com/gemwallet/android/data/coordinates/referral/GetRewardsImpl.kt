@@ -8,8 +8,8 @@ import com.wallet.core.primitives.Rewards
 class GetRewardsImpl(
     private val gemApiClient: GemApiClient,
 ) : GetRewards {
-    override suspend fun getRewards(address: String): Rewards {
-        val response = gemApiClient.getRewards(address)
+    override suspend fun getRewards(deviceId: String, walletId: String): Rewards {
+        val response = gemApiClient.getRewards(deviceId, walletId)
         if (response.code == null) {
             throw ReferralError.NotCreated
         }

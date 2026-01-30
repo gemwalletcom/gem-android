@@ -29,7 +29,7 @@ class RedeemImpl(
     private val assetsRepository: AssetsRepository,
 ) : Redeem {
 
-    override suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption): RedemptionResult {
+    override suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption, deviceId: String): RedemptionResult {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
         val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
         if (rewards.points < option.points) {
@@ -37,7 +37,8 @@ class RedeemImpl(
         }
         return try {
             val result = gemApiClient.redeem(
-                address = account.address,
+                deviceId = deviceId,
+                walletId = wallet.id,
                 request = AuthenticatedRequest(
                     auth = authPayload,
                     data = RedemptionRequest(option.id)

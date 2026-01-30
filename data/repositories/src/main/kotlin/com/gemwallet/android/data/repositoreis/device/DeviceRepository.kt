@@ -24,7 +24,7 @@ import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
-import com.wallet.core.primitives.NewSupportDevice
+import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
 import com.wallet.core.primitives.Subscription
@@ -208,9 +208,9 @@ class DeviceRepository(
         val supportId = UUID.randomUUID().toString().substring(0, 31)
         try {
             gemApiClient.registerSupport(
-                NewSupportDevice(
+                deviceId = getDeviceId.getDeviceId(),
+                request = SupportDeviceRequest(
                     supportDeviceId = supportId,
-                    deviceId = getDeviceId.getDeviceId(),
                 )
             )
             context.dataStore.edit { it[Key.SupportId] = supportId }

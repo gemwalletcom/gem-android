@@ -21,12 +21,14 @@ class CreateReferralImpl(
 ) : CreateReferral {
 
 
-    override suspend fun createReferral(code: String, wallet: Wallet): Rewards {
+    override suspend fun createReferral(code: String, wallet: Wallet, deviceId: String): Rewards {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
         val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
         return try {
             gemApiClient.createReferral(
-                AuthenticatedRequest(
+                deviceId = deviceId,
+                walletId = wallet.id,
+                body = AuthenticatedRequest(
                     auth = authPayload,
                     data = ReferralCode(
                         code = code

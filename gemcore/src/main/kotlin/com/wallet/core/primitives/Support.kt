@@ -19,3 +19,8 @@ data class SupportDevice (
 	val unread: Int
 )
 
+@Serializable
+data class SupportDeviceRequest (
+	val supportDeviceId: String
+)
+
