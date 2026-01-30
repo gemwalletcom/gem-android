@@ -51,9 +51,9 @@ class PreferencePasswordStore(
             return data.decodeHex()
         } catch (_: Throwable) {}
 
-        val deviceKey = HDWallet(128, "").getMasterKey(Curve.CURVE25519)
+        val deviceKey = HDWallet(128, "").getMasterKey(Curve.ED25519)
         putPassword(Keys.DevicePrivateKey.key, deviceKey.data().toHexString())
-        putPassword(Keys.DevicePublicKey.key, deviceKey.publicKeyCurve25519.data().toHexString())
+        putPassword(Keys.DevicePublicKey.key, deviceKey.publicKeyEd25519.data().toHexString())
         return deviceKey.data()
     }
 

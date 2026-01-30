@@ -25,10 +25,10 @@ class SecurityInterceptor(
             it.writeTo(buffer)
             val data = buffer.readUtf8()
             Hash.sha256(data.toByteArray())
-        }?.toHexString() ?: ""
+        }?.toHexString("") ?: ""
         val time = System.currentTimeMillis()
         val message = "v1.${time}.${method}.${path}.${body}"
-        val signature = Base64.encode(privateKey.sign(message.toByteArray(), Curve.CURVE25519))
+        val signature = Base64.encode(privateKey.sign(message.toByteArray(), Curve.ED25519))
         return chain.proceed(
             request.newBuilder()
                 .header("x-device-signature", signature)
