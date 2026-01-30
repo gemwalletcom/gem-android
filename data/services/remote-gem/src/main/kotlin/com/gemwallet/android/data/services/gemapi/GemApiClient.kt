@@ -98,13 +98,13 @@ interface GemApiClient {
     @PUT("/v1/devices/{device_id}")
     suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device
 
-    @GET("/v1/device/{device_id}/subscriptions")
+    @GET("/v1/subscriptions/{device_id}")
     suspend fun getOldSubscriptions(@Path("device_id") deviceId: String): List<Subscription>?
 
-    @HTTP(method = "DELETE", path = "/v1/device/{device_id}/subscriptions", hasBody = true)
+    @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
     suspend fun deleteOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
-    @POST("/v1/device/{device_id}/subscriptions")
+    @POST("/v1/subscriptions/{device_id}")
     suspend fun addOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
     @GET("/v1/devices/{device_id}/subscriptions")

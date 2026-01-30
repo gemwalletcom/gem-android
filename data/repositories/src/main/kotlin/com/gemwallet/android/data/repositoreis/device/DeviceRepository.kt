@@ -25,10 +25,10 @@ import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
-import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
 import com.wallet.core.primitives.Subscription
+import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletSubscription
@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 import wallet.core.jni.AnyAddress
 import java.util.Locale
 import java.util.UUID
-import kotlin.collections.contains
 import kotlin.math.max
 
 class DeviceRepository(
@@ -75,21 +74,9 @@ class DeviceRepository(
         coroutineScope.launch {
             passwordStore.getDevicePrivateKey()
 
-            migration()
-
             syncDeviceInfo()
 
             syncSupportInfo()
-        }
-    }
-
-    private suspend fun migration() {
-        val hasNewValue = context.dataStore.data
-            .map { preferences -> preferences[Key.PushEnabled] }.firstOrNull() != null
-        if (!hasNewValue) {
-            context.dataStore.edit { preferences ->
-                preferences[Key.PushEnabled] = configStore.getBoolean(ConfigKey.PushEnabled.string)
-            }
         }
     }
 
@@ -135,8 +122,10 @@ class DeviceRepository(
         context.dataStore.edit { preferences ->
             preferences[Key.PushEnabled] = enabled
         }
-        syncDeviceInfo()
-        syncSubscription(wallets)
+        try {
+            syncDeviceInfo()
+            syncSubscription(wallets)
+        } catch (_: Throwable) {}
     }
 
     override fun getPushEnabled(): Flow<Boolean> = context.dataStore.data
