@@ -7,18 +7,17 @@ ARG ANDROID_API_LEVEL=35
 ARG ANDROID_BUILD_TOOLS_VERSION=35.0.0
 ARG ANDROID_NDK_VERSION=28.1.13356709
 ARG JUST_VERSION=1.45.0
-ARG JUST_TARGET=x86_64-unknown-linux-musl
 
 FROM ${GRADLE_IMAGE}
 
 USER root
 
+ARG TARGETARCH
 ARG CMDLINE_TOOLS_VERSION
 ARG ANDROID_API_LEVEL
 ARG ANDROID_BUILD_TOOLS_VERSION
 ARG ANDROID_NDK_VERSION
 ARG JUST_VERSION
-ARG JUST_TARGET
 
 ENV HOME=/root
 ENV ANDROID_HOME=/opt/android-sdk
@@ -27,18 +26,23 @@ ENV ANDROID_SDK_URL=https://dl.google.com/android/repository/commandlinetools-li
 ENV PATH=${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
 # Runtime deps for build-tools/aapt2.
-RUN dpkg --add-architecture amd64 && \
+RUN DPKG_ARCH=$(dpkg --print-architecture) && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    libc6:amd64 \
-    libstdc++6:amd64 \
-    zlib1g:amd64 \
-    libtinfo6:amd64 \
+    libc6:${DPKG_ARCH} \
+    libstdc++6:${DPKG_ARCH} \
+    zlib1g:${DPKG_ARCH} \
+    libtinfo6:${DPKG_ARCH} \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Install just from a pinned release.
-RUN curl -fL \
+RUN case ${TARGETARCH} in \
+        amd64) JUST_TARGET="x86_64-unknown-linux-musl" ;; \
+        arm64) JUST_TARGET="aarch64-unknown-linux-musl" ;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    curl -fL \
         "https://github.com/casey/just/releases/download/${JUST_VERSION}/just-${JUST_VERSION}-${JUST_TARGET}.tar.gz" \
         -o /tmp/just.tar.gz && \
     tar -xzf /tmp/just.tar.gz -C /tmp && \

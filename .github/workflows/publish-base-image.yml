@@ -45,7 +45,7 @@ jobs:
           docker buildx build \
             --pull \
             --no-cache \
-            --platform linux/amd64 \
+            --platform linux/amd64,linux/arm64 \
             -t ${BASE_IMAGE_FULL_NAME}:${BASE_TAG} \
             -t ${BASE_IMAGE_FULL_NAME}:latest \
             --push \
