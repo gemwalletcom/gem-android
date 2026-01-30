@@ -1,9 +1,11 @@
 package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
+import android.os.Build
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.data.services.gemapi.Mime
+import com.gemwallet.android.model.BuildInfo
 import com.gemwallet.android.serializer.jsonEncoder
 import dagger.Module
 import dagger.Provides
@@ -25,7 +27,10 @@ object ClientsModule {
 
     @Provides
     @Singleton
-    fun provideGemHttpClient(@ApplicationContext context: Context,): OkHttpClient = OkHttpClient
+    fun provideGemHttpClient(
+        @ApplicationContext context: Context,
+        buildInfo: BuildInfo,
+    ): OkHttpClient = OkHttpClient
         .Builder()
         .connectionPool(ConnectionPool(32, 5, TimeUnit.MINUTES))
         .cache(Cache(context.cacheDir, 10 * 1024 * 1024))
@@ -39,10 +44,11 @@ object ClientsModule {
             chain.proceed(
                 chain.request()
                     .newBuilder()
-                    .header("User-Agent", "Gem/Android")
+                    .header("User-Agent", "Gem/Android(${Build.VERSION.RELEASE}); Version: ${buildInfo.versionName}; Platform: ${buildInfo.platformStore};")
                     .build()
             )
         }
+        .addNetworkInterceptor {  }
         .build()
 
     @Provides
