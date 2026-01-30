@@ -24,19 +24,27 @@ concurrency:
 jobs:
   verify:
     name: Verify APK
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 360
     permissions:
       contents: read
       packages: read
     env:
       DOCKER_BUILDKIT: 1
+      DOCKER_DEFAULT_PLATFORM: linux/arm64
       VERIFY_BASE_IMAGE: ghcr.io/${{ github.repository_owner }}/gem-android-base
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Install Docker (Colima)
+        run: |
+          brew install docker docker-buildx colima
+          mkdir -p ~/.docker/cli-plugins
+          ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
+          colima start --cpu 4 --memory 8 --arch aarch64
 
       - name: Read base image tag (default)
         id: base_tag
