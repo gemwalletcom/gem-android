@@ -14,7 +14,7 @@ class SecurityInterceptor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val privateKey = getPrivateKey()
+        val privateKey = PrivateKey(passwordStore.getDevicePrivateKey())
         val request = chain.request()
         val method = request.method
         val path = request.url.encodedPath
@@ -25,19 +25,9 @@ class SecurityInterceptor(
         return chain.proceed(
             request.newBuilder()
                 .header("x-device-signature", signature)
-                .header("x-device-timestamp", time.toHexString())
+                .header("x-device-timestamp", time.toString())
                 .header("x-device-body-hash", bodyHash)
                 .build()
         )
-    }
-
-    private fun getPrivateKey(): PrivateKey {
-        try {
-            val data = passwordStore.getPassword("gem_api_pk")
-            return PrivateKey(data.decodeHex())
-        } catch (_: Throwable) {}
-        val deviceKey = HDWallet(128, "").getMasterKey(Curve.CURVE25519)
-        passwordStore.putPassword("gem_api_pk", deviceKey.data().toHexString())
-        return deviceKey
     }
 }

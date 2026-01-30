@@ -121,7 +121,8 @@ private fun PerpetualPositionScenePreview() {
             high = basePrice + variance + 300.0,
             low = basePrice + variance - 200.0,
             close = basePrice + variance + 100.0,
-            volume = 500000000.0 + (index * 10000000.0)
+            volume = 500000000.0 + (index * 10000000.0),
+            interval = "1h",
         )
     }
 

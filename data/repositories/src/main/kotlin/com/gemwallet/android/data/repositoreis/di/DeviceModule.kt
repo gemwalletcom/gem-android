@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
@@ -41,10 +42,12 @@ object DeviceModule {
         getDeviceId: GetDeviceId,
         priceAlertRepository: PriceAlertRepository,
         getCurrentCurrencyCase: GetCurrentCurrencyCase,
+        passwordStore: PasswordStore,
     ): DeviceRepository {
         return DeviceRepository(
             context = context,
             gemApiClient = gemApiClient,
+            passwordStore = passwordStore,
             configStore = ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)),
             requestPushToken = buildInfo.requestPushToken,
             platformStore = buildInfo.platformStore,

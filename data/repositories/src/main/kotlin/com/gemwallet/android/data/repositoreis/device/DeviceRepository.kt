@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
@@ -49,6 +50,7 @@ import kotlin.math.max
 class DeviceRepository(
     private val context: Context,
     private val gemApiClient: GemApiClient,
+    private val passwordStore: PasswordStore,
     private val configStore: ConfigStore,
     private val requestPushToken: RequestPushToken,
     private val platformStore: PlatformStore,
@@ -71,6 +73,8 @@ class DeviceRepository(
 
     init {
         coroutineScope.launch {
+            passwordStore.getDevicePrivateKey()
+
             migration()
 
             syncDeviceInfo()
@@ -106,6 +110,9 @@ class DeviceRepository(
             version = versionName,
             currency = getCurrentCurrencyCase.getCurrentCurrency().string,
             subscriptionsVersion = getSubscriptionVersion(),
+            publicKey = try {
+                passwordStore.getPassword(PasswordStore.Keys.DevicePublicKey.key)
+            } catch (_: Throwable) { "" }
         )
         if (pushEnabled && pushToken.isEmpty()) {
             requestPushToken.requestToken { pushToken ->

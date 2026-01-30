@@ -10,6 +10,7 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class ChartCandleStick (
 	val date: SerializedDate,
+	val interval: String,
 	val open: Double,
 	val high: Double,
 	val low: Double,

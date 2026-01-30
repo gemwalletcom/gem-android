@@ -33,6 +33,10 @@ class TinkPasswordStore(
         TODO("Not yet implemented")
     }
 
+    override fun getDevicePrivateKey(): ByteArray {
+        TODO("Not yet implemented")
+    }
+
     @Throws(GeneralSecurityException::class)
     private fun store(): Aead {
         val keysetHandle = AndroidKeysetManager.Builder()

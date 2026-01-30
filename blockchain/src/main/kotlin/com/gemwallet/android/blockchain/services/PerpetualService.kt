@@ -140,6 +140,7 @@ fun GemChartCandleStick.toDTO(): ChartCandleStick {
         low = low,
         close = close,
         volume = volume,
+        interval = "" // TODO: In
     )
 }
 
