@@ -89,7 +89,7 @@ class SwapRepository(
             data = permit2Single,
             contract = permit.permit2Contract
         )
-        val key = loadPrivateKeyOperator.invoke(wallet, chain, passwordStore.getPassword(walletId = wallet.id))
+        val key = loadPrivateKeyOperator.invoke(wallet, chain, passwordStore.getPassword(key = wallet.id))
         val signature = try {
             signClient.signTypedMessage(
                 chain = chain,

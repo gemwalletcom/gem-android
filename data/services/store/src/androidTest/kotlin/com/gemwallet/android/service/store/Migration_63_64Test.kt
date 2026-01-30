@@ -374,22 +374,22 @@ class Migration_63_64Test {
     private class TestPasswordStore : PasswordStore {
         private val passwords = mutableMapOf<String, String>()
 
-        override fun createPassword(walletId: String): String {
-            val password = "generated_password_$walletId"
-            passwords[walletId] = password
+        override fun createPassword(key: String): String {
+            val password = "generated_password_$key"
+            passwords[key] = password
             return password
         }
 
-        override fun getPassword(walletId: String): String {
-            return passwords[walletId] ?: ""
+        override fun getPassword(key: String): String {
+            return passwords[key] ?: ""
         }
 
-        override fun putPassword(walletId: String, password: String) {
-            passwords[walletId] = password
+        override fun putPassword(key: String, password: String) {
+            passwords[key] = password
         }
 
-        override fun removePassword(walletId: String): Boolean {
-            return passwords.remove(walletId) != null
+        override fun removePassword(key: String): Boolean {
+            return passwords.remove(key) != null
         }
     }
 }

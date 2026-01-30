@@ -2,9 +2,11 @@ package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
 import android.os.Build
+import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.data.services.gemapi.Mime
+import com.gemwallet.android.data.services.gemapi.http.SecurityInterceptor
 import com.gemwallet.android.model.BuildInfo
 import com.gemwallet.android.serializer.jsonEncoder
 import dagger.Module
@@ -30,6 +32,7 @@ object ClientsModule {
     fun provideGemHttpClient(
         @ApplicationContext context: Context,
         buildInfo: BuildInfo,
+        passwordStore: PasswordStore,
     ): OkHttpClient = OkHttpClient
         .Builder()
         .connectionPool(ConnectionPool(32, 5, TimeUnit.MINUTES))
@@ -48,7 +51,7 @@ object ClientsModule {
                     .build()
             )
         }
-        .addNetworkInterceptor {  }
+        .addNetworkInterceptor(SecurityInterceptor(passwordStore))
         .build()
 
     @Provides

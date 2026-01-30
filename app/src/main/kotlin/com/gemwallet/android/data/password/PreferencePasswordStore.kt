@@ -25,19 +25,19 @@ class PreferencePasswordStore(
         return key.toHexString()
     }
 
-    override fun removePassword(walletId: String): Boolean =
-        getStore().edit().remove(walletId).commit()
+    override fun removePassword(key: String): Boolean =
+        getStore().edit().remove(key).commit()
 
-    override fun getPassword(walletId: String): String {
-        val password = getStore().getString(walletId, null)
+    override fun getPassword(key: String): String {
+        val password = getStore().getString(key, null)
             ?: throw IllegalAccessError("Password doesn't found")
 
         return password
     }
 
-    override fun putPassword(walletId: String, password: String) {
+    override fun putPassword(key: String, password: String) {
         getStore().edit(commit = true) {
-            putString(walletId, password)
+            putString(key, password)
         }
     }
 

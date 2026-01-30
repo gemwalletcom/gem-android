@@ -18,13 +18,13 @@ import com.wallet.core.primitives.FiatQuoteUrlRequest
 import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
-import com.wallet.core.primitives.ReferralLeaderboard
-import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.RedemptionRequest
 import com.wallet.core.primitives.RedemptionResult
 import com.wallet.core.primitives.ReferralCode
+import com.wallet.core.primitives.ReferralLeaderboard
 import com.wallet.core.primitives.RewardEvent
+import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
@@ -98,13 +98,13 @@ interface GemApiClient {
     @PUT("/v1/devices/{device_id}")
     suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device
 
-    @GET("/v1/subscriptions/{device_id}")
+    @GET("/v1/device/{device_id}/subscriptions")
     suspend fun getOldSubscriptions(@Path("device_id") deviceId: String): List<Subscription>?
 
-    @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
+    @HTTP(method = "DELETE", path = "/v1/device/{device_id}/subscriptions", hasBody = true)
     suspend fun deleteOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
-    @POST("/v1/subscriptions/{device_id}")
+    @POST("/v1/device/{device_id}/subscriptions")
     suspend fun addOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
     @GET("/v1/devices/{device_id}/subscriptions")

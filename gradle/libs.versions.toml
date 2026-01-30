@@ -56,6 +56,8 @@ gemstone = "1.0.2"
 
 glance-widgets = "1.1.1"
 
+tink = "1.20.0"
+
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -150,6 +152,8 @@ androidx-material3-adaptive-android = { group = "androidx.compose.material3", na
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 datastore = { module ="androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
+tink = { module = "com.google.crypto.tink:tink-android", version.ref = "tink"}
 
 # ktor
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }

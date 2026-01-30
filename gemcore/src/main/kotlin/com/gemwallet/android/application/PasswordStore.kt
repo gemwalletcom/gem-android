@@ -1,8 +1,8 @@
 package com.gemwallet.android.application
 
 interface PasswordStore {
-    fun createPassword(walletId: String): String
-    fun removePassword(walletId: String): Boolean
-    fun getPassword(walletId: String): String
-    fun putPassword(walletId: String, password: String)
+    fun createPassword(key: String): String
+    fun removePassword(key: String): Boolean
+    fun getPassword(key: String): String
+    fun putPassword(key: String, password: String)
 }
