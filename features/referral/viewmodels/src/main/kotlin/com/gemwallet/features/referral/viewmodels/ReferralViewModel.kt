@@ -9,10 +9,6 @@ import com.gemwallet.android.application.referral.coordinators.Redeem
 import com.gemwallet.android.application.referral.coordinators.UseReferralCode
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.referralChain
-import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
@@ -35,8 +31,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ReferralViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
-    private val walletsRepository: WalletsRepository,
+    sessionRepository: SessionRepository,
+    walletsRepository: WalletsRepository,
     private val getRewards: GetRewards,
     private val redeem: Redeem,
     private val useReferralCode: UseReferralCode,
@@ -74,10 +70,7 @@ class ReferralViewModel @Inject constructor(
             }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val referralAccount = currentWallet.filterNotNull().mapLatest { wallet ->
-        wallet.getAccount(Chain.referralChain) ?: return@mapLatest null
-    }
-    .filterNotNull()
+    private val referralWallet = currentWallet.filterNotNull()
     .onEach { sync(it, SyncType.Init) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -86,13 +79,13 @@ class ReferralViewModel @Inject constructor(
     }
 
     fun sync() {
-        sync(referralAccount.value ?: return, SyncType.Refresh)
+        sync(referralWallet.value ?: return, SyncType.Refresh)
     }
 
-    private fun sync(account: Account, type: SyncType) = viewModelScope.launch(Dispatchers.IO) {
+    private fun sync(wallet: Wallet, type: SyncType) = viewModelScope.launch(Dispatchers.IO) {
         inSync.update { type }
         val rewards = try {
-            getRewards.getRewards(account.address)
+            getRewards.getRewards(wallet.id)
         } catch (_: Exception) {
             null
         } finally {

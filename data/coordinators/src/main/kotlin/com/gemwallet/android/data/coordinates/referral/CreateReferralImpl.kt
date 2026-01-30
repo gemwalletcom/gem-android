@@ -2,6 +2,7 @@ package com.gemwallet.android.data.coordinates.referral
 
 import com.gemwallet.android.application.GetAuthPayload
 import com.gemwallet.android.application.referral.coordinators.CreateReferral
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.models.ResponseError
 import com.gemwallet.android.domains.referral.values.ReferralError
@@ -17,6 +18,7 @@ import retrofit2.HttpException
 
 class CreateReferralImpl(
     private val gemApiClient: GemApiClient,
+    private val getDeviceId: GetDeviceId,
     private val getAuthPayload: GetAuthPayload
 ) : CreateReferral {
 
@@ -26,7 +28,9 @@ class CreateReferralImpl(
         val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
         return try {
             gemApiClient.createReferral(
-                AuthenticatedRequest(
+                deviceId = getDeviceId.getDeviceId(),
+                walletId = wallet.id,
+                body = AuthenticatedRequest(
                     auth = authPayload,
                     data = ReferralCode(
                         code = code

@@ -24,7 +24,7 @@ import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
-import com.wallet.core.primitives.NewSupportDevice
+import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
 import com.wallet.core.primitives.Subscription
@@ -107,18 +107,15 @@ class DeviceRepository(
             currency = getCurrentCurrencyCase.getCurrentCurrency().string,
             subscriptionsVersion = getSubscriptionVersion(),
         )
-        val register: () -> Unit = {
-            CoroutineScope(Dispatchers.IO).launch {
-                callRegisterDevice(device.copy(token = getPushToken()))
-            }
-        }
         if (pushEnabled && pushToken.isEmpty()) {
             requestPushToken.requestToken { pushToken ->
                 setPushToken(pushToken)
-                register()
+                CoroutineScope(Dispatchers.IO).launch {
+                    handlePushToken(pushToken, device)
+                }
             }
         } else {
-            register()
+            handlePushToken(pushToken, device)
         }
     }
 
@@ -207,34 +204,54 @@ class DeviceRepository(
         val supportId = UUID.randomUUID().toString().substring(0, 31)
         try {
             gemApiClient.registerSupport(
-                NewSupportDevice(
+                deviceId = getDeviceId.getDeviceId(),
+                request = SupportDeviceRequest(
                     supportDeviceId = supportId,
-                    deviceId = getDeviceId.getDeviceId(),
                 )
             )
             context.dataStore.edit { it[Key.SupportId] = supportId }
         } catch (_: Throwable) { }
     }
 
-    private suspend fun callRegisterDevice(device: Device) {
-        val remoteDeviceInfo = try {
-            gemApiClient.getDevice(device.id)
-        } catch (_: Throwable) {
-            null
+    private suspend fun handlePushToken(pushToken: String, device: Device) {
+        val device = device.copy(token = pushToken)
+
+        if (isDeviceRegistered(device.id)) {
+            updateDevice(device)
+        } else {
+            registerDevice(device)
         }
+    }
+
+    private suspend fun isDeviceRegistered(deviceId: String): Boolean {
+        val local = context.dataStore.data.map { it[Key.DeviceRegistered] }.firstOrNull() == true
+        return local || gemApiClient.isDeviceRegistered(deviceId)
+    }
+
+    private suspend fun registerDevice(device: Device) = try {
+        gemApiClient.registerDevice(device)
+        val isRegistered = (gemApiClient.isDeviceRegistered(device.id))
+        setDeviceRegistered(isRegistered)
+    } catch (_: Throwable) {}
+
+    private suspend fun updateDevice(device: Device) {
         try {
-            when {
-                remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
-                remoteDeviceInfo.hasChanges(device) -> {
-                    val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
-                    setSubscriptionVersion(subVersion)
-                    gemApiClient.updateDevice(
-                        device.id,
-                        device.copy(subscriptionsVersion = subVersion)
-                    )
-                }
+            val remote = gemApiClient.getDevice(device.id)
+
+            if (remote?.hasChanges(device) == true) {
+                val subscriptionsVersion = max(device.subscriptionsVersion, remote.subscriptionsVersion) + 1
+                setSubscriptionVersion(subscriptionsVersion)
+                gemApiClient.updateDevice(
+                    deviceId = device.id,
+                    request = device.copy(subscriptionsVersion = subscriptionsVersion)
+                )
+                setDeviceRegistered(true)
             }
         } catch (_: Throwable) { }
+    }
+
+    private suspend fun setDeviceRegistered(isRegistered: Boolean = true) {
+        context.dataStore.edit { it[Key.DeviceRegistered] = isRegistered }
     }
 
     private suspend fun getRemoteSubscriptions(deviceId: String): List<WalletSubscriptionChains> {
@@ -356,6 +373,7 @@ class DeviceRepository(
     private object Key {
         val PushEnabled = booleanPreferencesKey("push_enabled")
         val SupportId = stringPreferencesKey("support-id")
+        val DeviceRegistered = booleanPreferencesKey("device_registered")
     }
 
     companion object {

@@ -310,7 +310,7 @@ class AssetsRepository @Inject constructor(
         }
 
         val availableAssetsId = try {
-            gemApi.getAssets(getDeviceId.getDeviceId(), wallet.index)
+            gemApi.getAssets(deviceId = getDeviceId.getDeviceId(), walletId = wallet.id)
         } catch (_: Throwable) {
             return@launch
         }
