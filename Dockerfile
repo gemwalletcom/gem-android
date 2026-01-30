@@ -37,11 +37,11 @@ RUN DPKG_ARCH=$(dpkg --print-architecture) && \
     && rm -rf /var/lib/apt/lists/*
 
 # Install just from a pinned release.
-RUN case ${TARGETARCH} in \
-        amd64) JUST_TARGET="x86_64-unknown-linux-musl" ;; \
-        arm64) JUST_TARGET="aarch64-unknown-linux-musl" ;; \
-        *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
-    esac && \
+RUN JUST_TARGET=$(case ${TARGETARCH} in \
+        amd64) echo "x86_64-unknown-linux-musl" ;; \
+        arm64) echo "aarch64-unknown-linux-musl" ;; \
+        *) echo "x86_64-unknown-linux-musl" ;; \
+    esac) && \
     curl -fL \
         "https://github.com/casey/just/releases/download/${JUST_VERSION}/just-${JUST_VERSION}-${JUST_TARGET}.tar.gz" \
         -o /tmp/just.tar.gz && \
