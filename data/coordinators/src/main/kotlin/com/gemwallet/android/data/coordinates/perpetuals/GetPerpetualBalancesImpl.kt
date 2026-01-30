@@ -8,6 +8,7 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PerpetualBalance
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
@@ -19,6 +20,7 @@ class GetPerpetualBalancesImpl(
 
     override fun getPerpetualBalance(): Flow<com.gemwallet.android.domains.perpetual.values.PerpetualBalance> {
         return sessionRepository.session().map { it?.wallet?.accounts?.map { it.address } ?: emptyList()}
+            .filter { it.isNotEmpty() }
             .flatMapLatest { perpetualRepository.getBalances(it) }
             .map { items ->
                 items.fold(

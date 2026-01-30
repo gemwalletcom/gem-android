@@ -7,12 +7,8 @@ import com.gemwallet.android.application.referral.coordinators.CreateReferral
 import com.gemwallet.android.application.referral.coordinators.GetRewards
 import com.gemwallet.android.application.referral.coordinators.Redeem
 import com.gemwallet.android.application.referral.coordinators.UseReferralCode
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.referralChain
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
@@ -35,13 +31,12 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ReferralViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
-    private val walletsRepository: WalletsRepository,
+    sessionRepository: SessionRepository,
+    walletsRepository: WalletsRepository,
     private val getRewards: GetRewards,
     private val redeem: Redeem,
     private val useReferralCode: UseReferralCode,
     private val createReferral: CreateReferral,
-    private val getDeviceId: GetDeviceId,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -90,7 +85,7 @@ class ReferralViewModel @Inject constructor(
     private fun sync(wallet: Wallet, type: SyncType) = viewModelScope.launch(Dispatchers.IO) {
         inSync.update { type }
         val rewards = try {
-            getRewards.getRewards(getDeviceId.getDeviceId(), wallet.id)
+            getRewards.getRewards(wallet.id)
         } catch (_: Exception) {
             null
         } finally {
@@ -102,7 +97,7 @@ class ReferralViewModel @Inject constructor(
     fun createReferral(username: String, callback: (Exception?) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         val rewards = try {
             val wallet = currentWallet.value ?: return@launch
-            val response = createReferral.createReferral(username, wallet, getDeviceId.getDeviceId())
+            val response = createReferral.createReferral(username, wallet)
             callback(null)
             response
         } catch (err: Exception) {
@@ -115,7 +110,7 @@ class ReferralViewModel @Inject constructor(
     fun useCode(code: String, callback: (Exception?) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         try {
             val wallet = currentWallet.value ?: return@launch
-            useReferralCode.useReferralCode(code, wallet, getDeviceId.getDeviceId())
+            useReferralCode.useReferralCode(code, wallet)
             callback(null)
         } catch (err: Exception) {
             callback(err)
@@ -127,7 +122,7 @@ class ReferralViewModel @Inject constructor(
         val rewards = rewards.value ?: return
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                redeem.redeem(wallet, rewards, option, getDeviceId.getDeviceId())
+                redeem.redeem(wallet, rewards, option)
                 sync()
                 withContext(Dispatchers.Main) {
                     callback(null)

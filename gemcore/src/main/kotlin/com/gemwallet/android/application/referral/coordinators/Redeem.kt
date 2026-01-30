@@ -6,5 +6,5 @@ import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
 
 interface Redeem {
-    suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption, deviceId: String): RedemptionResult
+    suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption): RedemptionResult
 }

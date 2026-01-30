@@ -3,5 +3,5 @@ package com.gemwallet.android.application.referral.coordinators
 import com.wallet.core.primitives.Rewards
 
 interface GetRewards {
-    suspend fun getRewards(deviceId: String, walletId: String): Rewards
+    suspend fun getRewards(walletId: String): Rewards
 }

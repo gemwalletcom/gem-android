@@ -45,7 +45,6 @@ import java.util.Locale
 import java.util.UUID
 import kotlin.collections.contains
 import kotlin.math.max
-import retrofit2.HttpException
 
 class DeviceRepository(
     private val context: Context,
@@ -108,18 +107,15 @@ class DeviceRepository(
             currency = getCurrentCurrencyCase.getCurrentCurrency().string,
             subscriptionsVersion = getSubscriptionVersion(),
         )
-        val register: () -> Unit = {
-            CoroutineScope(Dispatchers.IO).launch {
-                callRegisterDevice(device.copy(token = getPushToken()))
-            }
-        }
         if (pushEnabled && pushToken.isEmpty()) {
             requestPushToken.requestToken { pushToken ->
                 setPushToken(pushToken)
-                register()
+                CoroutineScope(Dispatchers.IO).launch {
+                    handlePushToken(pushToken, device)
+                }
             }
         } else {
-            register()
+            handlePushToken(pushToken, device)
         }
     }
 
@@ -217,48 +213,45 @@ class DeviceRepository(
         } catch (_: Throwable) { }
     }
 
-    private suspend fun isDeviceRegisteredLocally(): Boolean {
-        return context.dataStore.data
-            .map { preferences -> preferences[Key.DeviceRegistered] == true }
-            .firstOrNull() ?: false
-    }
+    private suspend fun handlePushToken(pushToken: String, device: Device) {
+        val device = device.copy(token = pushToken)
 
-    private suspend fun setDeviceRegisteredLocally(registered: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[Key.DeviceRegistered] = registered
+        if (isDeviceRegistered(device.id)) {
+            updateDevice(device)
+        } else {
+            registerDevice(device)
         }
     }
 
-    private suspend fun callRegisterDevice(device: Device) {
+    private suspend fun isDeviceRegistered(deviceId: String): Boolean {
+        val local = context.dataStore.data.map { it[Key.DeviceRegistered] }.firstOrNull() == true
+        return local || gemApiClient.isDeviceRegistered(deviceId)
+    }
+
+    private suspend fun registerDevice(device: Device) = try {
+        gemApiClient.registerDevice(device)
+        val isRegistered = (gemApiClient.isDeviceRegistered(device.id))
+        setDeviceRegistered(isRegistered)
+    } catch (_: Throwable) {}
+
+    private suspend fun updateDevice(device: Device) {
         try {
-            val locallyRegistered = isDeviceRegisteredLocally()
-            if (!locallyRegistered) {
-                val isRegistered = gemApiClient.isDeviceRegistered(device.id)
-                if (!isRegistered) {
-                    gemApiClient.registerDevice(device)
-                    setDeviceRegisteredLocally(true)
-                    return
-                }
-                setDeviceRegisteredLocally(true)
-            }
-            val remoteDeviceInfo = try {
-                gemApiClient.getDevice(device.id)
-            } catch (e: HttpException) {
-                if (e.code() == 404) {
-                    setDeviceRegisteredLocally(false)
-                    return callRegisterDevice(device)
-                }
-                return
-            } ?: return
-            if (remoteDeviceInfo.hasChanges(device)) {
-                val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
-                setSubscriptionVersion(subVersion)
+            val remote = gemApiClient.getDevice(device.id)
+
+            if (remote?.hasChanges(device) == true) {
+                val subscriptionsVersion = max(device.subscriptionsVersion, remote.subscriptionsVersion) + 1
+                setSubscriptionVersion(subscriptionsVersion)
                 gemApiClient.updateDevice(
-                    device.id,
-                    device.copy(subscriptionsVersion = subVersion)
+                    deviceId = device.id,
+                    request = device.copy(subscriptionsVersion = subscriptionsVersion)
                 )
+                setDeviceRegistered(true)
             }
         } catch (_: Throwable) { }
+    }
+
+    private suspend fun setDeviceRegistered(isRegistered: Boolean = true) {
+        context.dataStore.edit { it[Key.DeviceRegistered] = isRegistered }
     }
 
     private suspend fun getRemoteSubscriptions(deviceId: String): List<WalletSubscriptionChains> {

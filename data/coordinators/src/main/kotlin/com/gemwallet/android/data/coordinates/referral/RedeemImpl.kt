@@ -2,6 +2,7 @@ package com.gemwallet.android.data.coordinates.referral
 
 import com.gemwallet.android.application.GetAuthPayload
 import com.gemwallet.android.application.referral.coordinators.Redeem
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
@@ -24,12 +25,13 @@ import retrofit2.HttpException
 class RedeemImpl(
     private val sessionRepository: SessionRepository,
     private val gemApiClient: GemApiClient,
+    private val getDeviceId: GetDeviceId,
     private val getAuthPayload: GetAuthPayload,
     private val tokensRepository: TokensRepository,
     private val assetsRepository: AssetsRepository,
 ) : Redeem {
 
-    override suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption, deviceId: String): RedemptionResult {
+    override suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption): RedemptionResult {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
         val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
         if (rewards.points < option.points) {
@@ -37,7 +39,7 @@ class RedeemImpl(
         }
         return try {
             val result = gemApiClient.redeem(
-                deviceId = deviceId,
+                deviceId = getDeviceId.getDeviceId(),
                 walletId = wallet.id,
                 request = AuthenticatedRequest(
                     auth = authPayload,

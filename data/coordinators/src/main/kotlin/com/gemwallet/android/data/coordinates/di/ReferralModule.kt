@@ -5,6 +5,7 @@ import com.gemwallet.android.application.referral.coordinators.CreateReferral
 import com.gemwallet.android.application.referral.coordinators.GetRewards
 import com.gemwallet.android.application.referral.coordinators.Redeem
 import com.gemwallet.android.application.referral.coordinators.UseReferralCode
+import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.coordinates.referral.CreateReferralImpl
 import com.gemwallet.android.data.coordinates.referral.GetRewardsImpl
 import com.gemwallet.android.data.coordinates.referral.RedeemImpl
@@ -26,10 +27,12 @@ object ReferralModule {
     @Singleton
     fun provideCreateReferral(
         gemApiClient: GemApiClient,
-        getAuthPayload: GetAuthPayload
+        getDeviceId: GetDeviceId,
+        getAuthPayload: GetAuthPayload,
     ): CreateReferral {
         return CreateReferralImpl(
             gemApiClient = gemApiClient,
+            getDeviceId = getDeviceId,
             getAuthPayload = getAuthPayload
         )
     }
@@ -38,9 +41,11 @@ object ReferralModule {
     @Singleton
     fun provideGetRewards(
         gemApiClient: GemApiClient,
+        getDeviceId: GetDeviceId,
     ): GetRewards {
         return GetRewardsImpl(
             gemApiClient = gemApiClient,
+            getDeviceId = getDeviceId,
         )
     }
 
@@ -49,6 +54,7 @@ object ReferralModule {
     fun provideRedeem(
         sessionRepository: SessionRepository,
         gemApiClient: GemApiClient,
+        getDeviceId: GetDeviceId,
         getAuthPayload: GetAuthPayload,
         tokensRepository: TokensRepository,
         assetsRepository: AssetsRepository,
@@ -56,6 +62,7 @@ object ReferralModule {
         return RedeemImpl(
             sessionRepository = sessionRepository,
             gemApiClient = gemApiClient,
+            getDeviceId = getDeviceId,
             getAuthPayload = getAuthPayload,
             tokensRepository = tokensRepository,
             assetsRepository = assetsRepository,
@@ -66,10 +73,12 @@ object ReferralModule {
     @Singleton
     fun provideUseReferralCode(
         gemApiClient: GemApiClient,
+        getDeviceId: GetDeviceId,
         getAuthPayload: GetAuthPayload
     ): UseReferralCode {
         return UseReferralCodeImpl(
             gemApiClient = gemApiClient,
+            getDeviceId = getDeviceId,
             getAuthPayload = getAuthPayload
         )
     }

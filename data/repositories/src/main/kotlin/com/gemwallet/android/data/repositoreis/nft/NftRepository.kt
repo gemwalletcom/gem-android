@@ -34,7 +34,7 @@ class NftRepository(
     override suspend fun loadNFT(wallet: Wallet) {
         val deviceId = getDeviceId.getDeviceId()
 
-        val response = gemApiClient.getNFTs(deviceId, wallet.id)
+        val response = gemApiClient.getNFTs(deviceId = deviceId, walletId = wallet.id)
         val collections = response.map {
             DbNFTCollection(
                 id = it.collection.id,

@@ -4,5 +4,5 @@ import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
 
 interface CreateReferral {
-    suspend fun createReferral(code: String, wallet: Wallet, deviceId: String): Rewards
+    suspend fun createReferral(code: String, wallet: Wallet): Rewards
 }
