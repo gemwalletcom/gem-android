@@ -45,6 +45,8 @@ sealed interface ConfirmProperty {
                     }
                     is ConfirmParams.TransferParams.Generic -> Generic(params.name)
                     is ConfirmParams.PerpetualParams.Open -> TODO()
+                    is ConfirmParams.PerpetualParams.Close -> TODO()
+                    is ConfirmParams.PerpetualParams.Modify -> TODO()
                 }
             }
         }

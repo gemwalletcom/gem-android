@@ -7,6 +7,7 @@ import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PerpetualData
+import com.wallet.core.primitives.PerpetualProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -27,6 +28,8 @@ class PerpetualDetailsDataAggregateImpl(
 ) : PerpetualDetailsDataAggregate {
     override val id: String = data.perpetual.id
 
+    override val provider: PerpetualProvider = data.perpetual.provider
+
     override val asset: Asset = data.asset
 
     override val name: String = data.perpetual.name
@@ -39,4 +42,7 @@ class PerpetualDetailsDataAggregateImpl(
 
     override val maxLeverage: Int = data.perpetual.maxLeverage.toInt()
 
+    override val price: Double = data.perpetual.price
+
+    override val identifier: String = data.perpetual.identifier
 }

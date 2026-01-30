@@ -4,6 +4,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
+import com.gemwallet.android.model.ConfirmParams.PerpetualParams.OrderAction
 import com.gemwallet.android.serializer.BigIntegerSerializer
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Account
@@ -14,6 +15,7 @@ import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.PerpetualDirection
+import com.wallet.core.primitives.PerpetualProvider
 import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
@@ -112,8 +114,48 @@ sealed class ConfirmParams() {
             return Stake.Unfreeze(asset, from, amount, resource)
         }
 
-        fun perpetual(): PerpetualParams.Open {
-            TODO("Not yet implemented")
+        fun perpetualOrder(
+            perpetualId: String,
+            perpetualProvider: PerpetualProvider,
+            perpetualPrice: Double,
+            perpetualIdentifier: String,
+            action: OrderAction,
+            leverage: Int,
+            baseAsset: Asset, // USD
+            direction: PerpetualDirection,
+            slippage: Double = 2.0,
+        ): PerpetualParams {
+            val marginAmount = Crypto(amount).value(baseAsset.decimals).toDouble()
+            val fiatValue = marginAmount * leverage
+            val assetSize = fiatValue / perpetualPrice
+
+            val slippageFraction = slippage / 100.0
+            val slippage = when (direction) {
+                PerpetualDirection.Short -> 1.0 - slippageFraction // TODO: Why we need slippage on Close = 1.0 + slippageFraction?
+                PerpetualDirection.Long -> 1.0 + slippageFraction // Close = 1.0 - slippageFraction
+            }
+
+            val order = PerpetualParams.Order(
+                perpetualId = perpetualId,
+                provider = perpetualProvider,
+                direction = direction,
+                baseAsset = baseAsset,
+                assetIndex = perpetualIdentifier.toInt(),
+                fiatValue = fiatValue,
+                size = assetSize,
+                slippage = slippage,
+                leverage = leverage,
+                marketPrice = perpetualPrice,
+                marginAmount = marginAmount,
+                takeProfit = null,
+                stopLoss = null
+            )
+
+            return when (action) {
+                OrderAction.Open -> PerpetualParams.Open(asset, from, amount, useMaxAmount, order)
+                OrderAction.Close -> PerpetualParams.Close(asset, from, amount, useMaxAmount, order)
+                OrderAction.Increase, OrderAction.Decrease -> PerpetualParams.Modify(asset, from, amount, useMaxAmount, action, order)
+            }
         }
     }
 
@@ -206,9 +248,9 @@ sealed class ConfirmParams() {
         override val amount: BigInteger
             get() = BigInteger.ZERO
 
-        override fun memo(): String? = data
+        override fun memo(): String = data
 
-        override fun destination(): DestinationAddress? {
+        override fun destination(): DestinationAddress {
             return DestinationAddress(contract)
         }
     }
@@ -263,7 +305,7 @@ sealed class ConfirmParams() {
         override val useMaxAmount: Boolean
             get() = false
 
-        override fun destination(): DestinationAddress? {
+        override fun destination(): DestinationAddress {
             return DestinationAddress(from.address)
         }
     }
@@ -296,7 +338,7 @@ sealed class ConfirmParams() {
             val validator: DelegationValidator,
             override val useMaxAmount: Boolean = false,
         ) : Stake() {
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress(validator.id)
             }
         }
@@ -311,7 +353,7 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress(delegation.validator.id)
             }
         }
@@ -326,7 +368,7 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress(delegation.validator.id)
             }
         }
@@ -344,7 +386,7 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
         }
@@ -359,7 +401,7 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
         }
@@ -372,7 +414,7 @@ sealed class ConfirmParams() {
             val resource: Resource,
             override val useMaxAmount: Boolean = false,
         ) : Stake() {
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
         }
@@ -387,7 +429,7 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
-            override fun destination(): DestinationAddress? {
+            override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
         }
@@ -396,41 +438,58 @@ sealed class ConfirmParams() {
     @Serializable
     sealed class PerpetualParams : ConfirmParams() {
 
+        enum class OrderAction {
+            Open,
+            Close,
+            Increase,
+            Decrease,
+        }
+
         @Serializable
-        class Open(
+        class Order(
             val perpetualId: String,
-            override val asset: Asset,
-            override val from: Account,
-            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
-            override val useMaxAmount: Boolean = false,
+            val provider: PerpetualProvider,
             val direction: PerpetualDirection,
             val baseAsset: Asset,
             val assetIndex: Int,
-            val price: String,
+//            val price: String,
             val fiatValue: Double,
-            val size: String,
+            val size: Double,
             val slippage: Double,
             val leverage: Int,
-            val entryPrice: Double?,
             val marketPrice: Double,
             val marginAmount: Double,
             val takeProfit: String?,
             val stopLoss: String?
+        )
+
+        @Serializable
+        class Open(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val useMaxAmount: Boolean = false,
+            val order: Order,
         ) : PerpetualParams()
 
+        @Serializable
+        class Close(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val useMaxAmount: Boolean = false,
+            val order: Order,
+        ) : PerpetualParams()
 
-//        val id: String,
-//	val name: String,
-//	val provider: PerpetualProvider,
-//	val assetId: AssetId,
-//	val identifier: String,
-
-//	val price: Double,
-//	val pricePercentChange24h: Double,
-//	val openInterest: Double,
-//	val volume24h: Double,
-//	val funding: Double,
-//	val maxLeverage: UByte
+        @Serializable
+        class Modify(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val useMaxAmount: Boolean = false,
+            val action: OrderAction,
+            val order: Order,
+        ) : PerpetualParams()
     }
 
     fun pack(): String? {
@@ -453,7 +512,9 @@ sealed class ConfirmParams() {
             is Stake.Freeze -> TransactionType.StakeFreeze
             is Stake.Unfreeze -> TransactionType.StakeUnfreeze
             is Stake -> throw IllegalArgumentException("Invalid stake parameter")
-            is PerpetualParams.Open -> TransactionType.PerpetualOpenPosition
+            is PerpetualParams.Open -> TransactionType.PerpetualModifyPosition
+            is PerpetualParams.Close -> TransactionType.PerpetualClosePosition
+            is PerpetualParams.Modify -> TransactionType.PerpetualOpenPosition
         }
     }
 

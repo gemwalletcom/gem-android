@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.hyper
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.services.mapper.toGem
+import com.gemwallet.android.blockchain.services.toGem
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -74,27 +75,7 @@ class HyperCoreSignClient(
         val gemLoadInput = GemTransactionLoadInput(
             inputType = GemTransactionInputType.Perpetual(
                 asset = params.asset.toGem(),
-                perpetualType = PerpetualType.Open(
-                    v1 = PerpetualConfirmData(
-                        direction = when (params.direction) {
-                            PerpetualDirection.Short -> uniffi.gemstone.PerpetualDirection.SHORT
-                            PerpetualDirection.Long -> uniffi.gemstone.PerpetualDirection.LONG
-                        },
-                        assetIndex = params.assetIndex,
-                        baseAsset = params.baseAsset.toGem(),
-                        price = params.price,
-                        fiatValue = params.fiatValue,
-                        size = params.size,
-                        slippage = params.slippage,
-                        leverage = params.leverage.toUByte(),
-                        pnl = null,
-                        entryPrice = null,
-                        marketPrice = params.marketPrice,
-                        marginAmount = params.marginAmount,
-                        takeProfit = params.takeProfit,
-                        stopLoss = params.stopLoss,
-                    )
-                )
+                perpetualType = PerpetualType.Open(params.order.toGem())
             ),
             senderAddress = params.from.address,
             destinationAddress = params.from.address,

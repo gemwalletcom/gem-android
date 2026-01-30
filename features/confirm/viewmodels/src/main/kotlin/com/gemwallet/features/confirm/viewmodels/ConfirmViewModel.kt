@@ -429,6 +429,9 @@ class ConfirmViewModel @Inject constructor(
                 val amount = perpetualRepository.getBalance(assetInfo.owner?.address ?: "").firstOrNull()?.available ?: 0.0
                 Crypto(amount.toBigDecimal(), assetInfo.asset.decimals).atomicValue
             }
+
+            is ConfirmParams.PerpetualParams.Close -> TODO()
+            is ConfirmParams.PerpetualParams.Modify -> TODO()
         }
     }
 

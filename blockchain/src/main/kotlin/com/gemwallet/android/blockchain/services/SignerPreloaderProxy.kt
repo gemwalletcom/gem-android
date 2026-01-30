@@ -52,6 +52,7 @@ import uniffi.gemstone.GemTransferDataExtra
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
 import uniffi.gemstone.PerpetualConfirmData
 import uniffi.gemstone.PerpetualDirection
+import uniffi.gemstone.PerpetualReduceData
 import uniffi.gemstone.PerpetualType
 import uniffi.gemstone.SwapperException.NotSupportedChain
 import uniffi.gemstone.TransferDataOutputAction
@@ -222,27 +223,36 @@ class SignerPreloaderProxy(
             is ConfirmParams.PerpetualParams.Open -> GemTransactionInputType.Perpetual(
                 asset = gemAsset,
                 perpetualType = PerpetualType.Open(
-                    v1 = PerpetualConfirmData(
-                        direction = when (params.direction) {
-                            com.wallet.core.primitives.PerpetualDirection.Long -> PerpetualDirection.LONG
-                            com.wallet.core.primitives.PerpetualDirection.Short -> PerpetualDirection.SHORT
-                        },
-                        baseAsset = params.baseAsset.toGem(),
-                        assetIndex = params.assetIndex,
-                        price = params.price,
-                        fiatValue = params.fiatValue,
-                        size = params.size,
-                        slippage = params.slippage,
-                        leverage = params.leverage.toUByte(),
-                        pnl = null,
-                        entryPrice = params.entryPrice,
-                        marketPrice = params.marketPrice,
-                        marginAmount = params.marginAmount,
-                        takeProfit = params.takeProfit,
-                        stopLoss = params.stopLoss,
-                    )
+                    v1 = params.order.toGem()
                 )
             )
+            is ConfirmParams.PerpetualParams.Close -> GemTransactionInputType.Perpetual(
+                asset = gemAsset,
+                perpetualType = PerpetualType.Close(
+                    v1 = params.order.toGem()
+                )
+            )
+            is ConfirmParams.PerpetualParams.Modify -> when (params.action) {
+                ConfirmParams.PerpetualParams.OrderAction.Increase ->  GemTransactionInputType.Perpetual(
+                    asset = gemAsset,
+                    perpetualType = PerpetualType.Increase(
+                        v1 = params.order.toGem()
+                    )
+                )
+                ConfirmParams.PerpetualParams.OrderAction.Decrease -> GemTransactionInputType.Perpetual(
+                    asset = gemAsset,
+                    perpetualType = PerpetualType.Reduce(
+                        v1 = PerpetualReduceData(
+                            data = params.order.toGem(),
+                            positionDirection = when (params.order.direction) {
+                                com.wallet.core.primitives.PerpetualDirection.Long -> PerpetualDirection.LONG
+                                com.wallet.core.primitives.PerpetualDirection.Short -> PerpetualDirection.SHORT
+                            }
+                        )
+                    )
+                )
+                else -> { throw IllegalArgumentException() }
+            }
         }
     }
 
@@ -400,3 +410,23 @@ private fun GemTransactionLoadMetadata.toChainData() = when (this) {
     is GemTransactionLoadMetadata.Hyperliquid -> toChainData()
     GemTransactionLoadMetadata.None -> throw NotSupportedChain()
 }
+
+fun ConfirmParams.PerpetualParams.Order.toGem() = PerpetualConfirmData(
+    direction = when (direction) {
+        com.wallet.core.primitives.PerpetualDirection.Long -> PerpetualDirection.LONG
+        com.wallet.core.primitives.PerpetualDirection.Short -> PerpetualDirection.SHORT
+    },
+    baseAsset = baseAsset.toGem(),
+    assetIndex = assetIndex,
+    price = marketPrice.toString(),
+    fiatValue = fiatValue,
+    size = size.toString(),
+    slippage = slippage,
+    leverage = leverage.toUByte(),
+    pnl = null,
+    entryPrice = null,
+    marketPrice = marketPrice,
+    marginAmount = marginAmount,
+    takeProfit = takeProfit,
+    stopLoss = stopLoss,
+)

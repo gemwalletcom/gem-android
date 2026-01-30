@@ -17,6 +17,7 @@ import com.gemwallet.features.transfer_amount.models.AmountError
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.PerpetualDirection
 import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,6 +72,7 @@ class PerpetualAmountViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val leverage = MutableStateFlow<Int>(10)
+    val direction = MutableStateFlow<PerpetualDirection>(PerpetualDirection.Long)
 
     override val assetInfo: StateFlow<AssetInfo?> = perpetual /// TODO: ???
         .filterNotNull()
@@ -109,6 +111,7 @@ class PerpetualAmountViewModel @Inject constructor(
     ) {
         val assetInfo = assetInfo.value
         val owner = assetInfo?.owner ?: return
+        val perpetual = perpetual.value ?: return
         val asset = assetInfo.asset
         val decimals = asset.decimals
         val price = assetInfo.price?.price?.price ?: 0.0
@@ -122,7 +125,16 @@ class PerpetualAmountViewModel @Inject constructor(
 
         val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue, maxAmount.value)
         val nextParams = when (params.txType) {
-            TransactionType.PerpetualOpenPosition -> builder.perpetual()
+            TransactionType.PerpetualOpenPosition -> builder.perpetualOrder(
+                perpetualId = perpetual.id,
+                perpetualPrice = perpetual.price,
+                perpetualProvider = perpetual.provider,
+                perpetualIdentifier = perpetual.identifier,
+                action = ConfirmParams.PerpetualParams.OrderAction.Open,
+                leverage = leverage.value,
+                baseAsset = asset, // USD
+                direction = direction.value,
+            )
             else -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
