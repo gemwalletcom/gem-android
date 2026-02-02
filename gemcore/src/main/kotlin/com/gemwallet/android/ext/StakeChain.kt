@@ -2,9 +2,7 @@ package com.gemwallet.android.ext
 
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.StakeChain
-import uniffi.gemstone.ChainConfig
 import uniffi.gemstone.Config
-import uniffi.gemstone.StakeChainConfig
 
 fun StakeChain.Companion.isStaked(chain: Chain): Boolean = byChain(chain) != null
 

@@ -1,12 +1,13 @@
 package com.gemwallet.android.di
 
 import android.content.Context
+import com.gemwallet.android.application.PasswordStore
+import com.gemwallet.android.application.SecurityStore
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.CreateWalletOperator
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
-import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.blockchain.operators.StorePhraseOperator
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
@@ -23,6 +24,7 @@ import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.wallet.ImportWalletService
 import com.gemwallet.android.data.password.PreferencePasswordStore
+import com.gemwallet.android.data.password.TinkSecurityStore
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.PhraseAddressImportWalletService
@@ -85,6 +87,11 @@ object InteractsModule {
     @Singleton
     fun providePasswordStore(@ApplicationContext context: Context): PasswordStore =
         PreferencePasswordStore(context)
+
+    @Provides
+    @Singleton
+    fun provideSecurityStore(@ApplicationContext context: Context): SecurityStore<Any> =
+        TinkSecurityStore(context)
 
     @Singleton
     @Provides

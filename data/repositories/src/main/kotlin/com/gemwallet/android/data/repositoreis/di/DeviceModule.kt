@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
-import com.gemwallet.android.application.PasswordStore
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
+import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.SetPushToken
@@ -11,10 +11,11 @@ import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
-import com.gemwallet.android.data.repositoreis.device.GetDeviceIdImpl
+import com.gemwallet.android.data.repositoreis.device.GetDeviceIdOldImpl
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.model.BuildInfo
 import dagger.Module
 import dagger.Provides
@@ -30,8 +31,8 @@ object DeviceModule {
 
     @Provides
     @Singleton
-    fun provideDeviceId(@ApplicationContext context: Context): GetDeviceId
-        = GetDeviceIdImpl(ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)))
+    fun provideDeviceOldId(@ApplicationContext context: Context): GetDeviceIdOld
+        = GetDeviceIdOldImpl(ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)))
 
     @Provides
     @Singleton
@@ -39,20 +40,22 @@ object DeviceModule {
         @ApplicationContext context: Context,
         buildInfo: BuildInfo,
         gemApiClient: GemApiClient,
+        gemDeviceApiClient: GemDeviceApiClient,
+        getDeviceIdOld: GetDeviceIdOld,
         getDeviceId: GetDeviceId,
         priceAlertRepository: PriceAlertRepository,
         getCurrentCurrencyCase: GetCurrentCurrencyCase,
-        passwordStore: PasswordStore,
     ): DeviceRepository {
         return DeviceRepository(
             context = context,
             gemApiClient = gemApiClient,
-            passwordStore = passwordStore,
+            gemDeviceApiClient = gemDeviceApiClient,
+            getDeviceIdOld = getDeviceIdOld,
+            getDeviceId = getDeviceId,
             configStore = ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)),
             requestPushToken = buildInfo.requestPushToken,
             platformStore = buildInfo.platformStore,
             versionName = buildInfo.versionName,
-            getDeviceId = getDeviceId,
             priceAlertRepository = priceAlertRepository,
             getCurrentCurrencyCase = getCurrentCurrencyCase,
         )

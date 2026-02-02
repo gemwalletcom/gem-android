@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.service.store.ConfigStore
@@ -22,7 +22,7 @@ object BuyModule {
         @ApplicationContext context: Context,
         gemFiatQuoteClient: GemApiClient,
         assetsRepository: AssetsRepository,
-        getDeviceId: GetDeviceId
+        getDeviceIdOld: GetDeviceIdOld
     ): BuyRepository =
         BuyRepository(
             configStore = ConfigStore(
@@ -33,6 +33,6 @@ object BuyModule {
             ),
             gemApi = gemFiatQuoteClient,
             assetsRepository = assetsRepository,
-            getDeviceId = getDeviceId
+            getDeviceIdOld = getDeviceIdOld
         )
 }

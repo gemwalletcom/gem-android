@@ -7,12 +7,10 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.PerpetualDirection
 import uniffi.gemstone.GemChainSigner
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadInput
-import uniffi.gemstone.PerpetualConfirmData
 import uniffi.gemstone.PerpetualType
 import java.math.BigInteger
 

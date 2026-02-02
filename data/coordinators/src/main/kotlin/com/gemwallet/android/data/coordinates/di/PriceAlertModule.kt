@@ -6,7 +6,6 @@ import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.application.pricealerts.coordinators.IncludePriceAlert
 import com.gemwallet.android.application.pricealerts.coordinators.PriceAlertsStateCoordinator
 import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
@@ -20,7 +19,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,14 +32,12 @@ object PriceAlertModule {
     @Provides
     @Singleton
     fun provideAddPriceAlerts(
-        gemApiClient: GemApiClient,
-        getDeviceId: GetDeviceId,
+        gemDeviceApiClient: GemDeviceApiClient,
         priceAlertRepository: PriceAlertRepository,
         sessionRepository: SessionRepository,
     ): IncludePriceAlert {
         return IncludePriceAlertImpl(
-            gemApiClient = gemApiClient,
-            getDeviceIdImpl = getDeviceId,
+            gemDeviceApiClient = gemDeviceApiClient,
             priceAlertRepository = priceAlertRepository,
             sessionRepository = sessionRepository
         )
@@ -82,14 +79,12 @@ object PriceAlertModule {
     @Provides
     @Singleton
     fun providePriceAlertExclude(
-        gemApiClient: GemApiClient,
+        gemDeviceApiClient: GemDeviceApiClient,
         sessionRepository: SessionRepository,
-        getDeviceId: GetDeviceId,
         priceAlertRepository: PriceAlertRepository,
     ): ExcludePriceAlert {
         return ExcludePriceAlertImpl(
-            getDeviceId = getDeviceId,
-            gemApiClient = gemApiClient,
+            gemDeviceApiClient = gemDeviceApiClient,
             sessionRepository = sessionRepository,
             priceAlertRepository = priceAlertRepository,
         )
@@ -107,13 +102,11 @@ object PriceAlertModule {
 
     @Provides
     fun provideSyncPriceAlerts(
-        gemApiClient: GemApiClient,
-        getDeviceId: GetDeviceId,
+        gemDeviceApiClient: GemDeviceApiClient,
         priceAlertRepository: PriceAlertRepository,
     ): SyncPriceAlerts {
         return SyncPriceAlertsImpl(
-            getDeviceId = getDeviceId,
-            gemApiClient = gemApiClient,
+            gemDeviceApiClient = gemDeviceApiClient,
             priceAlertRepository = priceAlertRepository,
         )
     }

@@ -7,11 +7,7 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.gemwallet.android.application.PasswordStore
-import com.gemwallet.android.application.PasswordStore.Keys
-import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
-import wallet.core.jni.Curve
-import wallet.core.jni.HDWallet
 import java.security.SecureRandom
 
 class PreferencePasswordStore(
@@ -43,18 +39,6 @@ class PreferencePasswordStore(
         getStore().edit(commit = true) {
             putString(key, password)
         }
-    }
-
-    override fun getDevicePrivateKey(): ByteArray {
-        try {
-            val data = getPassword(Keys.DevicePrivateKey.key)
-            return data.decodeHex()
-        } catch (_: Throwable) {}
-
-        val deviceKey = HDWallet(128, "").getMasterKey(Curve.ED25519)
-        putPassword(Keys.DevicePrivateKey.key, deviceKey.data().toHexString())
-        putPassword(Keys.DevicePublicKey.key, deviceKey.publicKeyEd25519.data().toHexString())
-        return deviceKey.data()
     }
 
     private fun getStore(): SharedPreferences {

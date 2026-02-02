@@ -4,7 +4,6 @@ import com.gemwallet.android.application.transactions.coordinators.GetChangedTra
 import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.blockchain.services.PerpetualService
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.PriceWebSocketClient
@@ -15,6 +14,7 @@ import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +29,7 @@ object AssetsModule {
     @Singleton
     fun provideAssetsRepository(
         gemApiClient: GemApiClient,
+        gemDeviceApiClient: GemDeviceApiClient,
         assetsDao: AssetsDao,
         assetsPriorityDao: AssetsPriorityDao,
         balancesDao: BalancesDao,
@@ -37,10 +38,10 @@ object AssetsModule {
         balancesService: BalancesService,
         getChangedTransactions: GetChangedTransactions,
         searchTokensCase: SearchTokensCase,
-        getDeviceId: GetDeviceId,
         priceClient: PriceWebSocketClient,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
+        gemDeviceApiClient = gemDeviceApiClient,
         assetsDao = assetsDao,
         assetsPriorityDao = assetsPriorityDao,
         balancesDao = balancesDao,
@@ -49,7 +50,6 @@ object AssetsModule {
         getChangedTransactions = getChangedTransactions,
         balancesService = balancesService,
         searchTokensCase = searchTokensCase,
-        getDeviceId = getDeviceId,
         priceClient = priceClient
     )
 

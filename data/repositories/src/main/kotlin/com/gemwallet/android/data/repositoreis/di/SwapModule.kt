@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.application.PasswordStore
+import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.cases.swap.GetSwapQuotes
 import com.gemwallet.android.cases.swap.GetSwapSupported

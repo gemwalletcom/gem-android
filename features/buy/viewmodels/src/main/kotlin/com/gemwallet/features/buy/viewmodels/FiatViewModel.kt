@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -53,7 +53,7 @@ class FiatViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
-    private val getDeviceId: GetDeviceId,
+    private val getDeviceIdOld: GetDeviceIdOld,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -204,7 +204,7 @@ class FiatViewModel @Inject constructor(
             val url = buyRepository.getQuoteUrl(
                 _selectedQuote.value?.id ?: return@launch,
                 walletAddress = assetInfoUIModel.value?.owner ?: return@launch,
-                deviceId = getDeviceId.getDeviceId(),
+                deviceId = getDeviceIdOld.getDeviceId(),
             )
             callback(url)
         }

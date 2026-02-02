@@ -1,9 +1,9 @@
 package com.gemwallet.android.data.repositoreis.di
 
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.application.transactions.coordinators.GetChangedTransactions
 import com.gemwallet.android.application.transactions.coordinators.GetPendingTransactionsCount
 import com.gemwallet.android.blockchain.services.TransactionStatusService
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
@@ -16,6 +16,7 @@ import com.gemwallet.android.data.repositoreis.transactions.TransactionRepositor
 import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepositoryImpl
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -91,14 +92,14 @@ object TransactionsModule {
     @Provides
     fun syncTransactionsService(
         gemApiClient: GemApiClient,
+        gemDeviceApiClient: GemDeviceApiClient,
         getDeviceId: GetDeviceId,
         putTransactions: PutTransactions,
         getTransactionUpdateTime: GetTransactionUpdateTime,
         assetsRepository: AssetsRepository,
     ): SyncTransactions {
         return SyncTransactionsService(
-            gemApiClient = gemApiClient,
-            getDeviceId = getDeviceId,
+            gemDeviceApiClient = gemDeviceApiClient,
             putTransactions = putTransactions,
             getTransactionUpdateTime = getTransactionUpdateTime,
             assetsRepository = assetsRepository,

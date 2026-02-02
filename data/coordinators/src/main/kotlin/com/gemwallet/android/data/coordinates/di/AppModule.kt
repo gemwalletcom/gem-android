@@ -1,11 +1,11 @@
 package com.gemwallet.android.data.coordinates.di
 
 import com.gemwallet.android.application.GetAuthPayload
-import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.application.PasswordStore
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
+import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.data.coordinates.GetAuthPayloadImpl
-import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,13 +18,13 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGetAuthPayload(
-        gemApiClient: GemApiClient,
+        gemDeviceApiClient: GemDeviceApiClient,
         getDeviceId: GetDeviceId,
         passwordStore: PasswordStore,
         loadPrivateKeyOperator: LoadPrivateKeyOperator,
     ): GetAuthPayload {
         return GetAuthPayloadImpl(
-            gemApiClient = gemApiClient,
+            gemDeviceApiClient = gemDeviceApiClient,
             getDeviceId = getDeviceId,
             passwordStore = passwordStore,
             loadPrivateKeyOperator = loadPrivateKeyOperator,

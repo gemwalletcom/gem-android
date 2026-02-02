@@ -2,9 +2,10 @@ package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
 import android.os.Build
-import com.gemwallet.android.application.PasswordStore
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.data.services.gemapi.Mime
 import com.gemwallet.android.data.services.gemapi.http.SecurityInterceptor
 import com.gemwallet.android.model.BuildInfo
@@ -29,10 +30,13 @@ object ClientsModule {
 
     @Provides
     @Singleton
+    fun provideSecurityInterceptor(getDeviceId: GetDeviceId) = SecurityInterceptor(getDeviceId)
+
+    @Provides
+    @Singleton
     fun provideGemHttpClient(
         @ApplicationContext context: Context,
         buildInfo: BuildInfo,
-        passwordStore: PasswordStore,
     ): OkHttpClient = OkHttpClient
         .Builder()
         .connectionPool(ConnectionPool(32, 5, TimeUnit.MINUTES))
@@ -51,7 +55,6 @@ object ClientsModule {
                     .build()
             )
         }
-        .addNetworkInterceptor(SecurityInterceptor(passwordStore))
         .build()
 
     @Provides
@@ -63,6 +66,23 @@ object ClientsModule {
             .addConverterFactory(jsonEncoder.asConverterFactory(Mime.Json.value))
             .build()
             .create(GemApiClient::class.java)
+
+    @Provides
+    @Singleton
+    fun provideGemDeviceApiClient(
+        httpClient: OkHttpClient,
+        securityInterceptor: SecurityInterceptor,
+    ): GemDeviceApiClient {
+        val httpClient = httpClient.newBuilder()
+            .addNetworkInterceptor(securityInterceptor)
+            .build()
+        return Retrofit.Builder()
+            .baseUrl("https://api.gemwallet.com")
+            .client(httpClient)
+            .addConverterFactory(jsonEncoder.asConverterFactory(Mime.Json.value))
+            .build()
+            .create(GemDeviceApiClient::class.java)
+    }
 
     @Provides
     @Singleton

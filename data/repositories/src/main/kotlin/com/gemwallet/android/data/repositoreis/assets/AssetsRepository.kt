@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.assets.AddRecentActivity
 import com.gemwallet.android.cases.assets.GetRecent
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.tokens.toPriorityQuery
@@ -24,6 +23,7 @@ import com.gemwallet.android.data.service.store.database.entities.toAssetLinksMo
 import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.exclude
@@ -80,11 +80,11 @@ class AssetsRepository @Inject constructor(
     private val balancesDao: BalancesDao,
     private val pricesDao: PricesDao,
     private val gemApi: GemApiClient,
+    private val gemDeviceApiClient: GemDeviceApiClient,
     private val sessionRepository: SessionRepository,
     private val balancesService: BalancesService,
     getChangedTransactions: GetChangedTransactions,
     private val searchTokensCase: SearchTokensCase,
-    private val getDeviceId: GetDeviceId,
     private val priceClient: PriceWebSocketClient,
     private val updateBalances: UpdateBalances = UpdateBalances(balancesDao, balancesService),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
@@ -273,8 +273,8 @@ class AssetsRepository @Inject constructor(
         val walletChains = wallet.accounts.map { it.chain }
         val includeChains = byChains.filter { walletChains.contains(it) }
         val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
-        return assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
-                if (it) {
+        return assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest { hasPriority ->
+                if (hasPriority) {
                     assetsDao.swapSearchWithPriority(query, includeChains, includeAssetIds.map { it.toIdentifier() })
                 } else {
                     assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
@@ -310,7 +310,7 @@ class AssetsRepository @Inject constructor(
         }
 
         val availableAssetsId = try {
-            gemApi.getAssets(deviceId = getDeviceId.getDeviceId(), walletId = wallet.id)
+            gemDeviceApiClient.getAssets(walletId = wallet.id)
         } catch (_: Throwable) {
             return@launch
         }

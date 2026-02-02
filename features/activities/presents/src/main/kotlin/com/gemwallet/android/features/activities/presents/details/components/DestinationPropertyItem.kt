@@ -21,7 +21,6 @@ import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.paddingSmall
 
 @Composable

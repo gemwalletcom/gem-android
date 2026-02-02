@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.nft
 
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
@@ -11,7 +10,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTAssociati
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAttribute
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollection
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectionLink
-import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NFTAttribute
@@ -26,15 +25,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 
 class NftRepository(
-    private val gemApiClient: GemApiClient,
-    private val getDeviceId: GetDeviceId,
+    private val gemDeviceApiClient: GemDeviceApiClient,
     private val nftDao: NftDao,
 ) : LoadNFTCase, GetListNftCase, GetAssetNft {
 
     override suspend fun loadNFT(wallet: Wallet) {
-        val deviceId = getDeviceId.getDeviceId()
 
-        val response = gemApiClient.getNFTs(deviceId = deviceId, walletId = wallet.id)
+        val response = gemDeviceApiClient.getNFTs(walletId = wallet.id)
         val collections = response.map {
             DbNFTCollection(
                 id = it.collection.id,

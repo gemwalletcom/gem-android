@@ -1,18 +1,16 @@
 package com.gemwallet.android.data.coordinates.pricealerts
 
 import com.gemwallet.android.application.pricealerts.coordinators.IncludePriceAlert
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
 
 class IncludePriceAlertImpl(
-    private val gemApiClient: GemApiClient,
-    private val getDeviceIdImpl: GetDeviceId,
+    private val gemDeviceApiClient: GemDeviceApiClient,
     private val sessionRepository: SessionRepository,
     private val priceAlertRepository: PriceAlertRepository,
 ) : IncludePriceAlert {
@@ -37,10 +35,7 @@ class IncludePriceAlertImpl(
         } ?: priceAlertRepository.addPriceAlert(priceAlert)
 
         try {
-            gemApiClient.includePriceAlert(
-                deviceId = getDeviceIdImpl.getDeviceId(),
-                alerts = listOf(priceAlert),
-            )
+            gemDeviceApiClient.includePriceAlert(alerts = listOf(priceAlert))
         } catch (_: Throwable) {}
     }
 }

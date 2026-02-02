@@ -5,9 +5,9 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.gemwallet.android.application.PasswordStore
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.GetSupportId
@@ -21,10 +21,12 @@ import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
+import com.wallet.core.primitives.MigrateDeviceIdRequest
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
 import com.wallet.core.primitives.Subscription
@@ -49,11 +51,12 @@ import kotlin.math.max
 class DeviceRepository(
     private val context: Context,
     private val gemApiClient: GemApiClient,
-    private val passwordStore: PasswordStore,
+    private val gemDeviceApiClient: GemDeviceApiClient,
     private val configStore: ConfigStore,
     private val requestPushToken: RequestPushToken,
     private val platformStore: PlatformStore,
     private val versionName: String,
+    private val getDeviceIdOld: GetDeviceIdOld,
     private val getDeviceId: GetDeviceId,
     private val priceAlertRepository: PriceAlertRepository,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
@@ -72,7 +75,7 @@ class DeviceRepository(
 
     init {
         coroutineScope.launch {
-            passwordStore.getDevicePrivateKey()
+            migrate()
 
             syncDeviceInfo()
 
@@ -80,12 +83,25 @@ class DeviceRepository(
         }
     }
 
+    private suspend fun migrate() {
+        try {
+            if (getDeviceIdOld.isMigrated()) return
+
+            gemDeviceApiClient.migrateDevice(
+                MigrateDeviceIdRequest(
+                    oldDeviceId = getDeviceIdOld.getDeviceId(),
+                    publicKey = getDeviceId.getDeviceId()
+                )
+            )
+            getDeviceIdOld.migrated()
+        } catch (_: Throwable) { }
+    }
+
     override suspend fun syncDeviceInfo() {
         val pushToken = getPushToken()
         val pushEnabled = getPushEnabled().firstOrNull() ?: false
-        val deviceId = getDeviceId.getDeviceId()
         val device = Device(
-            id = deviceId,
+            id = getDeviceId.getDeviceId(),
             platform = Platform.Android,
             platformStore = platformStore,
             os = Platform.os,
@@ -97,9 +113,6 @@ class DeviceRepository(
             version = versionName,
             currency = getCurrentCurrencyCase.getCurrentCurrency().string,
             subscriptionsVersion = getSubscriptionVersion(),
-            publicKey = try {
-                passwordStore.getPassword(PasswordStore.Keys.DevicePublicKey.key)
-            } catch (_: Throwable) { "" }
         )
         if (pushEnabled && pushToken.isEmpty()) {
             requestPushToken.requestToken { pushToken ->
@@ -145,9 +158,8 @@ class DeviceRepository(
 
     override suspend fun syncSubscription(wallets: List<Wallet>, added: Boolean) { // TODO: WalletID Migration: remove when back will ready
         syncOldSubscription(wallets, added)
-        val deviceId = getDeviceId.getDeviceId()
         val localSubscriptions = localSubscriptions(wallets)
-        val remoteSubscriptions = getRemoteSubscriptions(deviceId)
+        val remoteSubscriptions = getRemoteSubscriptions()
 
         val toRemove = remoteSubscriptions.filter { remote ->
             localSubscriptions.firstOrNull { it.wallet_id == remote.wallet_id && it.subscriptions.size == remote.chains.size } == null
@@ -157,8 +169,8 @@ class DeviceRepository(
             remoteSubscriptions.firstOrNull { it.wallet_id == local.wallet_id && local.subscriptions.size == it.chains.size } == null
         }
 
-        addSubscriptions(deviceId, toAdd)
-        removeSubscriptions(deviceId, toRemove)
+        addSubscriptions(toAdd)
+        removeSubscriptions(toRemove)
 
         if (toAdd.isNotEmpty() || toRemove.isNotEmpty()) {
             increaseSubscriptionVersion()
@@ -168,8 +180,9 @@ class DeviceRepository(
 
     suspend fun syncOldSubscription(wallets: List<Wallet>, added: Boolean) {
         val deviceId = getDeviceId.getDeviceId()
+        val oldDeviceId = getDeviceIdOld.getDeviceId()
         val subscriptionsIndex = buildSubscriptionIndex(wallets)
-        val remoteSubscriptions = getOldRemoteSubscriptions(deviceId)
+        val remoteSubscriptions = getOldRemoteSubscriptions(oldDeviceId)
 
         val toAddSubscriptions = subscriptionsIndex.toMutableMap()
         remoteSubscriptions.forEach {
@@ -184,8 +197,8 @@ class DeviceRepository(
             }
         }
 
-        addOldSubscriptions(deviceId, toAddSubscriptions.values.toList())
-        removeOldSubscriptions(deviceId, toRemoveSubscription)
+        addOldSubscriptions(oldDeviceId, toAddSubscriptions.values.toList())
+        removeOldSubscriptions(oldDeviceId, toRemoveSubscription)
 
         if (toAddSubscriptions.isNotEmpty() || toRemoveSubscription.isNotEmpty()) {
             increaseSubscriptionVersion()
@@ -199,8 +212,7 @@ class DeviceRepository(
         }
         val supportId = UUID.randomUUID().toString().substring(0, 31)
         try {
-            gemApiClient.registerSupport(
-                deviceId = getDeviceId.getDeviceId(),
+            gemDeviceApiClient.registerSupport(
                 request = SupportDeviceRequest(
                     supportDeviceId = supportId,
                 )
@@ -212,35 +224,32 @@ class DeviceRepository(
     private suspend fun handlePushToken(pushToken: String, device: Device) {
         val device = device.copy(token = pushToken)
 
-        if (isDeviceRegistered(device.id)) {
+        if (isDeviceRegistered()) {
             updateDevice(device)
         } else {
             registerDevice(device)
         }
     }
 
-    private suspend fun isDeviceRegistered(deviceId: String): Boolean {
+    private suspend fun isDeviceRegistered(): Boolean {
         val local = context.dataStore.data.map { it[Key.DeviceRegistered] }.firstOrNull() == true
-        return local || gemApiClient.isDeviceRegistered(deviceId)
+        return local || gemDeviceApiClient.isDeviceRegistered()
     }
 
     private suspend fun registerDevice(device: Device) = try {
-        gemApiClient.registerDevice(device)
-        val isRegistered = (gemApiClient.isDeviceRegistered(device.id))
+        gemDeviceApiClient.registerDevice(device)
+        val isRegistered = (gemDeviceApiClient.isDeviceRegistered())
         setDeviceRegistered(isRegistered)
     } catch (_: Throwable) {}
 
     private suspend fun updateDevice(device: Device) {
         try {
-            val remote = gemApiClient.getDevice(device.id)
+            val remote = gemDeviceApiClient.getDevice()
 
             if (remote?.hasChanges(device) == true) {
                 val subscriptionsVersion = max(device.subscriptionsVersion, remote.subscriptionsVersion) + 1
                 setSubscriptionVersion(subscriptionsVersion)
-                gemApiClient.updateDevice(
-                    deviceId = device.id,
-                    request = device.copy(subscriptionsVersion = subscriptionsVersion)
-                )
+                gemDeviceApiClient.updateDevice(request = device.copy(subscriptionsVersion = subscriptionsVersion))
                 setDeviceRegistered(true)
             }
         } catch (_: Throwable) { }
@@ -250,29 +259,29 @@ class DeviceRepository(
         context.dataStore.edit { it[Key.DeviceRegistered] = isRegistered }
     }
 
-    private suspend fun getRemoteSubscriptions(deviceId: String): List<WalletSubscriptionChains> {
+    private suspend fun getRemoteSubscriptions(): List<WalletSubscriptionChains> {
         return try {
-            gemApiClient.getSubscriptions(deviceId) ?: throw Exception()
+            gemDeviceApiClient.getSubscriptions() ?: throw Exception()
         } catch (_: Exception) {
             emptyList()
         }
     }
 
-    private suspend fun addSubscriptions(deviceId: String, subscriptions: List<WalletSubscription>) {
+    private suspend fun addSubscriptions(subscriptions: List<WalletSubscription>) {
         if (subscriptions.isEmpty()) {
             return
         }
         try {
-            gemApiClient.addSubscriptions(deviceId, subscriptions)
+            gemDeviceApiClient.addSubscriptions(subscriptions)
         } catch (_: Throwable) { }
     }
 
-    private suspend fun removeSubscriptions(deviceId: String, subscriptions: List<WalletSubscription>) {
+    private suspend fun removeSubscriptions(subscriptions: List<WalletSubscription>) {
         if (subscriptions.isEmpty()) {
             return
         }
         try {
-            gemApiClient.deleteSubscriptions(deviceId, subscriptions)
+            gemDeviceApiClient.deleteSubscriptions(subscriptions)
         } catch (_: Throwable) { }
     }
 

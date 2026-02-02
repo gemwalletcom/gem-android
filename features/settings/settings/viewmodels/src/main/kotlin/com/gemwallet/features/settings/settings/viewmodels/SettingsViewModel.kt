@@ -2,7 +2,7 @@ package com.gemwallet.features.settings.settings.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled

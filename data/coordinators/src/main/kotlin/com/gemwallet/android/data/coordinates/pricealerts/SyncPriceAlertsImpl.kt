@@ -1,28 +1,25 @@
 package com.gemwallet.android.data.coordinates.pricealerts
 
 import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class SyncPriceAlertsImpl(
-    private val gemApiClient: GemApiClient,
-    private val getDeviceId: GetDeviceId,
+    private val gemDeviceApiClient: GemDeviceApiClient,
     private val priceAlertRepository: PriceAlertRepository,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : SyncPriceAlerts {
     override fun syncPriceAlerts() {
-        val deviceId = getDeviceId.getDeviceId()
 
         scope.launch {
             val all = priceAlertRepository.getEnablePriceAlerts()
 
             val remote = try {
-                gemApiClient.getPriceAlerts(deviceId)
+                gemDeviceApiClient.getPriceAlerts()
             } catch (_: Throwable) { return@launch }
 
             val toExclude = remote.filter { remote ->
@@ -42,14 +39,14 @@ class SyncPriceAlertsImpl(
 
             if (toExclude.isNotEmpty()) {
                 try {
-                    gemApiClient.excludePriceAlert(deviceId, toExclude)
+                    gemDeviceApiClient.excludePriceAlert(toExclude)
                 } catch (_: Throwable) {
                 }
             }
 
             try {
                 val local = priceAlertRepository.getPriceAlerts().firstOrNull() ?: emptyList()
-                gemApiClient.includePriceAlert(deviceId, local.map { it.priceAlert })
+                gemDeviceApiClient.includePriceAlert(local.map { it.priceAlert })
             } catch (_: Throwable) {}
         }
     }

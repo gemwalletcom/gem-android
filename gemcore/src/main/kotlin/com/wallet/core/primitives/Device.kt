@@ -20,7 +20,12 @@ data class Device (
 	val currency: String,
 	val isPushEnabled: Boolean,
 	val isPriceAlertsEnabled: Boolean? = null,
-	val subscriptionsVersion: Int,
-	val publicKey: String? = null
+	val subscriptionsVersion: Int
+)
+
+@Serializable
+data class MigrateDeviceIdRequest (
+	val oldDeviceId: String,
+	val publicKey: String
 )
 

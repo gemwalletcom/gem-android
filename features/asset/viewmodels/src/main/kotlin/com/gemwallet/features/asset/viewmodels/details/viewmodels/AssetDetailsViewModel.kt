@@ -3,7 +3,6 @@ package com.gemwallet.features.asset.viewmodels.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.application.pricealerts.coordinators.GetAssetPriceAlertState
 import com.gemwallet.android.application.pricealerts.coordinators.GetPriceAlerts
 import com.gemwallet.android.application.pricealerts.coordinators.PriceAlertsStateCoordinator
 import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts

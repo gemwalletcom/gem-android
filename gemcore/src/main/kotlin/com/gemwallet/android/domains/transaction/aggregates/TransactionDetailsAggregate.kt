@@ -1,7 +1,7 @@
 package com.gemwallet.android.domains.transaction.aggregates
 
-import com.gemwallet.android.domains.transaction.values.ValueGroup
 import com.gemwallet.android.domains.transaction.values.TransactionDetailsValue
+import com.gemwallet.android.domains.transaction.values.ValueGroup
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.TransactionDirection

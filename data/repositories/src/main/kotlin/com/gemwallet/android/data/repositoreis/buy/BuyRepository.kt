@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.buy
 
-import com.gemwallet.android.cases.device.GetDeviceId
+import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
@@ -18,7 +18,7 @@ class BuyRepository @Inject constructor(
     private val configStore: com.gemwallet.android.data.service.store.ConfigStore,
     private val gemApi: GemApiClient,
     private val assetsRepository: AssetsRepository,
-    private val getDeviceId: GetDeviceId,
+    private val getDeviceIdOld: GetDeviceIdOld,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
@@ -49,13 +49,13 @@ class BuyRepository @Inject constructor(
                     assetId = asset.id.toIdentifier(),
                     amount = amount,
                     currency = fiatCurrency,
-                    deviceId = getDeviceId.getDeviceId()
+                    deviceId = getDeviceIdOld.getDeviceId()
                 )
                 FiatQuoteType.Sell -> gemApi.getSellFiatQuotes(
                     assetId = asset.id.toIdentifier(),
                     amount = amount,
                     currency = fiatCurrency,
-                    deviceId = getDeviceId.getDeviceId()
+                    deviceId = getDeviceIdOld.getDeviceId()
                 )
             }.quotes
         } catch (err: Throwable) {

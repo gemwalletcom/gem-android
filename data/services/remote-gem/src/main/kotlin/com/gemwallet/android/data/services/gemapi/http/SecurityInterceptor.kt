@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.services.gemapi.http
 
-import com.gemwallet.android.application.PasswordStore
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
+import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -11,11 +12,10 @@ import wallet.core.jni.Hash
 import wallet.core.jni.PrivateKey
 
 class SecurityInterceptor(
-    private val passwordStore: PasswordStore,
+    private val getDeviceId: GetDeviceId,
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val privateKey = PrivateKey(passwordStore.getDevicePrivateKey())
         val request = chain.request()
         val method = request.method
         val path = request.url.encodedPath
@@ -28,12 +28,17 @@ class SecurityInterceptor(
         }?.toHexString("") ?: ""
         val time = System.currentTimeMillis()
         val message = "v1.${time}.${method}.${path}.${body}"
-        val signature = Base64.encode(privateKey.sign(message.toByteArray(), Curve.ED25519))
+        val signature = Base64.encode(
+            PrivateKey(getDeviceId.getDeviceKey().decodeHex())
+                .sign(message.toByteArray(), Curve.ED25519)
+        )
+        val deviceId = getDeviceId.getDeviceId()
         return chain.proceed(
             request.newBuilder()
                 .header("x-device-signature", signature)
                 .header("x-device-timestamp", time.toString())
                 .header("x-device-body-hash", body)
+                .header("x-device-id", deviceId)
                 .build()
         )
     }

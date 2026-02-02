@@ -1,12 +1,11 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.cases.device.GetDeviceId
 import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
 import com.gemwallet.android.data.repositoreis.nft.NftRepository
 import com.gemwallet.android.data.service.store.database.NftDao
-import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,11 +19,10 @@ class NftModule {
     @Provides
     @Singleton
     fun provideNftRepository(
-        gemApiClient: GemApiClient,
-        getDeviceId: GetDeviceId,
+        gemDeviceApiClient: GemDeviceApiClient,
         nftDao: NftDao
     ): NftRepository {
-        return NftRepository(gemApiClient, getDeviceId, nftDao)
+        return NftRepository(gemDeviceApiClient, nftDao)
     }
 
     @Provides
