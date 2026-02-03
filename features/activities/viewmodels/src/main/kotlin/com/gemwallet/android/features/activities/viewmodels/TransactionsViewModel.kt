@@ -31,7 +31,11 @@ class TransactionsViewModel @Inject constructor(
     private val syncTransactions: SyncTransactions,
 ) : ViewModel() {
 
+    private val _state = MutableStateFlow(true)
+    val state: StateFlow<Boolean> = _state
+
     val chainsFilter = MutableStateFlow<List<Chain>>(emptyList())
+
     val typeFilter = MutableStateFlow<List<TransactionTypeFilter>>(emptyList())
 
     val session = sessionRepository.session()
@@ -51,9 +55,6 @@ class TransactionsViewModel @Inject constructor(
     }
     .distinctUntilChanged()
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, emptyList())
-
-    private val _state = MutableStateFlow(true)
-    val state: StateFlow<Boolean> = _state
 
     init {
         refresh()
