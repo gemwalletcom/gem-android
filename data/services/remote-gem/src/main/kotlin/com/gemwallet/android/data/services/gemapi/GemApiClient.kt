@@ -9,14 +9,9 @@ import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.Charts
 import com.wallet.core.primitives.ConfigResponse
 import com.wallet.core.primitives.FiatAssets
-import com.wallet.core.primitives.FiatQuoteUrl
-import com.wallet.core.primitives.FiatQuoteUrlRequest
-import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NameRecord
-import com.wallet.core.primitives.Subscription
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -36,15 +31,6 @@ interface GemApiClient {
 
     @GET("/v1/name/resolve/{domain}")
     suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): NameRecord
-
-    @GET("/v1/subscriptions/{device_id}")
-    suspend fun getOldSubscriptions(@Path("device_id") deviceId: String): List<Subscription>?
-
-    @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
-    suspend fun deleteOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
-
-    @POST("/v1/subscriptions/{device_id}")
-    suspend fun addOldSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
     @GET("/v1/charts/{asset_id}")
     suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Charts

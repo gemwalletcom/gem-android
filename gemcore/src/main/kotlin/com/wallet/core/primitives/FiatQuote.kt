@@ -29,13 +29,6 @@ data class FiatQuoteUrl (
 )
 
 @Serializable
-data class FiatQuoteUrlRequest (
-	val quoteId: String,
-	val walletAddress: String,
-	val deviceId: String
-)
-
-@Serializable
 data class FiatQuotes (
 	val quotes: List<FiatQuote>
 )
