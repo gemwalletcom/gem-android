@@ -1,11 +1,11 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
-import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +20,9 @@ object BuyModule {
     @Singleton
     fun provideBuyRepository(
         @ApplicationContext context: Context,
-        gemFiatQuoteClient: GemApiClient,
+        gemApiClient: GemApiClient,
+        gemDeviceApiClient: GemDeviceApiClient,
         assetsRepository: AssetsRepository,
-        getDeviceIdOld: GetDeviceIdOld
     ): BuyRepository =
         BuyRepository(
             configStore = ConfigStore(
@@ -31,8 +31,8 @@ object BuyModule {
                     Context.MODE_PRIVATE
                 )
             ),
-            gemApi = gemFiatQuoteClient,
+            gemApi = gemApiClient,
+            gemDeviceApiClient = gemDeviceApiClient,
             assetsRepository = assetsRepository,
-            getDeviceIdOld = getDeviceIdOld
         )
 }

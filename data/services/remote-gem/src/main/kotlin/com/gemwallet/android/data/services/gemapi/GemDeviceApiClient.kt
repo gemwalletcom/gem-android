@@ -4,6 +4,10 @@ import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.AuthNonce
 import com.wallet.core.primitives.AuthenticatedRequest
 import com.wallet.core.primitives.Device
+import com.wallet.core.primitives.FiatQuoteType
+import com.wallet.core.primitives.FiatQuoteUrl
+import com.wallet.core.primitives.FiatQuoteUrlRequest
+import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.MigrateDeviceIdRequest
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.PriceAlert
@@ -120,5 +124,21 @@ interface GemDeviceApiClient {
     // Support
     @POST("/v2/devices/support")
     suspend fun registerSupport(@Body request: SupportDeviceRequest): SupportDevice
+
+    // BUY
+    @GET("/v2/devices/fiat/quotes/{type}/{asset_id}")
+    suspend fun getFiatQuotes(
+        @Header("x-wallet-id")  walletId: String,
+        @Path("type") type: String,
+        @Path("asset_id") assetId: String,
+        @Query("amount") amount: Double,
+        @Query("currency") currency: String,
+    ): FiatQuotes
+
+    @GET("/v2/devices/fiat/quotes/{quote_id}/url")
+    suspend fun getFiatQuoteUrl(
+        @Header("x-wallet-id")  walletId: String,
+        @Path("quote_id") quoteId: String
+    ): FiatQuoteUrl
 
 }

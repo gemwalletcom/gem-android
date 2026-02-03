@@ -1,15 +1,12 @@
 package com.gemwallet.android.data.repositoreis.buy
 
-import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.FiatQuote
 import com.wallet.core.primitives.FiatQuoteType
-import com.wallet.core.primitives.FiatQuoteUrlRequest
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,9 +14,8 @@ import javax.inject.Singleton
 class BuyRepository @Inject constructor(
     private val configStore: com.gemwallet.android.data.service.store.ConfigStore,
     private val gemApi: GemApiClient,
+    private val gemDeviceApiClient: GemDeviceApiClient,
     private val assetsRepository: AssetsRepository,
-    private val getDeviceIdOld: GetDeviceIdOld,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
     suspend fun sync() {
@@ -37,40 +33,30 @@ class BuyRepository @Inject constructor(
     }
 
     suspend fun getQuotes(
+        walletId: String,
         asset: Asset,
         type: FiatQuoteType,
         fiatCurrency: String,
         amount: Double,
-        owner: String,
     ): List<FiatQuote> {
         return try {
-            when (type) {
-                FiatQuoteType.Buy -> gemApi.getBuyFiatQuotes(
-                    assetId = asset.id.toIdentifier(),
-                    amount = amount,
-                    currency = fiatCurrency,
-                    deviceId = getDeviceIdOld.getDeviceId()
-                )
-                FiatQuoteType.Sell -> gemApi.getSellFiatQuotes(
-                    assetId = asset.id.toIdentifier(),
-                    amount = amount,
-                    currency = fiatCurrency,
-                    deviceId = getDeviceIdOld.getDeviceId()
-                )
-            }.quotes
+            gemDeviceApiClient.getFiatQuotes(
+                assetId = asset.id.toIdentifier(),
+                amount = amount,
+                currency = fiatCurrency,
+                walletId = walletId,
+                type = type.string,
+            ).quotes
         } catch (err: Throwable) {
             throw Exception("Quotes not found", err)
         }
     }
 
-    suspend fun getQuoteUrl(quoteId: String, walletAddress: String, deviceId: String): String? {
+    suspend fun getQuoteUrl(quoteId: String, walletId: String): String? {
         return try {
-            gemApi.getFiatQuoteUrl(
-                FiatQuoteUrlRequest(
-                    quoteId = quoteId,
-                    walletAddress = walletAddress,
-                    deviceId = deviceId,
-                )
+            gemDeviceApiClient.getFiatQuoteUrl(
+                walletId = walletId,
+                quoteId = quoteId,
             ).redirectUrl
         } catch (_: Throwable) {
             null

@@ -309,31 +309,31 @@ class AssetsRepository @Inject constructor(
             items.toMutableMap().apply { put(wallet.id, true) }
         }
 
-        val availableAssetsId = try {
-            gemDeviceApiClient.getAssets(walletId = wallet.id)
+        try {
+            val availableAssetsId = gemDeviceApiClient.getAssets(walletId = wallet.id)
+            val assetIds = availableAssetsId.mapNotNull { it.toAssetId() }
+            val tokenIds = assetIds.filter { it.type() != AssetSubtype.NATIVE }
+
+            searchTokensCase.search(tokenIds, currency)
+            assetIds.map { assetId ->
+                async {
+                    val asset = assetsDao.getAsset(assetId.toIdentifier())?.toDTO() ?: return@async null
+                    add(
+                        walletId = wallet.id,
+                        accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
+                        asset = asset,
+                        visible = true
+                    )
+                    asset
+                }
+            }.awaitAll()
+            sync()
         } catch (_: Throwable) {
             return@launch
-        }
-        val assetIds = availableAssetsId.mapNotNull { it.toAssetId() }
-        val tokenIds = assetIds.filter { it.type() != AssetSubtype.NATIVE }
-
-        searchTokensCase.search(tokenIds, currency)
-        assetIds.map { assetId ->
-            async {
-                val asset = assetsDao.getAsset(assetId.toIdentifier())?.toDTO() ?: return@async null
-                add(
-                    walletId = wallet.id,
-                    accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
-                    asset = asset,
-                    visible = true
-                )
-                asset
+        } finally {
+            importStatus.update { items ->
+                items.toMutableMap().apply { remove(wallet.id) }
             }
-        }.awaitAll()
-        sync()
-
-        importStatus.update { items ->
-            items.toMutableMap().apply { remove(wallet.id) }
         }
     }
 

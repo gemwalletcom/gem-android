@@ -28,25 +28,6 @@ interface GemApiClient {
     @POST("/v1/prices")
     suspend fun prices(@Body request: AssetPricesRequest): PricesResponse
 
-    @GET("/v1/fiat/quotes/sell/{asset_id}")
-    suspend fun getBuyFiatQuotes(
-        @Path("asset_id") assetId: String,
-        @Query("amount") amount: Double,
-        @Query("device_id") deviceId: String,
-        @Query("currency") currency: String,
-    ): FiatQuotes
-
-    @GET("/v1/fiat/quotes/sell/{asset_id}")
-    suspend fun getSellFiatQuotes(
-        @Path("asset_id") assetId: String,
-        @Query("amount") amount: Double,
-        @Query("currency") currency: String,
-        @Query("device_id") deviceId: String,
-    ): FiatQuotes
-
-    @POST("/v1/fiat/quotes/url")
-    suspend fun getFiatQuoteUrl(@Body request: FiatQuoteUrlRequest): FiatQuoteUrl
-
     @GET("/v1/fiat/on_ramp/assets")
     suspend fun getOnRampAssets(): FiatAssets
 

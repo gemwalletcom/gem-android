@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -53,7 +52,6 @@ class FiatViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
-    private val getDeviceIdOld: GetDeviceIdOld,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -124,8 +122,8 @@ class FiatViewModel @Inject constructor(
     private val _selectedQuote = MutableStateFlow<FiatQuote?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val quotes = combine(assetInfoUIModel, type, amount, amountValidator) { asset, type, amount, validator ->
-        asset ?: return@combine emptyList()
+    val quotes = combine(assetInfoUIModel, type, amount, amountValidator) { assetInfo, type, amount, validator ->
+        assetInfo ?: return@combine emptyList()
         if (!validator.validate(amount)) {
             _state.value = FiatSceneState.Error(validator.error)
             return@combine emptyList()
@@ -133,18 +131,18 @@ class FiatViewModel @Inject constructor(
             _state.value = FiatSceneState.Loading
         }
         val amountParsed = amount.parseNumber().toDouble()
-        val crypto = asset.price.fiat?.let { Fiat(BigDecimal(amountParsed)).convert(asset.asset.decimals, it).atomicValue } ?: BigInteger.ZERO
-        if (type == FiatQuoteType.Sell && crypto > asset.assetInfo.balance.balance.available.toBigInteger()) {
+        val crypto = assetInfo.price.fiat?.let { Fiat(BigDecimal(amountParsed)).convert(assetInfo.asset.decimals, it).atomicValue } ?: BigInteger.ZERO
+        if (type == FiatQuoteType.Sell && crypto > assetInfo.assetInfo.balance.balance.available.toBigInteger()) {
             _state.value = FiatSceneState.Error(BuyError.InsufficientBalance)
             return@combine emptyList()
         }
         val result = try {
             val quotes = buyRepository.getQuotes(
-                asset.asset,
+                walletId = assetInfo.assetInfo.walletId ?: return@combine emptyList(),
+                asset = assetInfo.asset,
                 type = type,
                 fiatCurrency = currency.string,
-                amountParsed,
-                owner = asset.assetInfo.owner?.address ?: ""
+                amount = amountParsed,
             )
             _state.value = null
             if (quotes.isEmpty()) {
@@ -202,9 +200,8 @@ class FiatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             addRecent()
             val url = buyRepository.getQuoteUrl(
-                _selectedQuote.value?.id ?: return@launch,
-                walletAddress = assetInfoUIModel.value?.owner ?: return@launch,
-                deviceId = getDeviceIdOld.getDeviceId(),
+                quoteId = _selectedQuote.value?.id ?: return@launch,
+                walletId = assetInfoUIModel.value?.assetInfo?.walletId ?: return@launch,
             )
             callback(url)
         }
