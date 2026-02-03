@@ -93,7 +93,7 @@ android {
             buildConfigField("String", "UPDATE_URL", "\"https://apps.samsung.com/appquery/appDetail.as?appId=com.gemwallet.android\"")
         }
 
-        create("raw") {
+        create("emerald") {
             dimension = channelDimension
             ndk {
                 abiFilters.add("armeabi-v7a")
@@ -304,9 +304,9 @@ dependencies {
     // fdroid
     "fdroidImplementation"(project(":flavors:pushes-stub"))
     "fdroidImplementation"(project(":flavors:review-stub"))
-    // raw
-    "rawImplementation"(project(":flavors:fcm"))
-    "rawImplementation"(project(":flavors:review-stub"))
+    // emerald
+    "emeraldImplementation"(project(":flavors:fcm"))
+    "emeraldImplementation"(project(":flavors:review-stub"))
 
     // Preview
     debugImplementation(libs.androidx.ui.tooling)

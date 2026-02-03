@@ -83,6 +83,7 @@ class AppViewModel @Inject constructor(
                         PlatformStore.SamsungStore -> "samsung"
                         PlatformStore.ApkUniversal -> "universal"
                         PlatformStore.AppStore -> it.store.string
+                        PlatformStore.Emerald -> "emerald"
                         PlatformStore.Local -> "local"
                     }
                     BuildConfig.FLAVOR == versionFlavor

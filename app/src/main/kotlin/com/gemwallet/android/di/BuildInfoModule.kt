@@ -63,6 +63,7 @@ object BuildInfoModule {
             "solana" -> PlatformStore.SolanaStore
             "fdroid" -> PlatformStore.Fdroid
             "samsung" -> PlatformStore.SamsungStore
+            "emerald" -> PlatformStore.Emerald
             else -> PlatformStore.Local
         }
     }

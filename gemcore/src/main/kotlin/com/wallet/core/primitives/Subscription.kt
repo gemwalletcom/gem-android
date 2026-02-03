@@ -8,13 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class Subscription (
-	val wallet_index: Int,
-	val chain: Chain,
-	val address: String
-)
-
-@Serializable
 data class WalletSubscription (
 	val walletId: String,
 	val source: WalletSource? = null,
