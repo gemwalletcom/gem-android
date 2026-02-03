@@ -99,7 +99,7 @@ android {
                 abiFilters.add("armeabi-v7a")
                 abiFilters.add("arm64-v8a")
             }
-            buildConfigField("String", "UPDATE_URL", System.getenv("RAW_UPDATE_URL") ?: "\"https://apk.gemwallet.com/gem_wallet_latest.apk\"")
+            buildConfigField("String", "UPDATE_URL", System.getenv("UPDATE_URL") ?: "\"https://apk.gemwallet.com/gem_wallet_latest.apk\"")
         }
     }
     signingConfigs {

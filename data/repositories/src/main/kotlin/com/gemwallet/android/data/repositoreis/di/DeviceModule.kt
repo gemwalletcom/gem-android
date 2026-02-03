@@ -14,7 +14,6 @@ import com.gemwallet.android.data.repositoreis.device.DeviceRepository
 import com.gemwallet.android.data.repositoreis.device.GetDeviceIdOldImpl
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.ConfigStore
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.model.BuildInfo
 import dagger.Module
@@ -39,7 +38,6 @@ object DeviceModule {
     fun provideDeviceRepository(
         @ApplicationContext context: Context,
         buildInfo: BuildInfo,
-        gemApiClient: GemApiClient,
         gemDeviceApiClient: GemDeviceApiClient,
         getDeviceIdOld: GetDeviceIdOld,
         getDeviceId: GetDeviceId,
@@ -48,7 +46,6 @@ object DeviceModule {
     ): DeviceRepository {
         return DeviceRepository(
             context = context,
-            gemApiClient = gemApiClient,
             gemDeviceApiClient = gemDeviceApiClient,
             getDeviceIdOld = getDeviceIdOld,
             getDeviceId = getDeviceId,

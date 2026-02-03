@@ -40,13 +40,14 @@ class AppViewModel @Inject constructor(
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AppUIState())
 
-    val notificationRequest = combine(
-        userConfig.isRequestNotificationEnable(),
+    val askNotifications = combine(
+        userConfig.isAskNotifications(),
         sessionRepository.session(),
         getPushEnabled.getPushEnabled(),
-    ) { isShow, session, pushEnabled ->
-        isShow && session != null && !pushEnabled
+    ) { isAsk, session, pushEnabled ->
+        isAsk && session != null && !pushEnabled
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
 
     init {
         viewModelScope.launch {
@@ -97,18 +98,19 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    fun onHideNotificationRequest() {
-        viewModelScope.launch(Dispatchers.IO) {
-            userConfig.hideRequestNotification()
-        }
-    }
-
     fun onNotificationsEnable() {
         viewModelScope.launch(Dispatchers.IO) {
+            userConfig.stopAskNotifications()
             switchPushEnabled.switchPushEnabled(
                 true,
                 walletsRepository.getAll().firstOrNull() ?: emptyList()
             )
+        }
+    }
+
+    fun laterAskNotifications() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userConfig.stopAskNotifications()
         }
     }
 

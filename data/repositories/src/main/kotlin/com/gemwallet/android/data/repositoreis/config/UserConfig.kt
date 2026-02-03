@@ -15,6 +15,7 @@ import com.gemwallet.android.cases.config.IsWelcomeBannerHidden
 import com.gemwallet.android.cases.config.SetLatestVersion
 import com.gemwallet.android.cases.config.SetLockInterval
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class UserConfig(
@@ -103,6 +104,10 @@ class UserConfig(
         }
     }
 
+    fun isAskNotifications(): Flow<Boolean> = context.dataStore.data.map { it[Key.IsAskNotifications] ?: true }
+
+    suspend fun stopAskNotifications() = context.dataStore.edit { it[Key.IsAskNotifications] = false }
+
     fun isRequestNotificationEnable(): Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[Key.IsRequestNotifications] ?: true }
 
@@ -156,5 +161,6 @@ class UserConfig(
         val AppVersionSkip = stringPreferencesKey("app-version-skip")
         val IsWelcomeBannerHidden = stringSetPreferencesKey("is_welcome_banner_state")
         val IsRequestNotifications = booleanPreferencesKey("is_request_notifications")
+        val IsAskNotifications = booleanPreferencesKey("is_ask_notifications")
     }
 }
