@@ -23,9 +23,8 @@ class GetDeviceIdOldImpl(
     }
 
     private fun initDeviceId() {
-        if (configStore.getString(ConfigKey.DeviceId.string).isNotEmpty()) {
-            return
+        if (!configStore.getString(ConfigKey.DeviceId.string).isNotEmpty()) {
+            configStore.getBoolean(Keys.DeviceIdMigrated.string, true)
         }
-        configStore.putString(Keys.DeviceId.string, UUID.randomUUID().toString().substring(0, 31))
     }
 }
