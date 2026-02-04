@@ -12,7 +12,11 @@ if [ "$arch" = "arm64" ]; then
   fi
 
   . /etc/os-release
-  codename="${VERSION_CODENAME:-noble}"
+  codename="${VERSION_CODENAME:-${UBUNTU_CODENAME:-}}"
+  if [ -z "$codename" ]; then
+    echo "Missing Ubuntu codename in /etc/os-release" >&2
+    exit 1
+  fi
 
   cat > /etc/apt/sources.list.d/ubuntu-amd64.sources <<EOF
 Types: deb
@@ -30,7 +34,7 @@ Architectures: amd64
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF
 
-  extra="libc6:amd64 zlib1g:amd64"
+  extra="libc6:amd64 libstdc++6:amd64 zlib1g:amd64 libtinfo6:amd64 libgcc-s1:amd64"
 fi
 
 apt-get update
