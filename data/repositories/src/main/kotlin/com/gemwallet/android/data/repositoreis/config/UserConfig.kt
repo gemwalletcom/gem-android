@@ -2,9 +2,11 @@ package com.gemwallet.android.data.repositoreis.config
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.text.format.DateUtils
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -15,7 +17,6 @@ import com.gemwallet.android.cases.config.IsWelcomeBannerHidden
 import com.gemwallet.android.cases.config.SetLatestVersion
 import com.gemwallet.android.cases.config.SetLockInterval
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class UserConfig(
@@ -104,9 +105,13 @@ class UserConfig(
         }
     }
 
-    fun isAskNotifications(): Flow<Boolean> = context.dataStore.data.map { it[Key.IsAskNotifications] ?: true }
+    fun isAskNotifications(): Flow<Boolean> = context.dataStore.data.map {
+        (it[Key.AskNotifications] ?: 0L) < System.currentTimeMillis() - 30 * DateUtils.DAY_IN_MILLIS
+    }
 
-    suspend fun stopAskNotifications() = context.dataStore.edit { it[Key.IsAskNotifications] = false }
+    suspend fun stopAskNotifications() = context.dataStore.edit {
+        it[Key.AskNotifications] = System.currentTimeMillis()
+    }
 
     fun isRequestNotificationEnable(): Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[Key.IsRequestNotifications] ?: true }
@@ -161,6 +166,6 @@ class UserConfig(
         val AppVersionSkip = stringPreferencesKey("app-version-skip")
         val IsWelcomeBannerHidden = stringSetPreferencesKey("is_welcome_banner_state")
         val IsRequestNotifications = booleanPreferencesKey("is_request_notifications")
-        val IsAskNotifications = booleanPreferencesKey("is_ask_notifications")
+        val AskNotifications = longPreferencesKey("ask_notifications")
     }
 }

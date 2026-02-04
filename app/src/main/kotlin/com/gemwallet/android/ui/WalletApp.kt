@@ -2,13 +2,11 @@
 
 package com.gemwallet.android.ui
 
-import android.Manifest
 import android.content.Context
 import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,11 +28,10 @@ import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateW
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
 import com.gemwallet.android.flavors.ReviewManager
+import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.navigation.WalletNavGraph
 import com.gemwallet.android.ui.theme.Spacer16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -48,29 +45,7 @@ fun WalletApp(
 
     var startDestination by remember { mutableStateOf<String?>(null) }
 
-    val permissionState = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        null
-    } else {
-        rememberPermissionState(
-            permission = Manifest.permission.POST_NOTIFICATIONS,
-            onPermissionResult = {
-                if (it) {
-                    viewModel.onNotificationsEnable()
-                } else {
-                    viewModel.laterAskNotifications()
-                }
-            }
-        )
-    }
-
-    var requestNotificationPermissions by remember { mutableStateOf(false) }
     val askNotifications by viewModel.askNotifications.collectAsStateWithLifecycle()
-
-    LaunchedEffect(requestNotificationPermissions) {
-        if (requestNotificationPermissions) {
-            permissionState?.launchPermissionRequest()
-        }
-    }
 
     LaunchedEffect(Unit) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -102,30 +77,11 @@ fun WalletApp(
     }
 
     if (askNotifications) {
-        if (permissionState == null) {
-            AlertDialog(
-                onDismissRequest = viewModel::laterAskNotifications,
-                text = {
-                    Text(text = stringResource(id = R.string.notifications_permission_request_notification))
-                },
-                confirmButton = {
-                    Button(onClick = viewModel::onNotificationsEnable) {
-                        Text(text = stringResource(id = R.string.common_grant_permission))
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = viewModel::laterAskNotifications) {
-                        Text(text = stringResource(id = R.string.common_no_thanks))
-                    }
-                }
-            )
-        } else {
-            if (permissionState.status.isGranted) {
-                viewModel.onNotificationsEnable()
-            } else {
-                requestNotificationPermissions = askNotifications
-            }
-        }
+        PushRequest(
+            showRequestDialog = true,
+            onNotificationEnable = viewModel::onNotificationsEnable,
+            onDismiss = viewModel::laterAskNotifications
+        )
     }
 }
 

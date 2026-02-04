@@ -200,6 +200,11 @@ fun SettingsScene(
     }
 
     requestPushGrant?.let {
-        PushRequest(it) { requestPushGrant = null }
+        PushRequest(
+            onNotificationEnable = {
+            it()
+                requestPushGrant = null
+            }
+        ) { requestPushGrant = null }
     }
 }

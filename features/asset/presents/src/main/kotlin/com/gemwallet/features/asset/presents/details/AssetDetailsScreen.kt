@@ -74,7 +74,7 @@ fun AssetDetailsScreen(
     }
 
     if (priceAlertEnabled is PriceAlertsStateEvent.PushRequested) {
-        PushRequest(viewModel::pushGranted, viewModel::pushRejected)
+        PushRequest(onNotificationEnable = viewModel::pushGranted, onDismiss = viewModel::pushRejected)
     }
 }
 
