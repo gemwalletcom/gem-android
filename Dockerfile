@@ -26,15 +26,10 @@ ENV ANDROID_SDK_URL=https://dl.google.com/android/repository/commandlinetools-li
 ENV PATH=${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
 # Runtime deps for build-tools/aapt2.
-RUN DPKG_ARCH=$(dpkg --print-architecture) && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libc6:${DPKG_ARCH} \
-    libstdc++6:${DPKG_ARCH} \
-    zlib1g:${DPKG_ARCH} \
-    libtinfo6:${DPKG_ARCH} \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# On arm64 hosts, build-tools ship x86_64-only binaries (aapt2). Install amd64
+# libc/zlib so those binaries can run under emulation.
+COPY scripts/setup-multiarch-apt.sh /usr/local/bin/setup-multiarch-apt
+RUN chmod +x /usr/local/bin/setup-multiarch-apt && /usr/local/bin/setup-multiarch-apt
 
 # Install just from a pinned release.
 RUN case ${TARGETARCH} in \
