@@ -25,9 +25,9 @@ ENV ANDROID_SDK_ROOT=/opt/android-sdk
 ENV ANDROID_SDK_URL=https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip
 ENV PATH=${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
-# Runtime deps for build-tools/aapt2; on arm64 install amd64 libs so x86_64-only aapt2 runs under emulation.
+# Runtime deps for build-tools on arm64, amd64 libs are needed for x86_64-only binary (aapt2 etc) under emulation.
 COPY scripts/setup-multiarch-apt.sh /usr/local/bin/setup-multiarch-apt
-RUN chmod +x /usr/local/bin/setup-multiarch-apt && /usr/local/bin/setup-multiarch-apt
+RUN /usr/local/bin/setup-multiarch-apt
 
 # Install just from a pinned release.
 RUN case ${TARGETARCH} in \
