@@ -43,7 +43,7 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 --no-cache -t gem-android-base ..
+	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM={{DOCKER_PLATFORM}} docker build --platform {{DOCKER_PLATFORM}} --no-cache -t gem-android-base {{justfile_directory()}}
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
