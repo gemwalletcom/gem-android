@@ -48,6 +48,8 @@ build-base-image:
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 BUNDLE_TASK := env("BUNDLE_TASK", "clean :app:bundleGoogleRelease assembleUniversalRelease")
+DOCKER_PLATFORM := env("DOCKER_PLATFORM", "linux/amd64")
+OUTPUTS_DIR := env("OUTPUTS_DIR", "")
 GRADLE_WORKERS_MAX := env("GRADLE_WORKERS_MAX", "4")
 
 build-app-image:
@@ -58,9 +60,9 @@ build-app-image:
 	tag="{{TAG}}"
 	if ! docker pull ghcr.io/gemwalletcom/gem-android-base:${base_tag} >/dev/null 2>&1; then
 		echo "Base image ghcr.io/gemwalletcom/gem-android-base:${base_tag} not found; building locally..." >&2
-		DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 -t ghcr.io/gemwalletcom/gem-android-base:${base_tag} .
+		DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM="{{DOCKER_PLATFORM}}" docker build --platform "{{DOCKER_PLATFORM}}" -t ghcr.io/gemwalletcom/gem-android-base:${base_tag} .
 	fi
-	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 \
+	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM="{{DOCKER_PLATFORM}}" docker build --platform "{{DOCKER_PLATFORM}}" \
 		--build-arg TAG="${tag}" \
 		--build-arg SKIP_SIGN=true \
 		--build-arg BUNDLE_TASK="${BUNDLE_TASK}" \
@@ -78,15 +80,20 @@ build-app-in-docker:
 	container_name="gem-android-app-build"
 	gradle_cache=$(mktemp -d)
 	maven_cache=$(mktemp -d)
+	outputs_dir="{{OUTPUTS_DIR}}"
 	trap 'rm -rf "${gradle_cache}" "${maven_cache}"; docker rm -f ${container_name} >/dev/null 2>&1 || true' EXIT
 	docker rm -f ${container_name} >/dev/null 2>&1 || true
-	DOCKER_DEFAULT_PLATFORM=linux/amd64 docker run --platform linux/amd64 --name ${container_name} \
+	DOCKER_DEFAULT_PLATFORM="{{DOCKER_PLATFORM}}" docker run --platform "{{DOCKER_PLATFORM}}" --name ${container_name} \
 		-e SKIP_SIGN=true \
 		-e BUNDLE_TASK="${BUNDLE_TASK}" \
 		-v "${gradle_cache}":/root/.gradle \
 		-v "${maven_cache}":/root/.m2 \
 		gem-android-app-verify \
 		bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache -Dorg.gradle.workers.max={{GRADLE_WORKERS_MAX}}'
+	if [ -n "${outputs_dir}" ]; then
+		mkdir -p "${outputs_dir}"
+		docker cp "${container_name}":/root/gem-android/app/build/outputs/. "${outputs_dir}/"
+	fi
 
 core-upgrade:
 	@git submodule update --recursive --remote
