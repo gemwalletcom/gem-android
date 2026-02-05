@@ -98,7 +98,7 @@ class Migration_63_64(context: Context, private val passwordStore: PasswordStore
             newWalletIds.keys.firstOrNull()
         }
 
-        if (sessionWalletId == null) {
+        if (sessionWalletId != null) {
             db.execSQL("UPDATE session SET wallet_id = ? WHERE id = 1", arrayOf(sessionWalletId))
         }
 
