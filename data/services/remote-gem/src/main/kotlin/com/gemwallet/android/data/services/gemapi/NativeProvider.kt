@@ -12,6 +12,7 @@ import uniffi.gemstone.AlienProvider
 import uniffi.gemstone.AlienResponse
 import uniffi.gemstone.AlienTarget
 import uniffi.gemstone.Chain
+import uniffi.gemstone.GatewayException
 
 class NativeProvider(
     private val getNodesCase: GetNodesCase,
@@ -22,7 +23,7 @@ class NativeProvider(
 
     override fun getEndpoint(chain: Chain): String {
         return chain.toChain()?.getNodeUrl(getNodesCase, getCurrentNodeCase, setCurrentNodeCase)
-            ?: throw IllegalArgumentException("Can't found node url for chain: $chain")
+            ?: throw GatewayException.PlatformException("Can't found node url for chain: $chain")
     }
 
     override suspend fun request(target: AlienTarget): AlienResponse {

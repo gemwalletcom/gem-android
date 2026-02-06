@@ -1,11 +1,12 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
-import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.blockchain.services.mapper.toUtxo
 import com.gemwallet.android.ext.toChain
+import com.gemwallet.android.model.GemPlatformErrors
 import com.wallet.core.primitives.UTXO
 import uniffi.gemstone.Chain
+import uniffi.gemstone.GatewayException
 import uniffi.gemstone.GemFeeOptions
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemGatewayEstimateFee
@@ -93,8 +94,8 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
             Common.SigningError.OK -> { /* continue */ }
             Common.SigningError.Error_not_enough_utxos,
             Common.SigningError.Error_dust_amount_requested,
-            Common.SigningError.Error_missing_input_utxos -> throw BlockchainError.DustError//("Dust Error: $bytePrice")
-            else -> throw IllegalStateException(plan.error.name)
+            Common.SigningError.Error_missing_input_utxos -> throw GatewayException.PlatformException(GemPlatformErrors.Dust.message)
+            else -> throw GatewayException.PlatformException(plan.error.name)
         }
 
         val selectedUtxos: MutableList<UTXO> = mutableListOf()
