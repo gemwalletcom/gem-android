@@ -23,6 +23,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.GemPlatformErrors
 import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
@@ -127,7 +128,7 @@ class ConfirmViewModel @Inject constructor(
         } catch (err: Throwable) {
             state.update {
                 ConfirmState.Error(
-                    when (err.message?.contains("DustError")) {
+                    when (err.message?.contains(GemPlatformErrors.Dust.message)) {
                         true -> ConfirmError.DustThreshold("${owner.chain.asset().name} (${owner.chain.asset().symbol})")
                         else -> ConfirmError.PreloadError
                     }
