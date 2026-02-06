@@ -41,7 +41,6 @@ fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationD
             }
             PushNotificationTypes.Support,
             PushNotificationTypes.Test -> null
-
             PushNotificationTypes.Rewards -> jsonEncoder.decodeFromString<PushNotificationReward>(rawData).let {
                 PushNotificationData.Reward
             }
