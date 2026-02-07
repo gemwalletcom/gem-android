@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -67,11 +68,10 @@ class ChartViewModel @Inject constructor(
         val currency = assetInfo.price?.currency ?: Currency.USD
 
         val prices = try {
-            gemApiClient.getChart(
-                assetId = assetInfo.asset.id.toIdentifier(),
-                currency = currency.string,
-                period = period.string
-            ).prices.sortedBy { it.timestamp }
+            val rate = assetsRepository.getCurrencyRate(currency).firstOrNull()?.rate?.toFloat() ?: throw IllegalStateException()
+            gemApiClient.getChart(assetInfo.asset.id.toIdentifier(), period.string).prices.map {
+                it.copy(value = it.value * rate)
+            }.sortedBy { it.timestamp }
         } catch (_: Throwable) {
             emptyList()
         }

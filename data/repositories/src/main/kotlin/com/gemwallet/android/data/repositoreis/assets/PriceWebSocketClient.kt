@@ -101,7 +101,7 @@ class PriceWebSocketClient(
     private suspend fun handlePriceUpdate(prices: List<AssetPrice>, newRates: List<FiatRate>) {
         val currency = sessionRepository.getCurrentCurrency()
         updateRates(newRates, currency)
-        val rate = pricesDao.getRates(currency)?.toDTO() ?: return
+        val rate = pricesDao.getRates(currency).firstOrNull()?.toDTO() ?: return
         updatePrices(prices, rate)
     }
 

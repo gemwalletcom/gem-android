@@ -18,6 +18,7 @@ import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 
 class TokensRepository (
@@ -50,7 +51,7 @@ class TokensRepository (
         } else {
             runCatching { assetsDao.insert(tokens.map { it.toRecord() }) }
             runCatching {
-                pricesDao.getRates(currency)?.let { rate ->
+                pricesDao.getRates(currency).firstOrNull()?.let { rate ->
                     tokens.mapNotNull {
                         val price = it.price ?: return@mapNotNull null
                         DbPrice(

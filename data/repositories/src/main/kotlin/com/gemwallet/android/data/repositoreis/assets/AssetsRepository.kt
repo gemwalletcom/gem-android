@@ -47,6 +47,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.FiatRate
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope
@@ -493,10 +494,14 @@ class AssetsRepository @Inject constructor(
     }
 
     private suspend fun changeCurrency(currency: Currency) {
-        val rate = pricesDao.getRates(currency)?.toDTO() ?: return
+        val rate = pricesDao.getRates(currency).map { it?.toDTO() }.firstOrNull() ?: return
         pricesDao.getAll().firstOrNull()?.map {
             it.copy(value = (it.usdValue ?: 0.0) * rate.rate, currency = currency.string)
         }?.let { pricesDao.insert(it) }
+    }
+
+    suspend fun getCurrencyRate(currency: Currency): Flow<FiatRate?> {
+        return pricesDao.getRates(currency).map { it?.toDTO() }
     }
 
     override suspend fun addRecentActivity(

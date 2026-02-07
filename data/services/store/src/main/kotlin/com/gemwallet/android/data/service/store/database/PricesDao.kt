@@ -31,5 +31,5 @@ interface PricesDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM currency_rates WHERE currency=:currency")
-    suspend fun getRates(currency: Currency): DbFiatRate?
+    fun getRates(currency: Currency): Flow<DbFiatRate?>
 }
