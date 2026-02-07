@@ -142,7 +142,7 @@ class AssetsRepository @Inject constructor(
         val assetIdIdentifier = assetId.toIdentifier()
         val assetFullJob = async {
             try {
-                gemApi.getAsset(assetIdIdentifier, currency.string)
+                gemApi.getAsset(assetIdIdentifier)
             } catch (_: Throwable) {
                 null
             }

@@ -23,7 +23,7 @@ class GetDeviceIdOldImpl(
     }
 
     private fun initDeviceId() {
-        if (!configStore.getString(ConfigKey.DeviceId.string).isNotEmpty()) {
+        if (configStore.getString(ConfigKey.DeviceId.string).isEmpty()) {
             configStore.getBoolean(Keys.DeviceIdMigrated.string, true)
         }
     }

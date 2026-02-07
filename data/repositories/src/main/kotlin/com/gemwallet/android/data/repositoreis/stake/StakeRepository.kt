@@ -32,7 +32,7 @@ class StakeRepository(
 
     suspend fun sync(chain: Chain, address: String) = withContext(Dispatchers.IO) {
         val apr = try {
-            gemApiClient.getAsset(chain.string, Currency.USD.string).properties.stakingApr ?: return@withContext
+            gemApiClient.getAsset(chain.string).properties.stakingApr ?: return@withContext
         } catch (_: Throwable) {
             return@withContext
         }
