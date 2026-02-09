@@ -33,7 +33,7 @@ interface GemApiClient {
     suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): NameRecord
 
     @GET("/v1/charts/{asset_id}")
-    suspend fun getChart(@Path("asset_id") assetId: String, @Query("period") period: String): Charts // TODO: Remove currency
+    suspend fun getChart(@Path("asset_id") assetId: String, @Query("period") period: String): Charts
 
     @GET("/v1/assets/{asset_id}")
     suspend fun getAsset(@Path("asset_id") assetId: String): AssetFull
