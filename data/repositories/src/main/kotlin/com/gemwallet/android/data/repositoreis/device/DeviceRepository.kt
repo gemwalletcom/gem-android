@@ -81,6 +81,8 @@ class DeviceRepository(
         try {
             if (getDeviceIdOld.isMigrated()) return
 
+            if (getDeviceIdOld.getDeviceId().isEmpty()) return
+
             gemDeviceApiClient.migrateDevice(
                 MigrateDeviceIdRequest(
                     oldDeviceId = getDeviceIdOld.getDeviceId(),
