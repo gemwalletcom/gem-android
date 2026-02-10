@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.assets
 
+import android.os.Build
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
@@ -7,6 +8,7 @@ import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.model.BuildInfo
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Chain
@@ -17,12 +19,15 @@ import com.wallet.core.primitives.WebSocketPriceActionType
 import com.wallet.core.primitives.WebSocketPricePayload
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.UserAgent
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.sendSerialized
 import io.ktor.client.plugins.websocket.wss
+import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
+import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class PriceWebSocketClient(
     private val sessionRepository: SessionRepository,
+    private val buildInfo: BuildInfo,
     private val assetsDao: AssetsDao,
     private val pricesDao: PricesDao,
     private val priceAlertsDao: PriceAlertsDao,
@@ -50,6 +56,9 @@ class PriceWebSocketClient(
         install(WebSockets) {
             pingIntervalMillis = 15_000
             contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        }
+        install(UserAgent) {
+            agent = "Gem/Android(${Build.VERSION.RELEASE}); Version: ${buildInfo.versionName};"
         }
     }
 
@@ -74,7 +83,9 @@ class PriceWebSocketClient(
                 host = "api.gemwallet.com",
                 port = 443,
                 path = "/v1/ws/prices",
-            ) { webSocketBlock() }
+            ) {
+                webSocketBlock()
+            }
         } catch (_: Throwable) {
         }
     }

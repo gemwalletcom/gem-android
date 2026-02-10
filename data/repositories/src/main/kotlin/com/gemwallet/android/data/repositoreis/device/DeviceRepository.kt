@@ -3,13 +3,11 @@ package com.gemwallet.android.data.repositoreis.device
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
-import com.gemwallet.android.cases.device.GetSupportId
 import com.gemwallet.android.cases.device.RequestPushToken
 import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled
@@ -27,7 +25,6 @@ import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.MigrateDeviceIdRequest
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
-import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSubscription
 import com.wallet.core.primitives.WalletSubscriptionChains
@@ -40,7 +37,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.UUID
 import kotlin.math.max
 
 class DeviceRepository(
@@ -62,8 +58,7 @@ class DeviceRepository(
     GetPushEnabled,
     GetPushToken,
     SetPushToken,
-    SyncSubscription,
-    GetSupportId
+    SyncSubscription
 {
     private val Context.dataStore by preferencesDataStore(name = "device_config")
 
@@ -72,8 +67,6 @@ class DeviceRepository(
             migrate()
 
             syncDeviceInfo()
-
-            syncSupportInfo()
         }
     }
 
@@ -122,11 +115,6 @@ class DeviceRepository(
         }
     }
 
-    override fun getSupportId(): Flow<String?> {
-        return context.dataStore.data
-            .map { preferences -> preferences[Key.SupportId] }
-    }
-
     override suspend fun switchPushEnabled(enabled: Boolean, wallets: List<Wallet>) {
         context.dataStore.edit { preferences ->
             preferences[Key.PushEnabled] = enabled
@@ -171,21 +159,6 @@ class DeviceRepository(
             increaseSubscriptionVersion()
             syncDeviceInfo()
         }
-    }
-
-    private suspend fun syncSupportInfo() {
-        if (!getSupportId().firstOrNull().isNullOrEmpty()) {
-            return
-        }
-        val supportId = UUID.randomUUID().toString().substring(0, 31)
-        try {
-            gemDeviceApiClient.registerSupport(
-                request = SupportDeviceRequest(
-                    supportDeviceId = supportId,
-                )
-            )
-            context.dataStore.edit { it[Key.SupportId] = supportId }
-        } catch (_: Throwable) { }
     }
 
     private suspend fun handlePushToken(pushToken: String, device: Device) {
@@ -302,7 +275,6 @@ class DeviceRepository(
 
     private object Key {
         val PushEnabled = booleanPreferencesKey("push_enabled")
-        val SupportId = stringPreferencesKey("support-id")
         val DeviceRegistered = booleanPreferencesKey("device_registered")
     }
 

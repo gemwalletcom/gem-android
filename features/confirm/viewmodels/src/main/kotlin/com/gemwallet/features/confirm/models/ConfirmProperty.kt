@@ -28,7 +28,11 @@ sealed interface ConfirmProperty {
                     is ConfirmParams.Activate,
                     is ConfirmParams.Stake.Freeze,
                     is ConfirmParams.Stake.Unfreeze,
-                    is ConfirmParams.Stake.RewardsParams -> null
+                    is ConfirmParams.Stake.RewardsParams,
+                    is ConfirmParams.PerpetualParams.Open,
+                    is ConfirmParams.PerpetualParams.Close,
+                    is ConfirmParams.PerpetualParams.Modify
+                         -> null
                     is ConfirmParams.Stake.DelegateParams,
                     is ConfirmParams.Stake.RedelegateParams,
                     is ConfirmParams.Stake.UndelegateParams,
@@ -44,9 +48,6 @@ sealed interface ConfirmProperty {
                         } ?: throw ConfirmError.RecipientEmpty
                     }
                     is ConfirmParams.TransferParams.Generic -> Generic(params.name)
-                    is ConfirmParams.PerpetualParams.Open -> TODO()
-                    is ConfirmParams.PerpetualParams.Close -> TODO()
-                    is ConfirmParams.PerpetualParams.Modify -> TODO()
                 }
             }
         }

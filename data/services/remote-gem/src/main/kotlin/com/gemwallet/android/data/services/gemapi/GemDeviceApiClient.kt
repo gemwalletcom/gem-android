@@ -121,10 +121,6 @@ interface GemDeviceApiClient {
     @GET("/v2/devices/auth/nonce")
     suspend fun getAuthNonce(): AuthNonce
 
-    // Support
-    @POST("/v2/devices/support")
-    suspend fun registerSupport(@Body request: SupportDeviceRequest): SupportDevice
-
     // BUY
     @GET("/v2/devices/fiat/quotes/{type}/{asset_id}")
     suspend fun getFiatQuotes(

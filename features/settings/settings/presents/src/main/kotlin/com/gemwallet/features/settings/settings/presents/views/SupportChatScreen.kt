@@ -46,7 +46,6 @@ import uniffi.gemstone.DocsUrl
 import java.io.ByteArrayInputStream
 
 
-
 @Composable
 fun SupportChatScreen(
     onCancel: () -> Unit,
@@ -139,6 +138,7 @@ private fun GemWebView(
             navigator = navigator,
             onCreated = { webView ->
                 webView.settings.javaScriptEnabled = true
+//                WebView.setWebContentsDebuggingEnabled(true)
                 webView.addJavascriptInterface(
                     JSInterface({ isReady.value = true }, isCancel),
                     "Gem"
@@ -190,6 +190,7 @@ private fun GemWebView(
                 }
             },
             chromeClient = object : AccompanistWebChromeClient() {
+
                 override fun onProgressChanged(view: WebView, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
 

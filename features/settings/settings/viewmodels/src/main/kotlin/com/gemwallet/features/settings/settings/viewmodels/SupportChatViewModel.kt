@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositoreis.device.DeviceRepository
+import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
@@ -13,28 +13,17 @@ import com.wallet.core.primitives.Platform
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class SupportChatViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val sessionRepository: SessionRepository,
-    private val deviceRepository: DeviceRepository,
+    sessionRepository: SessionRepository,
+    getDeviceId: GetDeviceId,
 ): ViewModel() {
-
-    private val supportId = deviceRepository.getSupportId()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val html = combine(
-        sessionRepository.session().filterNotNull(),
-        supportId.filterNotNull(),
-    ) { session, supportId ->
-        htmlContent(supportId, session.currency)
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     val baseUrl = "https://support.gemwallet.com"
 
@@ -42,7 +31,7 @@ class SupportChatViewModel @Inject constructor(
 
     private val sdkSourceURL = "$baseUrl/packs/js/sdk.js"
 
-    private val sdkInitializationScript = """
+    private fun sdkInitializationScript() = """
         window.chatwootSDK.run({
           websiteToken: '$publicChatwootToken',
           baseUrl: '$baseUrl'
@@ -57,13 +46,19 @@ class SupportChatViewModel @Inject constructor(
             visibility: hidden !important;
         }
     """
-    val hideCloseButtonUserScript = """
+    fun hideCloseButtonUserScript() = """
         (function() {
             var style = document.createElement('style');
             style.innerHTML = '$css';
             document.head.appendChild(style);
         })();
     """
+
+    val html = sessionRepository.session().filterNotNull().mapNotNull { session ->
+        val supportId = getDeviceId.getDeviceId()
+        htmlContent(supportId, session.currency)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private fun chatwootSettingsScript(): String {
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -79,7 +74,7 @@ class SupportChatViewModel @Inject constructor(
         """
     }
 
-    private val toggleChatScript = "window.\$chatwoot.toggle(open);"
+    private fun toggleChatScript() = "window.\$chatwoot.toggle(open);"
 
     private fun getDeviceIdScript(supportDeviceId: String, currency: Currency,): String {
         val os = Platform.os
@@ -104,9 +99,9 @@ class SupportChatViewModel @Inject constructor(
         """
     }
 
-    val chatOpenEventHandler = chatEventHandler(ChatwootEvent.Ready)
+    fun chatOpenEventHandler() = chatEventHandler(ChatwootEvent.Ready)
         
-    val chatCloseEventHandler = chatEventHandler(ChatwootEvent.Closed)
+    fun chatCloseEventHandler() = chatEventHandler(ChatwootEvent.Closed)
 
     private fun htmlContent(deviceSupportId: String, currency: Currency): String =
         """
@@ -120,11 +115,11 @@ class SupportChatViewModel @Inject constructor(
         </head>
         <body>
           <script src="$sdkSourceURL" async onload="
-            $sdkInitializationScript
-            $toggleChatScript
+            ${sdkInitializationScript()}
+            ${toggleChatScript()}
             ${getDeviceIdScript(deviceSupportId, currency)}
-            $chatOpenEventHandler
-            $chatCloseEventHandler
+            ${chatOpenEventHandler()}
+            ${chatCloseEventHandler()}
           "></script>
         </body>
         </html>
