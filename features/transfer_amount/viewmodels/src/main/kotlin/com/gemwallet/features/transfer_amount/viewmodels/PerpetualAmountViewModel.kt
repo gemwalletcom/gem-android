@@ -60,6 +60,7 @@ class PerpetualAmountViewModel @Inject constructor(
             val owner = session.wallet.getAccount(assetId.chain) ?: return@onEach
             assetsRepository.switchVisibility(session.wallet.id, owner, assetId, false)
         }
+        .onEach { perpetual -> leverage.update { min(perpetual?.maxLeverage ?: 0, 5) } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val availableLeverages = perpetual.filterNotNull().map {
@@ -71,8 +72,7 @@ class PerpetualAmountViewModel @Inject constructor(
         list
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val leverage = MutableStateFlow<Int>(10)
-    val direction = MutableStateFlow<PerpetualDirection>(PerpetualDirection.Long)
+    val leverage = MutableStateFlow(0)
 
     override val assetInfo: StateFlow<AssetInfo?> = perpetual /// TODO: ???
         .filterNotNull()
@@ -133,16 +133,16 @@ class PerpetualAmountViewModel @Inject constructor(
                 action = ConfirmParams.PerpetualParams.OrderAction.Open,
                 leverage = leverage.value,
                 baseAsset = asset, // USD
-                direction = direction.value,
+                direction = params.perpetualDirection ?: PerpetualDirection.Long,
             )
             else -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
     }
 
-    private fun getAssetId(chain: Chain): AssetId { // TODO: Check it
+    private fun getAssetId(chain: Chain): AssetId { // TODO: How to get asset info for perpetual asset + perpetual base asset
         return when (chain) {
-            Chain.HyperCore -> AssetId(Chain.Arbitrum, "0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
+            Chain.HyperCore -> AssetId(chain = chain, tokenId = "perpetual::USDC")
             else -> throw IllegalArgumentException()
         }
     }

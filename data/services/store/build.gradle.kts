@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
     id("com.google.devtools.ksp")
 }
 
@@ -42,9 +41,7 @@ android {
             freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
         }
     }
-    kapt {
-        correctErrorTypes = true
-    }
+
 
     sourceSets {
         getByName("androidTest").assets.srcDirs("$projectDir/schemas")
@@ -65,7 +62,7 @@ dependencies {
     implementation(project(":gemcore"))
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)

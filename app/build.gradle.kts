@@ -5,7 +5,6 @@ plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
     kotlin("android")
-    kotlin("kapt")
     id("kotlinx-serialization")
     id("com.google.devtools.ksp")
     id("androidx.room")
@@ -182,9 +181,7 @@ android {
             useLegacyPackaging = true
         }
     }
-    kapt {
-        correctErrorTypes = true
-    }
+
 
     androidResources {
         generateLocaleConfig = true
@@ -265,7 +262,7 @@ dependencies {
 
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.runtime.compose)

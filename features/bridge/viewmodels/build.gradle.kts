@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -58,7 +58,7 @@ dependencies {
     api(libs.walletconnect.web3wallet)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.viewmodel.savedstate)

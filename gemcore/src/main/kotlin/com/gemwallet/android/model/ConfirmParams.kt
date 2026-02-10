@@ -512,9 +512,9 @@ sealed class ConfirmParams() {
             is Stake.Freeze -> TransactionType.StakeFreeze
             is Stake.Unfreeze -> TransactionType.StakeUnfreeze
             is Stake -> throw IllegalArgumentException("Invalid stake parameter")
-            is PerpetualParams.Open -> TransactionType.PerpetualModifyPosition
+            is PerpetualParams.Open -> TransactionType.PerpetualOpenPosition
             is PerpetualParams.Close -> TransactionType.PerpetualClosePosition
-            is PerpetualParams.Modify -> TransactionType.PerpetualOpenPosition
+            is PerpetualParams.Modify -> TransactionType.PerpetualModifyPosition
         }
     }
 
@@ -549,7 +549,9 @@ sealed class ConfirmParams() {
                 Stake.Unfreeze::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.Unfreeze>(json)
                 Activate::class.qualifiedName -> jsonEncoder.decodeFromString<Activate>(json)
                 NftParams::class.qualifiedName -> jsonEncoder.decodeFromString<NftParams>(json)
-//                SmartContractCallParams::class.qualifiedName -> TODO()
+                PerpetualParams.Open::class.qualifiedName -> jsonEncoder.decodeFromString<PerpetualParams.Open>(json)
+                PerpetualParams.Close::class.qualifiedName -> jsonEncoder.decodeFromString<PerpetualParams.Close>(json)
+                PerpetualParams.Modify::class.qualifiedName -> jsonEncoder.decodeFromString<PerpetualParams.Modify>(json)
                 else -> throw IllegalStateException()
             }
             return result

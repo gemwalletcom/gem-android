@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.compose.compiler)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -61,7 +61,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.vico.m3)
 

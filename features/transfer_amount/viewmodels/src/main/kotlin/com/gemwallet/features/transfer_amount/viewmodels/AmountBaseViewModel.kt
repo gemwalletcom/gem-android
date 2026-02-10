@@ -139,7 +139,7 @@ abstract class AmountBaseViewModel(
         if (amount.atomicValue == BigInteger.ZERO) {
             throw AmountError.ZeroAmount
         }
-        if (amount.atomicValue.toBigDecimal() > availableBalance.value) {
+        if (amount.value(assetInfo.asset.decimals) > availableBalance.value) {
             throw  AmountError.InsufficientBalance(assetInfo.asset.name)
         }
     }

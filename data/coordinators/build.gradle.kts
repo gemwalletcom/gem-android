@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -55,7 +55,7 @@ dependencies {
     compileOnly(libs.compose.runtime.annotation)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.ktx.core)
     implementation(libs.androidx.appcompat)

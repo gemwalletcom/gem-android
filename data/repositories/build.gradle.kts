@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -40,10 +40,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    kapt {
-        correctErrorTypes = true
-    }
-
     packaging {
         resources {
             excludes += "META-INF/*"
@@ -68,7 +64,7 @@ dependencies {
     api(libs.walletconnect.web3wallet)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.datastore)
 

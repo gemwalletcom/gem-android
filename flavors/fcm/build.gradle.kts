@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlin)
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -47,7 +47,7 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

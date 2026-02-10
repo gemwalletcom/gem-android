@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("kotlinx-serialization")
 }
 
@@ -38,9 +38,7 @@ android {
             freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
         }
     }
-    kapt {
-        correctErrorTypes = true
-    }
+
 
     packaging {
         resources {
@@ -60,7 +58,7 @@ dependencies {
     implementation(libs.gson)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.ktx.core)
     implementation(libs.kotlinx.coroutines.android)

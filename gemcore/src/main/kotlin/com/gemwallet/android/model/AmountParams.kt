@@ -15,10 +15,10 @@ data class AmountParams(
     val txType: TransactionType,
     val destination: DestinationAddress? = null,
     val memo: String? = null,
-    val validatorId: String? = null,
-    val delegationId: String? = null,
-    val perpetualId: String? = null,
-    val perpetualDirection: PerpetualDirection? = null,
+    val validatorId: String? = null, // TODO: Separate to special subtype
+    val delegationId: String? = null, // TODO: Separate to special subtype
+    val perpetualId: String? = null, // TODO: Separate to special subtype
+    val perpetualDirection: PerpetualDirection? = null, // TODO: Separate to special subtype
 ) {
 
     fun pack(): String? {

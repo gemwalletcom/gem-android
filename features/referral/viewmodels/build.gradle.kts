@@ -4,9 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
-
 android {
     namespace = "com.gemwallet.features.referral.viewmodels"
     compileSdk = 36
@@ -54,7 +53,7 @@ dependencies {
     implementation(project(":data:repositories"))
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.viewmodel.savedstate)

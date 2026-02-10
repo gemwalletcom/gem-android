@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
 }
 
@@ -58,7 +58,7 @@ dependencies {
     implementation(project(":features:earn:stake:viewmodels"))
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.compose.navigation)
