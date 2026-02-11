@@ -50,7 +50,7 @@ class AddNodeViewModel @Inject constructor(
     fun addUrl() {
         val chain = state.value.chain ?: return
         viewModelScope.launch {
-            addNodeCase.addNode(chain = chain, url.value)
+            runCatching { addNodeCase.addNode(chain = chain, url.value) }
             setCurrentNodeCase.setCurrentNode(chain = chain, Node(url.value, status = NodeState.Active, 0))
             url.value = ""
         }
