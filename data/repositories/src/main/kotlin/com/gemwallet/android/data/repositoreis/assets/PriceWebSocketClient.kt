@@ -58,7 +58,7 @@ class PriceWebSocketClient(
             contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
         install(UserAgent) {
-            agent = "Gem/Android(${Build.VERSION.RELEASE}); Version: ${buildInfo.versionName};"
+            agent = "Gem/${buildInfo.versionCode}  Android/${Build.VERSION.RELEASE} Version/${buildInfo.versionName}"
         }
     }
 

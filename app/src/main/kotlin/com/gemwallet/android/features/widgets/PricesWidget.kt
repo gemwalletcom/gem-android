@@ -76,8 +76,7 @@ class PricesWidget() : GlanceAppWidget() {
                     AssetId(Chain.Solana).toIdentifier(),
                 )
             ).firstOrNull() ?: emptyList()).reversed()
-        } catch (err: Throwable) {
-            Log.d("GEM-WIDGET", "Error:", err)
+        } catch (_: Throwable) {
             emptyList()
         }
 

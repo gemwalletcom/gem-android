@@ -37,8 +37,7 @@ object ClientsModule {
     fun provideGemHttpClient(
         @ApplicationContext context: Context,
         buildInfo: BuildInfo,
-    ): OkHttpClient = OkHttpClient
-        .Builder()
+    ): OkHttpClient = OkHttpClient.Builder()
         .connectionPool(ConnectionPool(32, 5, TimeUnit.MINUTES))
         .cache(Cache(context.cacheDir, 10 * 1024 * 1024))
         .connectTimeout(60, TimeUnit.SECONDS)
@@ -51,7 +50,7 @@ object ClientsModule {
             chain.proceed(
                 chain.request()
                     .newBuilder()
-                    .header("User-Agent", "Gem/Android(${Build.VERSION.RELEASE}); Version: ${buildInfo.versionName};")
+                    .header("User-Agent", "Gem/${buildInfo.versionCode}  Android/${Build.VERSION.RELEASE} Version/${buildInfo.versionName}")
                     .build()
             )
         }

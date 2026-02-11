@@ -28,6 +28,7 @@ object BuildInfoModule {
         return BuildInfo(
             platformStore = platformStore,
             versionName = com.gemwallet.android.BuildConfig.VERSION_NAME,
+            versionCode = com.gemwallet.android.BuildConfig.VERSION_CODE,
             requestPushToken = requestPushToken,
         )
     }
