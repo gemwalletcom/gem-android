@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallet.presents
+package com.gemwallet.android.features.wallet.presents.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
@@ -14,7 +14,7 @@ import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
 @Composable
-internal fun ShowSecretData(
+internal fun ShowSecretDataProperty(
     wallet: Wallet,
     onAuthRequest: (() -> Unit) -> Unit,
     onPhraseShow: () -> Unit,

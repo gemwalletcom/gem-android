@@ -39,6 +39,7 @@ class WalletViewModel @Inject constructor(
 
     val wallet = walletId.flatMapLatest { walletsRepository.getWallet(it ?: return@flatMapLatest flowOf(null)) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val session = sessionRepository.session()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

@@ -18,6 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.features.wallet.presents.components.ShowSecretDataProperty
+import com.gemwallet.android.features.wallet.presents.components.WalletAddress
+import com.gemwallet.android.features.wallet.presents.dialogs.ConfirmWalletDeleteDialog
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.screen.Scene
@@ -69,7 +72,7 @@ internal fun WalletScene(
                 },
                 singleLine = true,
             )
-            ShowSecretData(wallet, onAuthRequest, onPhraseShow)
+            ShowSecretDataProperty(wallet, onAuthRequest, onPhraseShow)
             WalletAddress(wallet)
 
             Spacer16()

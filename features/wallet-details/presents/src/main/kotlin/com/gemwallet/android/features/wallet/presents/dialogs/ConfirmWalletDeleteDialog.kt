@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallet.presents
+package com.gemwallet.android.features.wallet.presents.dialogs
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults

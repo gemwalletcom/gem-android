@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallet.presents
+package com.gemwallet.android.features.wallet.presents.components
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box

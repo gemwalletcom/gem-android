@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.wallet.presents.ConfirmWalletDeleteDialog
+import com.gemwallet.android.features.wallet.presents.dialogs.ConfirmWalletDeleteDialog
 import com.gemwallet.features.wallets.viewmodels.WalletsViewModel
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
