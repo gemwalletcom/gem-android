@@ -46,7 +46,7 @@ object ClientsModule {
         .addInterceptor(HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         })
-        .addNetworkInterceptor { chain ->
+        .addInterceptor { chain ->
             chain.proceed(
                 chain.request()
                     .newBuilder()
@@ -73,7 +73,7 @@ object ClientsModule {
         securityInterceptor: SecurityInterceptor,
     ): GemDeviceApiClient {
         val httpClient = httpClient.newBuilder()
-            .addNetworkInterceptor(securityInterceptor)
+            .addInterceptor(securityInterceptor)
             .build()
         return Retrofit.Builder()
             .baseUrl("https://api.gemwallet.com")
