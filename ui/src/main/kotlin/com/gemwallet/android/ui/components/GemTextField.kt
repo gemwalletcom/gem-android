@@ -57,6 +57,8 @@ fun GemTextField(
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
+                keyboardActions = keyboardActions,
+                keyboardOptions = keyboardOptions,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             )
             trailing?.invoke()

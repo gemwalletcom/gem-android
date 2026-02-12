@@ -43,6 +43,7 @@ internal fun WalletAddress(
     var isDropDownShow by remember { mutableStateOf(false) }
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val context = LocalContext.current
+
     PropertyItem(
         modifier = Modifier.Companion.combinedClickable(
             enabled = true,
@@ -58,6 +59,7 @@ internal fun WalletAddress(
         },
         listPosition = ListPosition.Single,
     )
+
     Box(modifier = Modifier.Companion.fillMaxWidth()) {
         DropdownMenu(
             modifier = Modifier.Companion.align(Alignment.Companion.BottomEnd),

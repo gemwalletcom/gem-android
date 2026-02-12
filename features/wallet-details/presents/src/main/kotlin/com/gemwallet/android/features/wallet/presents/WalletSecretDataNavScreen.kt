@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
+import com.gemwallet.android.features.wallet.viewmodels.WalletSecretDataViewModel
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
@@ -30,22 +30,20 @@ import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.wallet.core.primitives.WalletType
 
 @Composable
-fun PhraseScreen(
+fun WalletSecretDataNavScreen(
     onCancel: () -> Unit,
+    viewModel: WalletSecretDataViewModel = hiltViewModel()
 ) {
     DisableScreenShooting()
 
-    val viewModel: WalletViewModel = hiltViewModel()
-    val wallet by viewModel.wallet.collectAsStateWithLifecycle()
     val phrase by viewModel.phrase.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
-    val walletType = wallet?.type
-    if (phrase == null) {
+
+    if (phrase.isEmpty()) {
         LoadingScene(title = stringResource(id = R.string.common_secret_phrase), onCancel)
         return
     }
@@ -87,19 +85,18 @@ fun PhraseScreen(
                 )
             }
 
-            when (walletType) {
-                WalletType.Multicoin,
-                WalletType.Single -> PhraseLayout(words = phrase?.split(" ") ?: emptyList())
-                WalletType.PrivateKey -> Text(
-                    text = phrase ?: "",
+            if (phrase.size == 1) {
+                Text(
+                    text = phrase.firstOrNull() ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                 )
-                else -> {}
+            } else if (phrase.size >= 12) {
+                PhraseLayout(words = phrase)
             }
 
             TextButton(
-                onClick = { clipboardManager.setPlainText(context, phrase ?: "", true) }
+                onClick = { clipboardManager.setPlainText(context, phrase.joinToString(" "), true) }
             ) {
                 Text(text = stringResource(id = R.string.common_copy))
             }

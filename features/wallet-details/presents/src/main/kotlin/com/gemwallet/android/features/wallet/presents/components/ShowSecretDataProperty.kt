@@ -15,25 +15,20 @@ import com.wallet.core.primitives.WalletType
 
 @Composable
 internal fun ShowSecretDataProperty(
-    wallet: Wallet,
-    onAuthRequest: (() -> Unit) -> Unit,
-    onPhraseShow: () -> Unit,
+    walletId: String,
+    walletType: WalletType,
+    onClick: (String) -> Unit,
 ) {
-    if (wallet.type == WalletType.View) {
-        return
+    val secretDataLabel = when (walletType) {
+        WalletType.Multicoin,
+        WalletType.Single -> stringResource(id = R.string.common_secret_phrase)
+        WalletType.PrivateKey -> stringResource(R.string.common_private_key)
+        WalletType.View -> return
     }
     PropertyItem(
-        modifier = Modifier.clickable { onAuthRequest(onPhraseShow) },
+        modifier = Modifier.clickable { onClick(walletId) },
         title = {
-            PropertyTitleText(
-                text = stringResource(
-                    id = R.string.common_show,
-                    if (wallet.type == WalletType.PrivateKey)
-                        stringResource(R.string.common_private_key)
-                    else
-                        stringResource(id = R.string.common_secret_phrase)
-                )
-            )
+            PropertyTitleText(stringResource(R.string.common_show, secretDataLabel))
         },
         data = { PropertyDataText("", badge = { DataBadgeChevron() }) },
         listPosition = ListPosition.Single,

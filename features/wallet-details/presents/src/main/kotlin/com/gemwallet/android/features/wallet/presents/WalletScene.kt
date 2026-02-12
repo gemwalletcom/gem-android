@@ -31,14 +31,13 @@ import com.wallet.core.primitives.Wallet
 @Composable
 internal fun WalletScene(
     wallet: Wallet?,
-    onAuthRequest: (() -> Unit) -> Unit,
-    onPhraseShow: () -> Unit,
     onWalletName: (String) -> Unit,
+    onPhraseShow: (String) -> Unit,
     onDelete: () -> Unit,
     onCancel: () -> Unit,
 ) {
     wallet ?: return
-    var isShowDelete by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     var walletName by remember(wallet.name) {
         mutableStateOf(wallet.name)
@@ -57,13 +56,13 @@ internal fun WalletScene(
         onClose = onCancel
     ) {
         Column(
-            modifier = Modifier.Companion
+            modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.Companion.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             GemTextField(
-                modifier = Modifier.Companion.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 label = stringResource(id = R.string.wallet_name),
                 value = walletName,
                 onValueChange = {
@@ -72,30 +71,35 @@ internal fun WalletScene(
                 },
                 singleLine = true,
             )
-            ShowSecretDataProperty(wallet, onAuthRequest, onPhraseShow)
+            ShowSecretDataProperty(
+                walletId = wallet.id,
+                walletType = wallet.type,
+                onClick = onPhraseShow,
+            )
             WalletAddress(wallet)
 
             Spacer16()
+
             Button(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .fillMaxWidth()
                     .defaultPadding(),
                 colors = ButtonDefaults.buttonColors()
                     .copy(containerColor = MaterialTheme.colorScheme.error),
-                onClick = { isShowDelete = true },
+                onClick = { showDeleteDialog = true },
             ) {
                 Text(text = stringResource(id = R.string.common_delete))
             }
         }
     }
 
-    if (isShowDelete) {
+    if (showDeleteDialog) {
         ConfirmWalletDeleteDialog(
             walletName = walletName,
             onConfirm = {
-                isShowDelete = false
+                showDeleteDialog = false
                 onDelete()
             }
-        ) { isShowDelete = false }
+        ) { showDeleteDialog = false }
     }
 }
