@@ -11,8 +11,8 @@ fun WalletNavScreen(
     onPhraseShow: (String) -> Unit,
     onBoard: () -> Unit,
     onCancel: () -> Unit,
+    viewModel: WalletViewModel = hiltViewModel(),
 ) {
-    val viewModel: WalletViewModel = hiltViewModel()
     val wallet by viewModel.wallet.collectAsStateWithLifecycle()
 
     WalletScene(
