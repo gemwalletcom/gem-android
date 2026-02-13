@@ -29,23 +29,20 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingSmall
-import com.wallet.core.primitives.Wallet
-import com.wallet.core.primitives.WalletType
 
 @Composable
 internal fun WalletAddress(
-    wallet: Wallet,
+    addresses: List<String>,
 ) {
-    if (wallet.type == WalletType.Multicoin) {
-        return
-    }
-    val account = wallet.accounts.firstOrNull() ?: return
+    // Show if single account wallet
+    val address = addresses.takeIf { it.size == 1 }?.firstOrNull() ?: return
+
     var isDropDownShow by remember { mutableStateOf(false) }
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val context = LocalContext.current
 
     PropertyItem(
-        modifier = Modifier.Companion.combinedClickable(
+        modifier = Modifier.combinedClickable(
             enabled = true,
             onClick = {},
             onLongClick = { isDropDownShow = true }
@@ -53,16 +50,16 @@ internal fun WalletAddress(
         title = { PropertyTitleText(R.string.common_address) },
         data = {
             PropertyDataText(
-                modifier = Modifier.Companion.weight(1f),
-                text = account.address
+                modifier = Modifier.weight(1f),
+                text = address,
             )
         },
         listPosition = ListPosition.Single,
     )
 
-    Box(modifier = Modifier.Companion.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         DropdownMenu(
-            modifier = Modifier.Companion.align(Alignment.Companion.BottomEnd),
+            modifier = Modifier.align(Alignment.BottomEnd),
             expanded = isDropDownShow,
             offset = DpOffset(paddingDefault, paddingSmall),
             containerColor = MaterialTheme.colorScheme.background,
@@ -73,7 +70,7 @@ internal fun WalletAddress(
                 trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                 onClick = {
                     isDropDownShow = false
-                    clipboardManager.setPlainText(context, account.address)
+                    clipboardManager.setPlainText(context, address)
                 },
             )
         }

@@ -1,8 +1,7 @@
-package com.gemwallet.android.cases.wallet
+package com.gemwallet.android.application.wallet.coordinators
 
 interface DeleteWallet {
     suspend fun deleteWallet(
-        currentWalletId: String?,
         walletId: String,
         onBoard: () -> Unit,
         onComplete: () -> Unit,

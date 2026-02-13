@@ -2,7 +2,7 @@ package com.gemwallet.features.wallets.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.wallet.DeleteWallet
+import com.gemwallet.android.application.wallet.coordinators.DeleteWallet
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.wallet.core.primitives.WalletType
@@ -49,8 +49,7 @@ class WalletsViewModel @Inject constructor(
     }
 
     fun deleteWallet(walletId: String, onBoard: () -> Unit) = viewModelScope.launch {
-        val currentWalletId = session.value?.wallet?.id
-        deleteWallet.deleteWallet(currentWalletId, walletId, onBoard) {}
+        deleteWallet.deleteWallet(walletId, onBoard) {}
     }
 
     fun togglePin(walletId: String) = viewModelScope.launch {

@@ -38,12 +38,13 @@ fun WalletSecretDataNavScreen(
 ) {
     DisableScreenShooting()
 
-    val phrase by viewModel.phrase.collectAsStateWithLifecycle()
+    val value by viewModel.data.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
 
-    if (phrase.isEmpty()) {
+
+    if (value == null) {
         LoadingScene(title = stringResource(id = R.string.common_secret_phrase), onCancel)
         return
     }
@@ -85,18 +86,16 @@ fun WalletSecretDataNavScreen(
                 )
             }
 
-            if (phrase.size == 1) {
+            value?.privateKey()?.let {
                 Text(
-                    text = phrase.firstOrNull() ?: "",
+                    text = it,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                 )
-            } else if (phrase.size >= 12) {
-                PhraseLayout(words = phrase)
-            }
+            } ?: PhraseLayout(words = value?.phrase() ?: emptyList())
 
             TextButton(
-                onClick = { clipboardManager.setPlainText(context, phrase.joinToString(" "), true) }
+                onClick = { clipboardManager.setPlainText(context, value.toString(), true) }
             ) {
                 Text(text = stringResource(id = R.string.common_copy))
             }

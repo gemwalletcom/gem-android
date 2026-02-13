@@ -25,9 +25,7 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.sendSerialized
 import io.ktor.client.plugins.websocket.wss
-import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
-import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

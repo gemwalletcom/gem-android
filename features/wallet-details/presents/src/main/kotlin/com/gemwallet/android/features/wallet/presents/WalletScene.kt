@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.domains.wallet.aggregates.WalletDetailsAggregate
 import com.gemwallet.android.features.wallet.presents.components.ShowSecretDataProperty
 import com.gemwallet.android.features.wallet.presents.components.WalletAddress
 import com.gemwallet.android.features.wallet.presents.dialogs.ConfirmWalletDeleteDialog
@@ -26,11 +27,10 @@ import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.wallet.core.primitives.Wallet
 
 @Composable
 internal fun WalletScene(
-    wallet: Wallet?,
+    wallet: WalletDetailsAggregate?,
     onWalletName: (String) -> Unit,
     onPhraseShow: (String) -> Unit,
     onDelete: () -> Unit,
@@ -76,7 +76,7 @@ internal fun WalletScene(
                 walletType = wallet.type,
                 onClick = onPhraseShow,
             )
-            WalletAddress(wallet)
+            WalletAddress(wallet.addresses)
 
             Spacer16()
 

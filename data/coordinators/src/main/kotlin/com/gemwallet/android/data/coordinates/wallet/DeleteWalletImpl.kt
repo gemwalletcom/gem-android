@@ -1,9 +1,10 @@
-package com.gemwallet.android.data.repositoreis.wallets
+package com.gemwallet.android.data.coordinates.wallet
 
+import com.gemwallet.android.application.wallet.coordinators.DeleteWallet
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
 import com.gemwallet.android.cases.device.SyncSubscription
-import com.gemwallet.android.cases.wallet.DeleteWallet
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -13,7 +14,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DeleteWalletOperator @Inject constructor(
+class DeleteWalletImpl @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val walletsRepository: WalletsRepository,
     private val deleteKeyStoreOperator: DeleteKeyStoreOperator,
@@ -21,32 +22,36 @@ class DeleteWalletOperator @Inject constructor(
 ) : DeleteWallet {
 
     override suspend fun deleteWallet(
-        currentWalletId: String?,
         walletId: String,
         onBoard: () -> Unit,
         onComplete: () -> Unit
-    ) = withContext(Dispatchers.IO) {
-        val wallets = walletsRepository.getAll().firstOrNull()?.filter { it.id != walletId } ?: emptyList()
-        async { walletsRepository.getAll().firstOrNull()?.let { syncSubscription.syncSubscription(it) } }
-
+    ) = withContext(Dispatchers.IO) { // TODO: Switch context to sync device state and doesn't wait it. Find more correct solution
         val wallet = walletsRepository.getWallet(walletId).firstOrNull() ?: return@withContext
+        val currentWalletId = sessionRepository.session().firstOrNull()?.wallet?.id
+
         if (!walletsRepository.removeWallet(walletId = walletId)) {
             return@withContext
         }
         if (wallet.type != WalletType.View) {
-            if (!deleteKeyStoreOperator(walletId)) {
-                return@withContext
-            }
+            if (!deleteKeyStoreOperator(walletId)) return@withContext
+        }
+
+        async {
+            walletsRepository.getAll().firstOrNull()
+                ?.let { syncSubscription.syncSubscription(it) }
         }
 
         val callback: () -> Unit = if (currentWalletId == walletId) {
-            val wallet = wallets.sortedBy { it.type }.minByOrNull { it.index }
+            val nextWallet = walletsRepository.getAll().firstOrNull()
+                ?.filter { it.id != walletId }
+                ?.sortedBy { it.type }
+                ?.minByOrNull { it.index }
 
-            if (wallet == null) {
+            if (nextWallet == null) {
                 sessionRepository.reset()
                 onBoard
             } else {
-                sessionRepository.setWallet(wallet)
+                sessionRepository.setWallet(nextWallet)
                 onComplete
             }
         } else {

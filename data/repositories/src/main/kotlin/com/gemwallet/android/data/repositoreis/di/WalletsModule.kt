@@ -1,11 +1,11 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
-import com.gemwallet.android.cases.device.SyncSubscription
-import com.gemwallet.android.cases.wallet.DeleteWallet
-import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.data.repositoreis.wallets.DeleteWalletOperator
+import com.gemwallet.android.application.wallet.coordinators.WalletIdGenerator
+import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepositoryImpl
+import com.gemwallet.android.data.service.store.database.AccountsDao
+import com.gemwallet.android.data.service.store.database.WalletsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,13 +16,18 @@ import dagger.hilt.components.SingletonComponent
 object WalletsModule {
 
     @Provides
-    fun provideDeleteWallet(
-        sessionRepository: SessionRepository,
-        walletsRepository: WalletsRepository,
-        deleteKeyStoreOperator: DeleteKeyStoreOperator,
-        syncSubscription: SyncSubscription,
-    ): DeleteWallet {
-        return DeleteWalletOperator(sessionRepository, walletsRepository, deleteKeyStoreOperator, syncSubscription)
+    fun provideWalletsRepository(
+        walletsDao: WalletsDao,
+        accountsDao: AccountsDao,
+        createAccountOperator: CreateAccountOperator,
+        walletIdGenerator: WalletIdGenerator,
+    ): WalletsRepository {
+        return WalletsRepositoryImpl(
+            walletsDao = walletsDao,
+            accountsDao = accountsDao,
+            createAccount = createAccountOperator,
+            walletIdGenerator = walletIdGenerator,
+        )
     }
 
 }
