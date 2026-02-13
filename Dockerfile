@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 # Pinned Android build environment on top of Gradle.
 
-ARG GRADLE_IMAGE=gradle:8.13-jdk17
+ARG GRADLE_IMAGE=gradle:9.0.0-jdk17
 ARG CMDLINE_TOOLS_VERSION=11076708
 ARG ANDROID_API_LEVEL=35
 ARG ANDROID_BUILD_TOOLS_VERSION=35.0.0
