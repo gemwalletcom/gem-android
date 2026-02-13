@@ -15,7 +15,7 @@ This folder contains the tooling to rebuild tagged releases inside Docker and co
 - unzip, curl
 - uv for tool installs, plus `apksigcopier` and `diffoscope`: `uv tool install apksigcopier diffoscope`
 - Android SDK build-tools `dexdump` for `diff_dexdump.py` (e.g., `${ANDROID_HOME}/build-tools/<ver>/dexdump`)
-- Tooling snapshot: Gradle 8.13-bin, AGP 8.13.1, Kotlin compiler/KGP 2.2.21/1.9.24, KSP 2.2.21-2.0.4; R8 is the AGP-bundled version (map-id flag not exposed).
+- Tooling snapshot: Gradle wrapper 9.2.1, AGP 9.0.0, Kotlin/KSP from `gradle/libs.versions.toml`; R8 is the AGP-bundled version (AGP still does not expose a public map-id seed/template flag).
 
 ## Step-by-step verification
 1) Auth + credentials:
@@ -32,10 +32,10 @@ This folder contains the tooling to rebuild tagged releases inside Docker and co
 6) Optional dexdump diff: `./diff_dexdump.py <official-apk> <rebuilt-apk> [--out-dir DIR] [--dexdump PATH] [--tag TAG]` to write per-dex dumps/diffs (defaults to `artifacts/reproducible/<tag>/dexdump` when `--tag` is provided).
 
 ## Known issues
-- AGP 8.13.1 (bundled R8) randomizes map-id; we patch via `fix_pg_map_id.py` and confirm payload identity by copying the official signing block (apksigcopier). Deterministic map-id support is still required for strict reproducibility.
-- Kotlin 2.2.x constrains AGP/R8 upgrades; AGP 9.0.0-beta03 + Gradle 9.2.1 (R8 9.0.27) rejects `-pg-map-id-seed` and lacks Studio support, so we remain on AGP 8.13.1/Gradle 8.13-bin.
+- AGP 9.0.0 (bundled R8) still does not provide a public DSL/property to set deterministic map-id values for release builds; we patch via `fix_pg_map_id.py` and confirm payload identity by copying the official signing block (apksigcopier).
+- `R8_MAP_ID_SEED` is kept as reproducible tooling input, but AGP 9.0.0 does not currently wire it to a supported map-id flag.
 
 ## Path forward
-1) Upgrade to an AGP that supports Kotlin 2.2.x and bundles a map-id-capable R8.
-2) Re-enable deterministic map-id (seed or fixed id) in release builds.
+1) Track AGP/R8 support for deterministic map-id configuration (seed/template/fixed id) through public APIs.
+2) Wire deterministic map-id into release builds once AGP exposes it.
 3) Re-run `./verify_apk.py <tag> <apk>` and confirm hashes match without signature copying.
