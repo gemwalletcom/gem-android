@@ -10,10 +10,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.domains.wallet.aggregates.WalletDataAggregate
 import com.gemwallet.android.features.wallet.presents.dialogs.ConfirmWalletDeleteDialog
 import com.gemwallet.features.wallets.viewmodels.WalletsViewModel
-import com.wallet.core.primitives.Wallet
-import com.wallet.core.primitives.WalletSource
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
 @Composable
@@ -26,13 +26,12 @@ fun WalletsScreen(
     onCancel: () -> Unit,
 ) {
     val viewModel: WalletsViewModel = hiltViewModel()
-    val currentWallet by viewModel.currentWallet.collectAsStateWithLifecycle()
-    val pinnedWallets by viewModel.pinnedWallets.collectAsStateWithLifecycle()
-    val unpinnedWallets by viewModel.unpinnedWallets.collectAsStateWithLifecycle()
+    val pinnedWallets by viewModel.pinned.collectAsStateWithLifecycle()
+    val unpinnedWallets by viewModel.unpinned.collectAsStateWithLifecycle()
+
     var deleteWalletId by remember { mutableStateOf("") }
 
     WalletsScene(
-        currentWalletId = currentWallet?.id ?: "",
         pinnedWallets = pinnedWallets,
         unpinnedWallets = unpinnedWallets,
         onCreate = onCreateWallet,
@@ -70,25 +69,46 @@ fun PreviewWalletScreen() {
         Box {
             WalletsScene(
                 unpinnedWallets = listOf(
-                    Wallet(
-                        "1", null, "Foo wallet #1", 1, WalletType.View, emptyList(), 0, false, source = WalletSource.Import,
-                    ),
-                    Wallet(
-                        "2", null, "Foo wallet #2", 2, WalletType.View, emptyList(), 0, false, source = WalletSource.Import,
-                    ),
-                    Wallet(
-                        "3", null, "Foo wallet #3", 3, WalletType.Multicoin, emptyList(), 1, false, source = WalletSource.Import,
-                    ),
-                    Wallet(
-                        "4", null, "Foo wallet #4", 4, WalletType.Multicoin, emptyList(), 2, false, source = WalletSource.Import,
-                    ),
+                    object : WalletDataAggregate {
+                        override val id: String = "1"
+                        override val name: String = "Foo wallet #1"
+                        override val type: WalletType = WalletType.View
+                        override val isCurrent: Boolean = true
+                        override val isPinned: Boolean = false
+                        override val walletChain: Chain = Chain.Ethereum
+                        override val walletAddress: String = "0xsdlkgjdlkfglkdjfg"
+                    },
+                    object : WalletDataAggregate {
+                        override val id: String = "1"
+                        override val name: String = "Foo wallet #3"
+                        override val type: WalletType = WalletType.Multicoin
+                        override val isCurrent: Boolean = false
+                        override val isPinned: Boolean = false
+                        override val walletChain: Chain = Chain.Ethereum
+                        override val walletAddress: String = "0xsdlkgjdlkfglkdjfg"
+                    },
+                    object : WalletDataAggregate {
+                        override val id: String = "1"
+                        override val name: String = "Foo wallet #2"
+                        override val type: WalletType = WalletType.PrivateKey
+                        override val isCurrent: Boolean = false
+                        override val isPinned: Boolean = false
+                        override val walletChain: Chain = Chain.Bitcoin
+                        override val walletAddress: String = "0xsdlkgjdlkfglkdjfg"
+                    },
                 ),
                 pinnedWallets = listOf(
-                    Wallet(
-                        "5", null, "Foo wallet #5", 44, WalletType.Multicoin, emptyList(), 2, true, source = WalletSource.Import,
-                    ),
+
+                    object : WalletDataAggregate {
+                        override val id: String = "1"
+                        override val name: String = "Foo wallet #4"
+                        override val type: WalletType = WalletType.Multicoin
+                        override val isCurrent: Boolean = true
+                        override val isPinned: Boolean = true
+                        override val walletChain: Chain = Chain.Bitcoin
+                        override val walletAddress: String = "0xsdlkgjdlkfglkdjfg"
+                    },
                 ),
-                currentWalletId = "1",
                 onEdit = {},
                 onCreate = {},
                 onImport = {},

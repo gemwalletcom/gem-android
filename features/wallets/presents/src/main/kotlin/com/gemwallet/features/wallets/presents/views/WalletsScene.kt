@@ -7,17 +7,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.domains.wallet.aggregates.WalletDataAggregate
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.features.wallets.presents.views.components.WalletsActions
 import com.gemwallet.features.wallets.presents.views.components.wallets
-import com.wallet.core.primitives.Wallet
 
 @Composable
 internal fun WalletsScene(
-    currentWalletId: String,
-    pinnedWallets: List<Wallet>,
-    unpinnedWallets: List<Wallet>,
+    pinnedWallets: List<WalletDataAggregate>,
+    unpinnedWallets: List<WalletDataAggregate>,
     onCreate: () -> Unit,
     onImport: () -> Unit,
     onEdit: (String) -> Unit,
@@ -40,7 +39,6 @@ internal fun WalletsScene(
             }
             wallets(
                 wallets = pinnedWallets,
-                currentWalletId = currentWalletId,
                 longPressedWallet = longPressedWallet,
                 onEdit = onEdit,
                 onSelectWallet = onSelectWallet,
@@ -50,7 +48,6 @@ internal fun WalletsScene(
             )
             wallets(
                 wallets = unpinnedWallets,
-                currentWalletId = currentWalletId,
                 longPressedWallet = longPressedWallet,
                 onEdit = onEdit,
                 onSelectWallet = onSelectWallet,

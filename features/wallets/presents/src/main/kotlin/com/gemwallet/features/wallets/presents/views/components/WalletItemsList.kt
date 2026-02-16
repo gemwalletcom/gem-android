@@ -17,19 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.ext.getAddressEllipsisText
+import com.gemwallet.android.domains.wallet.aggregates.WalletDataAggregate
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.DropDownContextItem
 import com.gemwallet.android.ui.components.list_item.WalletItem
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.features.wallets.viewmodels.cases.icon
-import com.gemwallet.features.wallets.viewmodels.cases.typeLabel
-import com.wallet.core.primitives.Wallet
-import com.wallet.core.primitives.WalletType
 
 internal fun LazyListScope.wallets(
-    wallets: List<Wallet>,
-    currentWalletId: String,
+    wallets: List<WalletDataAggregate>,
     longPressedWallet: MutableState<String>,
     isPinned: Boolean = false,
     onEdit: (String) -> Unit,
@@ -40,7 +35,7 @@ internal fun LazyListScope.wallets(
     if (isPinned && wallets.isNotEmpty()) {
         pinnedHeader()
     }
-    itemsIndexed(items = wallets, key = { index, item -> item.id }) { index, item ->
+    itemsIndexed(items = wallets, key = { _, item -> item.id }) { index, item ->
         DropDownContextItem(
             isExpanded = longPressedWallet.value == item.id,
             imeCompensate = true,
@@ -49,16 +44,12 @@ internal fun LazyListScope.wallets(
                 WalletItem(
                     id = item.id,
                     name = item.name,
-                    icon = item.icon,
-                    typeLabel = when (item.type) {
-                        WalletType.Multicoin -> stringResource(id = R.string.wallet_multicoin)
-                        WalletType.Single -> item.typeLabel.getAddressEllipsisText()
-                        else -> item.typeLabel.getAddressEllipsisText()
-                    },
-                    isCurrent = item.id == currentWalletId,
+                    walletChain = item.walletChain,
+                    walletAddress = item.walletAddress,
+                    isCurrent = item.isCurrent,
                     type = item.type,
                     listPosition = ListPosition.getPosition(index, wallets.size),
-                    onEdit = { walletId -> onEdit(walletId) },
+                    onEdit = onEdit,
                     modifier = it
                 )
             },

@@ -2,17 +2,23 @@ package com.gemwallet.android.data.coordinates.di
 
 import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.application.wallet.coordinators.DeleteWallet
+import com.gemwallet.android.application.wallet.coordinators.GetAllWallets
 import com.gemwallet.android.application.wallet.coordinators.GetWalletDetails
 import com.gemwallet.android.application.wallet.coordinators.GetWalletSecretData
+import com.gemwallet.android.application.wallet.coordinators.SetCurrentWallet
 import com.gemwallet.android.application.wallet.coordinators.SetWalletName
+import com.gemwallet.android.application.wallet.coordinators.ToggleWalletPin
 import com.gemwallet.android.application.wallet.coordinators.WalletIdGenerator
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.coordinates.wallet.DeleteWalletImpl
+import com.gemwallet.android.data.coordinates.wallet.GetAllWalletsImpl
 import com.gemwallet.android.data.coordinates.wallet.GetWalletDetailsImpl
 import com.gemwallet.android.data.coordinates.wallet.GetWalletSecretDataImpl
+import com.gemwallet.android.data.coordinates.wallet.SetCurrentWalletImpl
 import com.gemwallet.android.data.coordinates.wallet.SetWalletNameImpl
+import com.gemwallet.android.data.coordinates.wallet.ToggleWalletPinImpl
 import com.gemwallet.android.data.coordinates.wallet.WalletIdGeneratorImpl
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
@@ -34,15 +40,24 @@ object WalletModule {
     @Provides
     @Singleton
     fun provideGetWalletDetails(
-        walletsRepository: WalletsRepository
+        walletsRepository: WalletsRepository,
     ): GetWalletDetails {
         return GetWalletDetailsImpl(walletsRepository)
     }
 
     @Provides
     @Singleton
+    fun provideGetAllWallets(
+        sessionRepository: SessionRepository,
+        walletsRepository: WalletsRepository,
+    ): GetAllWallets {
+        return GetAllWalletsImpl(sessionRepository, walletsRepository)
+    }
+
+    @Provides
+    @Singleton
     fun provideSetWalletName(
-        walletsRepository: WalletsRepository
+        walletsRepository: WalletsRepository,
     ): SetWalletName {
         return SetWalletNameImpl(walletsRepository)
     }
@@ -69,5 +84,20 @@ object WalletModule {
         syncSubscription: SyncSubscription,
     ): DeleteWallet {
         return DeleteWalletImpl(sessionRepository, walletsRepository, deleteKeyStoreOperator, syncSubscription)
+    }
+
+    @Provides
+    fun provideToggleWalletPin(
+        walletsRepository: WalletsRepository,
+    ): ToggleWalletPin {
+        return ToggleWalletPinImpl(walletsRepository)
+    }
+
+    @Provides
+    fun provideSetCurrentWallet(
+        sessionRepository: SessionRepository,
+        walletsRepository: WalletsRepository,
+    ): SetCurrentWallet {
+        return SetCurrentWalletImpl(sessionRepository, walletsRepository)
     }
 }

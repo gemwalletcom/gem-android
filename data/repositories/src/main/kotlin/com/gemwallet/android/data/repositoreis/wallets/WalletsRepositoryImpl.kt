@@ -121,11 +121,6 @@ class WalletsRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun togglePin(walletId: String) = withContext(Dispatchers.IO) {
-        val room = walletsDao.getById(walletId).firstOrNull() ?: return@withContext
-        walletsDao.update(room.copy(pinned = !room.pinned))
-    }
-
     private suspend fun putWallet(wallet: Wallet): Wallet = withContext(Dispatchers.IO) {
         walletsDao.insert(wallet.toRecord())
         accountsDao.insert(wallet.accounts.map { it.toRecord(wallet.id) })

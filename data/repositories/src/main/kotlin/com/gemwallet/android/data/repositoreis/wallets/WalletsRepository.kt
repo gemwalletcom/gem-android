@@ -28,6 +28,4 @@ interface WalletsRepository {
     suspend fun removeWallet(walletId: String): Boolean
 
     fun getWallet(walletId: String): Flow<Wallet?>
-
-    suspend fun togglePin(walletId: String)
 }
