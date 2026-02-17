@@ -50,7 +50,7 @@ object ClientsModule {
             chain.proceed(
                 chain.request()
                     .newBuilder()
-                    .header("User-Agent", "Gem/${buildInfo.versionCode}  Android/${Build.VERSION.RELEASE} Version/${buildInfo.versionName}")
+                    .header("User-Agent", "Gem/${buildInfo.versionCode} Android/${Build.VERSION.RELEASE} Version/${buildInfo.versionName}")
                     .build()
             )
         }
