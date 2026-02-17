@@ -54,7 +54,6 @@ class AssetsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
-    private val getSwapSupportedChains: GetSwapSupported,
     private val userConfig: UserConfig,
     private val hasMultiSign: HasMultiSign,
 ) : ViewModel() {
@@ -62,7 +61,7 @@ class AssetsViewModel @Inject constructor(
     private val session = sessionRepository.session()
 
     val importInProgress = session.filterNotNull().flatMapLatest {
-        assetsRepository.importInProgress(it.wallet.id)
+        assetsRepository.importInProgress(it.wallet.id) // TODO: Move to application/import/coordinators/ImportAssets
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 

@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
+import android.util.Log
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
@@ -21,7 +22,7 @@ class SyncTransactionsService @Inject constructor(
         val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000L
         val response = runCatching {
             val result: List<Transaction>? = try {
-                gemDeviceApiClient.getTransactions(wallet.id, lastSyncTime)
+                gemDeviceApiClient.getTransactions(wallet.id, lastSyncTime).transactions
             } catch (_: Throwable) {
                 null
             }

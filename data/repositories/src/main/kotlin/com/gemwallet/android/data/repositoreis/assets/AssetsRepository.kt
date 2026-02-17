@@ -305,17 +305,27 @@ class AssetsRepository @Inject constructor(
         balancesJob.await()
     }
 
+    // TODO: Move out to application/import/coordinators/ImportAssets
     fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
+//        TODO: Replace to job retention:
+//        importStatus[wallet.id] = scope.launch(Dispatchers.IO) {
+//            try {
+//
+//            } finally {
+//                importStatus.update { it.toMutableMap().remove(wallet.id) };
+//            }
+//        }
         importStatus.update { items ->
             items.toMutableMap().apply { put(wallet.id, true) }
         }
 
         try {
-            val availableAssetsId = gemDeviceApiClient.getAssets(walletId = wallet.id)
+            val availableAssetsId = gemDeviceApiClient.getAssets(walletId = wallet.id, 0)
             val assetIds = availableAssetsId.mapNotNull { it.toAssetId() }
             val tokenIds = assetIds.filter { it.type() != AssetSubtype.NATIVE }
 
             searchTokensCase.search(tokenIds, currency)
+
             assetIds.map { assetId ->
                 async {
                     val asset = assetsDao.getAsset(assetId.toIdentifier())?.toDTO() ?: return@async null

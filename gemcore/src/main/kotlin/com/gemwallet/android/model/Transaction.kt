@@ -31,3 +31,6 @@ data class Transaction (
     @Serializable(with = DateSerializer::class)
     val createdAt: Long,
 )
+
+@Serializable
+class TransactionsResponse(val transactions: List<Transaction>)

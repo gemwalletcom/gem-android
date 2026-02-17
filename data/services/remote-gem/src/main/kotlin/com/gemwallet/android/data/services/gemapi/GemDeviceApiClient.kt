@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.services.gemapi
 
-import com.gemwallet.android.model.Transaction
+import com.gemwallet.android.model.TransactionsResponse
 import com.wallet.core.primitives.AuthNonce
 import com.wallet.core.primitives.AuthenticatedRequest
 import com.wallet.core.primitives.Device
@@ -17,8 +17,6 @@ import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
-import com.wallet.core.primitives.SupportDevice
-import com.wallet.core.primitives.SupportDeviceRequest
 import com.wallet.core.primitives.WalletSubscription
 import com.wallet.core.primitives.WalletSubscriptionChains
 import retrofit2.http.Body
@@ -93,25 +91,25 @@ interface GemDeviceApiClient {
     suspend fun redeem(@Header(WALLET_ID_HEADER)  walletId: String, @Body request: AuthenticatedRequest<RedemptionRequest>): RedemptionResult
 
     // Transactions
-    @GET("/v2/devices/transactions?from_timestamp={from_timestamp}")
+    @GET("/v2/devices/transactions")
     suspend fun getTransactions(
         @Header(WALLET_ID_HEADER)  walletId: String,
         @Query("from_timestamp") from: Long,
-    ): List<Transaction>
+    ): TransactionsResponse
 
-    @GET("/v2/devices/transactions?from_timestamp={from_timestamp}&asset_id")
+    @GET("/v2/devices/transactions")
     suspend fun getTransactions(
         @Header(WALLET_ID_HEADER)  walletId: String,
         @Query("asset_id") assetId: String,
         @Query("from_timestamp") from: Long,
-    ): List<Transaction>
+    ): TransactionsResponse
 
     @POST("/v2/devices/scan/transaction")
     suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): ScanTransaction
 
     // Assets
-    @GET("/v2/devices/assets?from_timestamp={fromTimestamp}")
-    suspend fun getAssets(@Header(WALLET_ID_HEADER)  walletId: String, @Query("from_timestamp") fromTimestamp: Int = 0): List<String>
+    @GET("/v2/devices/assets")
+    suspend fun getAssets(@Header(WALLET_ID_HEADER)  walletId: String, @Query("from_timestamp") fromTimestamp: Long): List<String>
 
     // NFT
     @GET("/v2/devices/nft_assets")
