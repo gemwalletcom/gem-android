@@ -4,8 +4,10 @@ import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import okhttp3.Interceptor
+import okhttp3.Protocol
 import okhttp3.Response
 import okio.Buffer
+import okio.IOException
 import wallet.core.jni.Base64
 import wallet.core.jni.Curve
 import wallet.core.jni.Hash
@@ -33,13 +35,21 @@ class SecurityInterceptor(
                 .sign(message.toByteArray(), Curve.ED25519)
         )
         val deviceId = getDeviceId.getDeviceId()
-        return chain.proceed(
-            request.newBuilder()
-                .header("x-device-signature", signature)
-                .header("x-device-timestamp", time.toString())
-                .header("x-device-body-hash", body)
-                .header("x-device-id", deviceId)
+        return try {
+            chain.proceed(
+                request.newBuilder()
+                    .header("x-device-signature", signature)
+                    .header("x-device-timestamp", time.toString())
+                    .header("x-device-body-hash", body)
+                    .header("x-device-id", deviceId)
+                    .build()
+            )
+        } catch (err: Throwable) {
+            Response.Builder()
+                .code(503)
+                .message("HTTP Exception: ${err.message}")
+                .request(chain.request())
                 .build()
-        )
+        }
     }
 }
