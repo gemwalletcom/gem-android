@@ -4,10 +4,8 @@ import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import okhttp3.Interceptor
-import okhttp3.Protocol
 import okhttp3.Response
 import okio.Buffer
-import okio.IOException
 import wallet.core.jni.Base64
 import wallet.core.jni.Curve
 import wallet.core.jni.Hash
