@@ -149,7 +149,7 @@ class AssetDetailsViewModel @Inject constructor(
                 }
             )
         }
-        viewModelScope.launch {
+        viewModelScope.launch { // TODO: Review coroutines
             syncPriceAlerts.syncPriceAlerts()
             assetsRepository.syncAssetInfo(
                 assetId = assetId,

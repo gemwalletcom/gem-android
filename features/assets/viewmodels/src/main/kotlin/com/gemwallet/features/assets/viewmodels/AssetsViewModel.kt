@@ -2,8 +2,9 @@ package com.gemwallet.features.assets.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.wallet_import.coordinators.GetImportWalletState
+import com.gemwallet.android.application.wallet_import.values.ImportWalletState
 import com.gemwallet.android.cases.banners.HasMultiSign
-import com.gemwallet.android.cases.swap.GetSwapSupported
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
@@ -56,12 +57,13 @@ class AssetsViewModel @Inject constructor(
     private val syncTransactions: SyncTransactions,
     private val userConfig: UserConfig,
     private val hasMultiSign: HasMultiSign,
+    private val getImportWalletState: GetImportWalletState,
 ) : ViewModel() {
 
     private val session = sessionRepository.session()
 
-    val importInProgress = session.filterNotNull().flatMapLatest {
-        assetsRepository.importInProgress(it.wallet.id) // TODO: Move to application/import/coordinators/ImportAssets
+    val importInProgress = session.filterNotNull().flatMapLatest { session ->
+        getImportWalletState.getImportState(session.wallet.id).mapLatest { it == ImportWalletState.Importing }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 

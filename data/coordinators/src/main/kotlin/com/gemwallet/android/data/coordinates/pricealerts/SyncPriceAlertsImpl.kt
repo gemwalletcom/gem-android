@@ -13,6 +13,7 @@ class SyncPriceAlertsImpl(
     private val priceAlertRepository: PriceAlertRepository,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : SyncPriceAlerts {
+
     override fun syncPriceAlerts() {
 
         scope.launch {

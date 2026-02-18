@@ -23,7 +23,6 @@ import com.gemwallet.android.data.service.store.database.entities.toAssetLinksMo
 import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.exclude
@@ -31,9 +30,7 @@ import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.swapSupport
-import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.RecentType
@@ -43,7 +40,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
@@ -57,21 +53,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private typealias WalletId = String
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
@@ -81,7 +72,6 @@ class AssetsRepository @Inject constructor(
     private val balancesDao: BalancesDao,
     private val pricesDao: PricesDao,
     private val gemApi: GemApiClient,
-    private val gemDeviceApiClient: GemDeviceApiClient,
     private val sessionRepository: SessionRepository,
     private val balancesService: BalancesService,
     getChangedTransactions: GetChangedTransactions,
@@ -98,8 +88,6 @@ class AssetsRepository @Inject constructor(
         Chain.Solana,
         Chain.Tron,
     )
-
-    private val importStatus = MutableStateFlow<Map<WalletId, Boolean>>(emptyMap())
 
     init {
         scope.launch(Dispatchers.IO) {
@@ -118,7 +106,7 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun sync() = withContext(Dispatchers.IO) {
+    suspend fun sync() {
         getAssetsInfo().firstOrNull()?.updateBalances()?.awaitAll()
     }
 
@@ -185,7 +173,7 @@ class AssetsRepository @Inject constructor(
      *  */
     suspend fun createAssets(wallet: Wallet) {
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
-            .map { account ->
+            .forEach { account ->
                 val asset = account.chain.asset()
                 val isVisible = account.isVisibleByDefault(wallet.type)
                 add(wallet.id, account.address, asset, isVisible)
@@ -212,8 +200,10 @@ class AssetsRepository @Inject constructor(
         .flowOn(Dispatchers.IO)
 
 
-    suspend fun searchToken(assetId: AssetId, currency: Currency): Boolean {
-        return searchTokensCase.search(assetId, currency)
+    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
+            .map { it?.toDTO() }
+            .flowOn(Dispatchers.IO)
     }
 
     suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
@@ -232,15 +222,13 @@ class AssetsRepository @Inject constructor(
         .flowOn(Dispatchers.IO)
     }
 
-    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
-        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .map { it?.toDTO() }
-            .flowOn(Dispatchers.IO)
-    }
-
     fun getTokensInfo(assetsId: List<String>): Flow<List<AssetInfo>> {
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
             .map { items -> items.distinctBy { it.id() } }
+    }
+
+    suspend fun searchToken(assetId: AssetId, currency: Currency): Boolean {
+        return searchTokensCase.search(assetId, currency)
     }
 
     fun search(query: String, tags: List<AssetTag>, byAllWallets: Boolean): Flow<List<AssetInfo>> {
@@ -303,53 +291,6 @@ class AssetsRepository @Inject constructor(
             getAssetsInfo(assetsId).firstOrNull()?.updateBalances()
         }
         balancesJob.await()
-    }
-
-    // TODO: Move out to application/import/coordinators/ImportAssets
-    fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
-//        TODO: Replace to job retention:
-//        importStatus[wallet.id] = scope.launch(Dispatchers.IO) {
-//            try {
-//
-//            } finally {
-//                importStatus.update { it.toMutableMap().remove(wallet.id) };
-//            }
-//        }
-        importStatus.update { items ->
-            items.toMutableMap().apply { put(wallet.id, true) }
-        }
-
-        try {
-            val availableAssetsId = gemDeviceApiClient.getAssets(walletId = wallet.id, 0)
-            val assetIds = availableAssetsId.mapNotNull { it.toAssetId() }
-            val tokenIds = assetIds.filter { it.type() != AssetSubtype.NATIVE }
-
-            searchTokensCase.search(tokenIds, currency)
-
-            assetIds.map { assetId ->
-                async {
-                    val asset = assetsDao.getAsset(assetId.toIdentifier())?.toDTO() ?: return@async null
-                    add(
-                        walletId = wallet.id,
-                        accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
-                        asset = asset,
-                        visible = true
-                    )
-                    asset
-                }
-            }.awaitAll()
-            sync()
-        } catch (_: Throwable) {
-            return@launch
-        } finally {
-            importStatus.update { items ->
-                items.toMutableMap().apply { remove(wallet.id) }
-            }
-        }
-    }
-
-    fun importInProgress(walletId: String): Flow<Boolean> {
-        return importStatus.mapLatest { it[walletId] == true }
     }
 
     /**
@@ -425,6 +366,7 @@ class AssetsRepository @Inject constructor(
         )
         val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain.string)
         runCatching { assetsDao.insert(asset.toRecord(defaultScore), link, config) }
+        runCatching { assetsDao.setConfig(config.copy(isVisible = visible)) }
 
         if (visible) {
             priceClient.addAssetId(asset.id)
@@ -510,7 +452,7 @@ class AssetsRepository @Inject constructor(
         }?.let { pricesDao.insert(it) }
     }
 
-    suspend fun getCurrencyRate(currency: Currency): Flow<FiatRate?> {
+    fun getCurrencyRate(currency: Currency): Flow<FiatRate?> {
         return pricesDao.getRates(currency).map { it?.toDTO() }
     }
 

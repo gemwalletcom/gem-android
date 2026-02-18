@@ -4,6 +4,7 @@ import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import okhttp3.Interceptor
+import okhttp3.Protocol
 import okhttp3.Response
 import okio.Buffer
 import wallet.core.jni.Base64
@@ -47,6 +48,7 @@ class SecurityInterceptor(
                 .code(503)
                 .message("HTTP Exception: ${err.message}")
                 .request(chain.request())
+                .protocol(Protocol.HTTP_2)
                 .build()
         }
     }

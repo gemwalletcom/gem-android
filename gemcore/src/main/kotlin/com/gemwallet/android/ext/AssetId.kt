@@ -6,6 +6,8 @@ import com.wallet.core.primitives.Chain
 
 fun AssetId.toIdentifier() = "${chain.string}${if (tokenId.isNullOrEmpty()) "" else "_${tokenId}"}"
 
+val AssetId.identifier: String get() = "${chain.string}${if (tokenId.isNullOrEmpty()) "" else "_${tokenId}"}"
+
 fun AssetId.type() = if (tokenId.isNullOrEmpty()) AssetSubtype.NATIVE else AssetSubtype.TOKEN
 
 fun String.toAssetId(): AssetId? {

@@ -3,6 +3,7 @@ package com.gemwallet.android.di
 import android.content.Context
 import com.gemwallet.android.application.PasswordStore
 import com.gemwallet.android.application.SecurityStore
+import com.gemwallet.android.application.wallet_import.services.ImportAssets
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.CreateWalletOperator
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
@@ -106,6 +107,7 @@ object InteractsModule {
         addBanner: AddBanner,
         syncSubscription: SyncSubscription,
         addressStatusService: AddressStatusService,
+        importAssets: ImportAssets,
     ): ImportWalletService = PhraseAddressImportWalletService(
         walletsRepository = walletsRepository,
         assetsRepository = assetsRepository,
@@ -117,5 +119,6 @@ object InteractsModule {
         addBanner = addBanner,
         syncSubscription = syncSubscription,
         addressStatusService = addressStatusService,
+        importAssets = importAssets,
     )
 }

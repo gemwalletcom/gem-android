@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.wallets
 
 import com.gemwallet.android.application.PasswordStore
+import com.gemwallet.android.application.wallet_import.services.ImportAssets
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.StorePhraseOperator
@@ -43,6 +44,7 @@ class PhraseAddressImportWalletService(
     private val syncSubscription: SyncSubscription,
     private val addressStatusService: AddressStatusService,
     private val addBanner: AddBanner,
+    private val importAssets: ImportAssets,
 ) : ImportWalletService {
 
     override suspend fun importWallet(
@@ -64,7 +66,7 @@ class PhraseAddressImportWalletService(
         }
 
         setupWallet(wallet)
-        assetsRepository.importAssets(wallet, sessionRepository.getCurrentCurrency())
+        importAssets.importAssets(wallet)
         checkAddresses(wallet)
 
         return Result.success(wallet)
