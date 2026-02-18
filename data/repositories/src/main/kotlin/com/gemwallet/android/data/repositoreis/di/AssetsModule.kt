@@ -14,7 +14,6 @@ import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.model.BuildInfo
 import dagger.Module
 import dagger.Provides
@@ -30,7 +29,6 @@ object AssetsModule {
     @Singleton
     fun provideAssetsRepository(
         gemApiClient: GemApiClient,
-        gemDeviceApiClient: GemDeviceApiClient,
         assetsDao: AssetsDao,
         assetsPriorityDao: AssetsPriorityDao,
         balancesDao: BalancesDao,
@@ -42,7 +40,6 @@ object AssetsModule {
         priceClient: PriceWebSocketClient,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
-        gemDeviceApiClient = gemDeviceApiClient,
         assetsDao = assetsDao,
         assetsPriorityDao = assetsPriorityDao,
         balancesDao = balancesDao,
