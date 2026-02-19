@@ -538,7 +538,6 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
                 low = basePrice + variance - 200.0,
                 close = basePrice + variance + 100.0,
                 volume = 500000000.0 + (index * 10000000.0),
-                interval = "1h",
             )
         }
 
@@ -552,7 +551,6 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
                 low = basePrice + variance - 10.0,
                 close = basePrice + variance + 5.0,
                 volume = 300000000.0 + (index * 5000000.0),
-                interval = "1h",
             )
         }
 
@@ -566,7 +564,6 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
                 low = basePrice + variance - 1.0,
                 close = basePrice + variance + 0.5,
                 volume = 100000000.0 + (index * 2000000.0),
-                interval = "1h",
             )
         }
 

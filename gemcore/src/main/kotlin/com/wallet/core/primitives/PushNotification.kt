@@ -53,7 +53,6 @@ data class PushNotificationSwapAsset (
 
 @Serializable
 data class PushNotificationTransaction (
-	val walletIndex: Int? = null,
 	val walletId: String,
 	val assetId: String,
 	val transaction: Transaction

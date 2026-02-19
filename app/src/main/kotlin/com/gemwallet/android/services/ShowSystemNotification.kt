@@ -48,7 +48,7 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         data: PushNotificationData.Transaction
     ) {
         val extra = Bundle().apply {
-            putInt("walletIndex", data.walletIndex)
+            putString("walletId", data.walletId)
         }
         showNotification(title, subtitle, channelId, extra, "${assetRouteUri}/${data.assetId}".toUri())
     }

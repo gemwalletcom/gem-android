@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Icon
@@ -17,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.features.swap.viewmodels.models.SwapError
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 import com.gemwallet.features.swap.viewmodels.models.SwapState
@@ -49,10 +52,16 @@ internal fun SwapScene(
         title = stringResource(id = R.string.wallet_swap),
         mainAction = {
             SwapAction(swapState, pay) {
-                if (priceImpact?.isHigh == true) {
-                    isShowPriceImpactAlert.value = true
-                } else {
-                    onSwap()
+                when {
+                    swapState is SwapState.Error && swapState.error is SwapError.InputAmountTooSmall -> {
+                        val value = pay?.asset?.let {
+                            (swapState.error as SwapError.InputAmountTooSmall).getValue(it)
+                        } ?: return@SwapAction
+                        payValue.clearText()
+                        payValue.setTextAndPlaceCursorAtEnd(value.toString())
+                    }
+                    priceImpact?.isHigh == true -> isShowPriceImpactAlert.value = true
+                    else -> onSwap()
                 }
             }
         },
@@ -101,7 +110,7 @@ internal fun SwapScene(
             }
 
             item {
-                SwapError(swapState)
+                SwapError(swapState, pay)
             }
         }
     }

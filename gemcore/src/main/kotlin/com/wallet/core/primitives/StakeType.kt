@@ -42,6 +42,18 @@ data class StakeData (
 )
 
 @Serializable
+data class TronUnfreeze (
+	val resource: Resource,
+	val amount: Long
+)
+
+@Serializable
+data class TronVote (
+	val validator: String,
+	val count: Long
+)
+
+@Serializable
 sealed class StakeType {
 	@Serializable
 	@SerialName("Stake")
@@ -61,5 +73,15 @@ sealed class StakeType {
 	@Serializable
 	@SerialName("Freeze")
 	data class Freeze(val content: FreezeData): StakeType()
+}
+
+@Serializable
+sealed class TronStakeData {
+	@Serializable
+	@SerialName("Votes")
+	data class Votes(val content: List<TronVote>): TronStakeData()
+	@Serializable
+	@SerialName("Unfreeze")
+	data class Unfreeze(val content: List<TronUnfreeze>): TronStakeData()
 }
 

@@ -85,7 +85,6 @@ data class NFTData (
 
 @Serializable
 data class ReportNft (
-	val deviceId: String,
 	val collectionId: String,
 	val assetId: String? = null,
 	val reason: String? = null

@@ -23,6 +23,8 @@ enum class SwapProvider(val string: String) {
 	Thorchain("thorchain"),
 	@SerialName("jupiter")
 	Jupiter("jupiter"),
+	@SerialName("okx")
+	Okx("okx"),
 	@SerialName("across")
 	Across("across"),
 	@SerialName("oku")

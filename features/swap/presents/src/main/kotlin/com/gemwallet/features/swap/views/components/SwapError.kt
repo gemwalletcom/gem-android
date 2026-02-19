@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.Spacer8
@@ -24,7 +25,7 @@ import com.gemwallet.features.swap.viewmodels.models.SwapError
 import com.gemwallet.features.swap.viewmodels.models.SwapState
 
 @Composable
-internal fun SwapError(state: SwapState) {
+internal fun SwapError(state: SwapState, pay: AssetInfo?) {
     val state = state as? SwapState.Error ?: return
 
     val errorText = when (state.error) {
@@ -35,13 +36,10 @@ internal fun SwapError(state: SwapState) {
         )
         SwapError.NotSupportedAsset -> stringResource(R.string.errors_swap_not_supported_asset)
         SwapError.NotSupportedChain -> stringResource(R.string.errors_swap_not_supported_chain)
-        SwapError.NotImplemented,
-        SwapError.NotSupportedPair -> stringResource(R.string.errors_swap_not_supported_pair)
-        SwapError.NetworkError -> "Node not available. Check internet connection."
         is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${(state.error as SwapError.Unknown).message}"
         SwapError.None,
         is SwapError.InsufficientBalance -> return
-        SwapError.InputAmountTooSmall -> stringResource(R.string.errors_swap_amount_too_small)
+        is SwapError.InputAmountTooSmall -> "${stringResource(R.string.errors_swap_amount_too_small)} ${pay?.asset?.let { (state.error as SwapError.InputAmountTooSmall).getFormattedValue(it) } ?: ""}"
         SwapError.NoAvailableProvider,
         SwapError.NoQuote,
         SwapError.TransactionError -> stringResource(R.string.errors_swap_no_quote_available)

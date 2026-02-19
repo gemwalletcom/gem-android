@@ -10,8 +10,6 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class StreamBalanceUpdate (
 	val walletId: WalletId,
-	val chain: Chain,
-	val address: String,
 	val assetId: AssetId
 )
 
@@ -21,9 +19,30 @@ data class StreamMessagePrices (
 )
 
 @Serializable
+data class StreamNftUpdate (
+	val walletId: WalletId
+)
+
+@Serializable
+data class StreamNotificationlUpdate (
+	val walletId: WalletId,
+	val notification: InAppNotification
+)
+
+@Serializable
+data class StreamPerpetualUpdate (
+	val walletId: WalletId
+)
+
+@Serializable
+data class StreamPriceAlertUpdate (
+	val assets: List<AssetId>
+)
+
+@Serializable
 data class StreamTransactionsUpdate (
 	val walletId: WalletId,
-	val transactions: List<Transaction>
+	val transactions: List<String>
 )
 
 @Serializable
@@ -37,6 +56,18 @@ sealed class StreamEvent {
 	@Serializable
 	@SerialName("transactions")
 	data class Transactions(val data: StreamTransactionsUpdate): StreamEvent()
+	@Serializable
+	@SerialName("priceAlerts")
+	data class PriceAlerts(val data: StreamPriceAlertUpdate): StreamEvent()
+	@Serializable
+	@SerialName("nft")
+	data class Nft(val data: StreamNftUpdate): StreamEvent()
+	@Serializable
+	@SerialName("perpetual")
+	data class Perpetual(val data: StreamPerpetualUpdate): StreamEvent()
+	@Serializable
+	@SerialName("inAppNotification")
+	data class InAppNotification(val data: StreamNotificationlUpdate): StreamEvent()
 }
 
 @Serializable
@@ -50,5 +81,11 @@ sealed class StreamMessage {
 	@Serializable
 	@SerialName("addPrices")
 	data class AddPrices(val data: StreamMessagePrices): StreamMessage()
+	@Serializable
+	@SerialName("subscribeRealtimePrices")
+	data class SubscribeRealtimePrices(val data: StreamMessagePrices): StreamMessage()
+	@Serializable
+	@SerialName("unsubscribeRealtimePrices")
+	data class UnsubscribeRealtimePrices(val data: StreamMessagePrices): StreamMessage()
 }
 

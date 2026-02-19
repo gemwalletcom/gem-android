@@ -220,5 +220,22 @@ private fun WalletConnectTransaction.map(
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
         )
+
+        is WalletConnectTransaction.Tron -> Generic(
+            requestId = request.requestId.toString(),
+            asset = asset,
+            from = request.account,
+            name = request.name,
+            description = request.description,
+            url = request.uri,
+            icon = request.icon,
+            gasLimit = "",
+            inputType = when (outputType) {
+                TransferDataOutputType.ENCODED_TRANSACTION -> ConfirmParams.TransferParams.InputType.EncodeTransaction
+                TransferDataOutputType.SIGNATURE -> ConfirmParams.TransferParams.InputType.Signature
+            },
+            destination = DestinationAddress(""),
+            amount = BigInteger.ZERO,
+        )
     }
 }

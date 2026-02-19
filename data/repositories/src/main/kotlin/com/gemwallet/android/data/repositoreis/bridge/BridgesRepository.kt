@@ -222,7 +222,11 @@ class BridgesRepository(
             sessionProposal = sessionProposal,
             supportedNamespaces = supportedNamespaces
         )
-        val approveProposal = Wallet.Params.SessionApprove(proposerPublicKey = sessionProposal.proposerPublicKey, namespaces = sessionNamespaces)
+        val approveProposal = Wallet.Params.SessionApprove(
+            proposerPublicKey = sessionProposal.proposerPublicKey,
+            namespaces = sessionNamespaces,
+            properties = proposal.properties ?: emptyMap(),
+        )
 
         WalletKit.approveSession(
             params = approveProposal,

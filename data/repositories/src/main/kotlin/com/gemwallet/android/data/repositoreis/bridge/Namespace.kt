@@ -36,6 +36,21 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
             WalletConnectionMethods.SuiSignTransaction,
             WalletConnectionMethods.SuiSignAndExecuteTransaction,
         )
+    ),
+    Ton(
+        Chain.Ton.string,
+        listOf(
+            WalletConnectionMethods.TonSendMessage,
+            WalletConnectionMethods.TonSignData,
+        )
+    ),
+    Tron(
+        Chain.Tron.string,
+        listOf(
+            WalletConnectionMethods.TronSignMessage,
+            WalletConnectionMethods.TronSignTransaction,
+            WalletConnectionMethods.TronSendTransaction,
+        )
     )
 }
 
@@ -48,7 +63,9 @@ fun Chain.getNameSpace(): ChainNamespace? {
         ChainType.Ethereum -> ChainNamespace.Eip155
         ChainType.Solana -> ChainNamespace.Solana
         ChainType.Sui -> ChainNamespace.Sui
-        else -> return null
+        ChainType.Ton -> ChainNamespace.Ton
+        ChainType.Tron -> ChainNamespace.Tron
+        else -> null
     }
 }
 
@@ -59,7 +76,7 @@ fun Chain.getReference(): String? {
 fun Chain.Companion.getNamespace(walletConnectChainId: String?): Chain? { // TODO: Use Reown call for parse
     val chainId = walletConnectChainId?.split(":")
     return if (!chainId.isNullOrEmpty() && chainId.size >= 2) {
-        return WalletConnect().getChain(chainId[0], chainId[1])?.toChain()
+        WalletConnect().getChain(chainId[0], chainId[1])?.toChain()
     } else {
         null
     }

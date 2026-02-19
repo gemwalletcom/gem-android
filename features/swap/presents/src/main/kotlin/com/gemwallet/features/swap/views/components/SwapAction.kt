@@ -20,9 +20,15 @@ import com.gemwallet.features.swap.viewmodels.models.SwapError
 import com.gemwallet.features.swap.viewmodels.models.SwapState
 
 @Composable
-internal fun SwapAction(swapState: SwapState, pay: AssetInfo?, onSwap: () -> Unit) {
+internal fun SwapAction(
+    swapState: SwapState,
+    pay: AssetInfo?,
+    onSwap: () -> Unit,
+) {
     Button(
-        modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(mainActionHeight),
         onClick = onSwap,
         enabled = (swapState == SwapState.Ready || (swapState is SwapState.Error && swapState.error !is SwapError.InsufficientBalance))
     ) {
@@ -42,6 +48,7 @@ internal fun SwapAction(swapState: SwapState, pay: AssetInfo?, onSwap: () -> Uni
                 modifier = Modifier.padding(4.dp),
                 text = when(swapState.error) {
                     is SwapError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, (swapState.error as SwapError.InsufficientBalance).symbol)
+                    is SwapError.InputAmountTooSmall -> stringResource(R.string.stake_minimum_amount)
                     else -> stringResource(R.string.common_try_again)
                 },
                 fontSize = 18.sp,

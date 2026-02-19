@@ -11,7 +11,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
 import uniffi.gemstone.SwapperProvider
 
-fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
+//fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
 
 fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.svg"
 
@@ -88,6 +88,7 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.NEAR_INTENTS -> "near"
         SwapperProvider.ORCA -> "orca"
         SwapperProvider.PANORA -> "panora"
+        SwapperProvider.OKX -> "okx"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

@@ -11,6 +11,7 @@ import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import uniffi.gemstone.TronStakeData
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Tron
@@ -100,7 +101,8 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val voteContract = createVoteContract(chainData, params.from.address)
+        val votes = (chainData.tronStakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
+        val voteContract = createVoteContract(votes, params.from.address)
         return listOf(
             sign(chainData, voteContract, fee, privateKey),
         )
@@ -114,9 +116,9 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val votes = chainData.votes
+        val votes = (chainData.tronStakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
         return listOfNotNull(
-            if (votes.isEmpty()) null else createVoteContract(chainData, params.from.address),
+            if (votes.isEmpty()) null else createVoteContract(votes,params.from.address),
         )
         .map {
             sign(chainData, it, fee, privateKey)
@@ -131,7 +133,8 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val voteContract = createVoteContract(chainData, params.from.address)
+        val votes = (chainData.tronStakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
+        val voteContract = createVoteContract(votes, params.from.address)
         return listOf(sign(chainData, voteContract, fee, privateKey))
     }
 
@@ -232,14 +235,14 @@ class TronSignClient(
         return signTransfer(chainData, contract, memo, null,  privateKey)
     }
 
-    private fun createVoteContract(chainData: TronChainData, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {
+    private fun createVoteContract(votes: List<uniffi.gemstone.TronVote>, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {
             this.ownerAddress = owner
             this.support = true
             this.addAllVotes(
-                chainData.votes.map {
+                votes.map {
                     Tron.VoteWitnessContract.Vote.newBuilder().apply {
-                        this.voteAddress = it.key
-                        this.voteCount = it.value.toLong()
+                        this.voteAddress = it.validator
+                        this.voteCount = it.count.toLong()
                     }.build()
                 }
             )

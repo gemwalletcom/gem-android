@@ -1,7 +1,9 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.model.ChainSignData
+import uniffi.gemstone.GemResource
 import uniffi.gemstone.GemTransactionLoadMetadata
+import uniffi.gemstone.TronStakeData
 
 data class TronChainData(
     val blockNumber: ULong,
@@ -10,7 +12,7 @@ data class TronChainData(
     val witnessAddress: String,
     val parentHash: String,
     val blockTimestamp: ULong,
-    val votes: Map<String, ULong> = emptyMap()
+    val tronStakeData: TronStakeData,
 ) : ChainSignData
 
 fun GemTransactionLoadMetadata.Tron.toChainData(): TronChainData {
@@ -21,6 +23,6 @@ fun GemTransactionLoadMetadata.Tron.toChainData(): TronChainData {
         txTrieRoot = transactionTreeRoot,
         witnessAddress = witnessAddress,
         parentHash = parentHash,
-        votes = votes
+        tronStakeData = stakeData,
     )
 }
