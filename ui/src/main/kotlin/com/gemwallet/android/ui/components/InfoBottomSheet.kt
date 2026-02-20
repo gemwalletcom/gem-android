@@ -113,7 +113,7 @@ sealed class InfoSheetEntity(
 
     object PriceImpactInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
-        title = R.string.info_price_impact_title,
+        title = R.string.swap_price_impact,
         description = R.string.info_price_impact_description,
         infoUrl = { Config().getDocsUrl(DocsUrl.PriceImpact) },
     )

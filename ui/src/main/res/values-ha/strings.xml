@@ -14,24 +14,20 @@
   <string name="wallet.new.title">Sabuwar Wallet</string>
   <string name="receive.title">Karba %s</string>
   <string name="buy.title">Saya %s</string>
-  <string name="wallet.import.secret_phrase">Secret Phrase</string>
+  <string name="common.secret_phrase">Kalmomin Sirri</string>
   <string name="wallet.name">Suna</string>
   <string name="wallet.import.action">Shigo da</string>
   <string name="common.next">Na gaba</string>
   <string name="common.copy">Kwafi</string>
   <string name="common.share">Raba</string>
-  <string name="wallet.new.backup_warning">Write down your unique Secret Phrase and store it securely; it\'s essential for wallet access and recovery.</string>
   <string name="common.continue">Ci gaba</string>
-  <string name="common.secret_phrase">Secret Phrase</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">Provider</string>
-  <string name="wallet.new.backup_confirm_warning">Confirm that you\'ve written down and stored your Secret Phrase securely before proceeding, as it is crucial for future wallet access and recovery.</string>
   <string name="common.loading">Ana lodawa</string>
   <string name="wallet.multicoin">Multi-Coin</string>
   <string name="common.address">Adireshi</string>
   <string name="transfer.network_fee">Kudin hanyar sadarwa</string>
   <string name="transfer.amount">Adadin</string>
-  <string name="transfer.address">Adireshi</string>
   <string name="wallet.import.address_field">Address or Name</string>
   <string name="common.back">Back</string>
   <string name="transfer.memo">Memo</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">Confirm</string>
   <string name="transfer.from">From</string>
   <string name="transfer.to">To</string>
-  <string name="transfer.confirm.maxtotal">Max total</string>
   <string name="common.paste">Paste</string>
   <string name="transfer.max">Max</string>
   <string name="common.delete">Delete</string>
@@ -61,7 +56,7 @@
   <string name="wallet.scan">Scan</string>
   <string name="settings.aboutus">About Us</string>
   <string name="common.wallet">Wallet</string>
-  <string name="common.show">Show %s</string>
+  <string name="common.show">Nuna %s</string>
   <string name="transfer.network">Network</string>
   <string name="common.copied">Copied: %s</string>
   <string name="transfer.amount.title">Amount</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">Enable Passcode</string>
   <string name="settings.security.authentication">Authentication</string>
   <string name="wallet.copy_address">Copy Address</string>
-  <string name="assets.hidden">Hidden</string>
   <string name="transfer.insufficient_balance">Insufficient %s balance.</string>
   <string name="transfer.insufficient_network_fee_balance">Insufficient %s balance to cover network fees.</string>
   <string name="asset.balances">Balances</string>
   <string name="asset.balances.available">Available</string>
-  <string name="common.see_all">See All</string>
-  <string name="asset.latest_transactions">Latest Transactions</string>
   <string name="common.no_thanks">No thanks</string>
   <string name="settings.notifications.title">Notifications</string>
   <string name="wallet.watch.tooltip.title">You are watching this wallet.</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">Stake</string>
   <string name="swap.you_pay">You Pay</string>
   <string name="swap.you_receive">You Receive</string>
-  <string name="swap.approve_token">Approve %s to Swap</string>
-  <string name="swap.approve_token_permission">Approve %s token for swap access.</string>
   <string name="common.phrase">Phrase</string>
   <string name="stake.active">Active</string>
   <string name="stake.pending">Pending</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
   <string name="transfer.withdraw.title">Withdraw</string>
-  <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
   <string name="stake.awaiting_withdrawal">Awaiting Withdrawal</string>
@@ -178,11 +167,10 @@
   <string name="errors.token.invalid_id">Invalid Token ID</string>
   <string name="errors.token.unable_fetch_token_information">Unable to fetch token information: %s</string>
   <string name="assets.add_custom_token">Add Custom Token</string>
-  <string name="errors.token.invalid_metadata">Invalid token metadata</string>
   <string name="asset.name">Name</string>
   <string name="asset.symbol">Symbol</string>
   <string name="asset.decimals">Decimals</string>
-  <string name="asset.token_id">Token ID</string>
+  <string name="asset.token_id">ID na Alamar</string>
   <string name="common.type">Type</string>
   <string name="stake.active_in">Active In</string>
   <string name="errors.import.invalid_secret_phrase">Invalid Secret Phrase</string>
@@ -214,7 +202,6 @@
   <string name="common.url">URL</string>
   <string name="errors.error_occured">An error occurred!</string>
   <string name="settings.language">Language</string>
-  <string name="wallet.import.private_key">%s encoded private key</string>
   <string name="errors.invalid_network_id">Invalid Network ID</string>
   <string name="common.private_key">Private Key</string>
   <string name="nodes.import_node.latency">Latency</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">Error</string>
   <string name="nodes.gem_wallet_node">Gem Wallet Node</string>
   <string name="errors.connections.user_cancelled">User cancelled</string>
-  <string name="errors.swap.no_quote_data">No quote data</string>
   <string name="errors.not_supported">Not Supported</string>
   <string name="errors.permissions_not_granted">Permissions Not Granted</string>
   <string name="errors.decoding">Decoding Error</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">Invalid %s address</string>
   <string name="transaction.title.received">Received</string>
   <string name="transaction.title.sent">Sent</string>
-  <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">Account Activation Fee</string>
   <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
   <string name="banner.stake.title">Start staking %s</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">Get notified when there’s a significant price change in your favorite crypto assets.</string>
   <string name="assets.select_asset">Select Asset</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
-  <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
   <string name="common.warning">Warning</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
   <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
   <string name="input.enter_amount_to">Please enter amount to %s</string>
-  <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Popular</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs.</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">Types</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">Slippage</string>
-  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">To use the %s asset, you must first enable it on the %s network by fulfilling the network’s specific requirements.</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">Save to Photos</string>
   <string name="permissions.access_denied">Access Denied</string>
   <string name="permissions.image.photo_access.denied.description">This app does not have permission to access your photo library. Please enable access in your device settings.</string>
-  <string name="common.magic_button">Magic Button</string>
   <string name="common.emoji">Emoji</string>
   <string name="common.style">Style</string>
   <string name="common.avatar">Avatar</string>
   <string name="common.photo">Photo</string>
-  <string name="info.price_impact.title">Price Impact</string>
   <string name="info.price_impact.description">Price impact is the change in token price caused by your trade size. Higher price impact means you receive fewer tokens due to low liquidity or a large order size.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">Set target price</string>
   <string name="common.save">Save</string>
   <string name="common.edit">Edit</string>
-  <string name="contacts.no_contacts">No contacts yet.</string>
-  <string name="contacts.no_addresses">No addresses yet.</string>
-  <string name="contacts.contact">Contact</string>
-  <string name="contacts.title">Contacts</string>
   <string name="common.percentage">Percentage</string>
   <string name="price_alerts.set_alert.current_price">Current price</string>
   <string name="price_alerts.added_for">Set price alert %s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">Make your first transaction</string>
   <string name="stake.state.empty.title">Your stakes will appear here</string>
   <string name="stake.state.empty.description">Stake your first %s</string>
-  <string name="wallet_connect.state.empty.title">Your connections will appear here️</string>
   <string name="wallet_connect.state.empty.description">Scan or paste code to connect to the DApp</string>
   <string name="assets.state.empty.search_description">You can try to add it manually</string>
   <string name="activity.state.empty.search_description">Clear filters to refresh your activities</string>
   <string name="search.state.empty.description">Check the spelling or try a new search.</string>
-  <string name="assets.state.empty.search_title">No assets found</string>
   <string name="networks.state.empty.search_title">No networks found</string>
   <string name="activity.state.empty.search_title">No activities found</string>
   <string name="markets.state.empty.title">Your markets data will appear here</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">Contract or Token ID</string>
   <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
   <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="errors.insufficient_funds">Insufficient funds</string>
   <string name="info.insufficient_network_fee_balance.title">%s required</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">Wannan ciniki yana buƙatar %s don biyan kuɗin hanyar sadarwa da aka biya %s masu hakar ma\'adinai, ba Gem WalletTabbatar kana da isassun kayan aiki %s.</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">Shawarwari</string>
   <string name="rewards.earn_points.title">Sami Maki</string>
   <string name="rewards.get_rewards.title">Sami Lada</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">Kuna da lambar turawa daga aboki?</string>
   <string name="rewards.activate_referral_code.title">Fanshe lambar</string>
   <string name="rewards.create_referral_code.title">Ƙirƙiri Sunan mai amfani</string>
-  <string name="rewards.create_referral_code.info">Wannan zai zama sunan mai amfani naka na sirri.</string>
+  <string name="rewards.create_referral_code.info">Wannan zai zama sunan barkwancinka na sirri don walat ɗin da ke yanzu.</string>
   <string name="rewards.username">Sunan mai amfani</string>
   <string name="rewards.ways_spend.title">Hanyoyin Kashe Kuɗi</string>
   <string name="rewards.ways_spend.asset.title">Samu %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">Sa hannu kan Ma\'amala</string>
   <string name="recent_activity.title">Kwanan nan</string>
   <string name="settings.preferences.app_icon">Alamar Manhaja</string>
-  <string name="recent_activity.clear_confirmation">Shin kana da tabbacin kana son share duk sabbin bayanai?</string>
   <string name="rewards.pending.title">Karin Kudi Ana Jira</string>
   <string name="rewards.pending.description">Akwai a cikin %s</string>
   <string name="rewards.pending.description_ready">Karin kyautar ku a shirye take!</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">Babu sanarwa tukuna</string>
+  <string name="notifications.inapp.state.empty.description">Za ku ga sabbin bayanai game da sanarwarku a nan</string>
+  <string name="rewards.nickname">Laƙabi</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">Gayyaci abokai kuma ku sami lada tare</string>
+  <string name="nodes.import_node.warning_message">Maɓallan da aka keɓance na iya zama masu cutarwa kuma suna iya fallasa bayanan ma\'amalar ku ko kuma samar da bayanan karya.</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">Darajar kasuwa ta ka\'ida idan duk tsabar kudi suna yawo. An ƙididdige shi azaman farashi da aka ninka ta hanyar mafi girman wadata.</string>
+  <string name="info.circulating_supply.description">Adadin tsabar kuɗi da ake da su a kasuwa a yanzu haka.\"</string>
+  <string name="info.total_supply.description">Jimillar tsabar kuɗin da ke akwai, gami da tsabar kuɗi da aka kulle ko aka ajiye.</string>
+  <string name="info.max_supply.title">Mafi girman wadata</string>
+  <string name="info.max_supply.description">Matsakaicin adadin tsabar kuɗi da za su wanzu.</string>
+  <string name="perpetual.value">darajar</string>
+  <string name="perpetual.unrealized_pnl">PnL mara Gaskiya</string>
+  <string name="perpetual.volume">Ƙarar girma</string>
+  <string name="perpetual.all_time_pnl">PnL na Duk Lokaci</string>
+  <string name="perpetual.margin_usage">Amfani da Gefen</string>
+  <string name="perpetual.account_leverage">Amfani da Asusu</string>
+  <string name="asset.all_time_high">Babban Lokaci</string>
+  <string name="asset.all_time_low">Ƙasa a Kowane Lokaci</string>
+  <string name="errors.swap.minimum_amount">Mafi ƙarancin adadin ciniki shine %s. Da fatan a shigar da adadin da ya fi girma.</string>
+  <string name="swap.use_minimum_amount">Yi amfani da Mafi ƙarancin Adadin</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">Matsayinka zai bayyana a nan</string>
+  <string name="earn.state.empty.description">Ajiye kuɗin farko %@</string>
+  <string name="contacts.title">Lambobin Sadarwa</string>
+  <string name="contacts.contact">Tuntuɓi</string>
+  <string name="contacts.addresses">Adiresoshi</string>
+  <string name="contacts.state.empty.title">Babu Lambobin Sadarwa</string>
+  <string name="contacts.state.empty.description">Ajiye adiresoshin da ake yawan amfani da su</string>
+  <string name="charts.price.open">A buɗe</string>
+  <string name="charts.price.close">Rufe</string>
+  <string name="charts.price.high">Babban</string>
+  <string name="charts.price.low">Ƙasa</string>
+  <string name="charts.price.change">Sauyi</string>
 </resources>

@@ -14,24 +14,20 @@
   <string name="wallet.new.title">Новый кошелек</string>
   <string name="receive.title">Получить %s</string>
   <string name="buy.title">Купить %s</string>
-  <string name="wallet.import.secret_phrase">Секретная фраза</string>
+  <string name="common.secret_phrase">Секретная фраза</string>
   <string name="wallet.name">Имя</string>
   <string name="wallet.import.action">Импортировать</string>
   <string name="common.next">Следующий</string>
   <string name="common.copy">Копировать</string>
   <string name="common.share">Поделиться</string>
-  <string name="wallet.new.backup_warning">Запишите свой уникальный Секретная фраза и надежно сохраните его; это необходимо для доступа к кошельку и восстановления.</string>
   <string name="common.continue">Продолжить</string>
-  <string name="common.secret_phrase">Секретная фраза</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">Провайдер</string>
-  <string name="wallet.new.backup_confirm_warning">Прежде чем продолжить, подтвердите, что вы записали и сохранили свой Секретная фраза в безопасном месте, так как это имеет решающее значение для будущего доступа к кошельку и его восстановления.</string>
   <string name="common.loading">Загрузка</string>
   <string name="wallet.multicoin">Мультимонетный</string>
   <string name="common.address">Адрес</string>
   <string name="transfer.network_fee">Сетевая плата</string>
   <string name="transfer.amount">Сумма</string>
-  <string name="transfer.address">Адрес</string>
   <string name="wallet.import.address_field">Адрес или имя</string>
   <string name="common.back">Назад</string>
   <string name="transfer.memo">Мемо</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">Подтвердить</string>
   <string name="transfer.from">От</string>
   <string name="transfer.to">Кому</string>
-  <string name="transfer.confirm.maxtotal">Максимальная сумма</string>
   <string name="common.paste">Вставить</string>
   <string name="transfer.max">Макс</string>
   <string name="common.delete">Удалить</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">Включить пароль</string>
   <string name="settings.security.authentication">Аутентификация</string>
   <string name="wallet.copy_address">Копировать адрес</string>
-  <string name="assets.hidden">Скрытые</string>
   <string name="transfer.insufficient_balance">Недостаточный %s баланс.</string>
   <string name="transfer.insufficient_network_fee_balance">Недостаточно %s баланса для покрытия сетевых платежей.</string>
   <string name="asset.balances">Балансы</string>
   <string name="asset.balances.available">Доступно</string>
-  <string name="common.see_all">Смотреть все</string>
-  <string name="asset.latest_transactions">Последние транзакции</string>
   <string name="common.no_thanks">Нет, спасибо</string>
   <string name="settings.notifications.title">Уведомления</string>
   <string name="wallet.watch.tooltip.title">Вы следите за этим кошельком.</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">Стейк</string>
   <string name="swap.you_pay">Вы платите</string>
   <string name="swap.you_receive">Вы получаете</string>
-  <string name="swap.approve_token">Одобрить %s на обмен</string>
-  <string name="swap.approve_token_permission">Одобрите токен %s для доступа к обмену.</string>
   <string name="common.phrase">Фраза</string>
   <string name="stake.active">Активный</string>
   <string name="stake.pending">В ожидании</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">Активация</string>
   <string name="stake.deactivating">Деактивация</string>
   <string name="transfer.withdraw.title">Вывести стейк</string>
-  <string name="transfer.step">Шаг %d</string>
   <string name="sign_message.title">Подписать сообщение</string>
   <string name="sign_message.message">Сообщение</string>
   <string name="stake.awaiting_withdrawal">Ожидание вывода средств</string>
@@ -178,11 +167,10 @@
   <string name="errors.token.invalid_id">Неверный идентификатор токена</string>
   <string name="errors.token.unable_fetch_token_information">Не удается получить информацию о токене: %s</string>
   <string name="assets.add_custom_token">Добавить токен вручную</string>
-  <string name="errors.token.invalid_metadata">Неверные метаданные токена</string>
   <string name="asset.name">Имя</string>
   <string name="asset.symbol">Символ</string>
   <string name="asset.decimals">Десятичные дроби</string>
-  <string name="asset.token_id">Ид токена</string>
+  <string name="asset.token_id">Токен ID</string>
   <string name="common.type">Тип</string>
   <string name="stake.active_in">Активен в</string>
   <string name="errors.import.invalid_secret_phrase">Неверная секретная фраза</string>
@@ -214,7 +202,6 @@
   <string name="common.url">URL-адрес</string>
   <string name="errors.error_occured">Произошла ошибка!</string>
   <string name="settings.language">Язык</string>
-  <string name="wallet.import.private_key">%s приватный ключ</string>
   <string name="errors.invalid_network_id">Неверный идентификатор сети</string>
   <string name="common.private_key">Приватный ключ</string>
   <string name="nodes.import_node.latency">Задержка</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">Ошибка</string>
   <string name="nodes.gem_wallet_node">Нод кошелька Gem</string>
   <string name="errors.connections.user_cancelled">Отменено пользователем</string>
-  <string name="errors.swap.no_quote_data">Нет данных о котировках</string>
   <string name="errors.not_supported">Не поддерживается</string>
   <string name="errors.permissions_not_granted">Разрешения не предоставлены</string>
   <string name="errors.decoding">Ошибка декодирования</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">Неверный адрес %s</string>
   <string name="transaction.title.received">Получено</string>
   <string name="transaction.title.sent">Отправлено</string>
-  <string name="stake.stake">Стейкнути</string>
   <string name="banner.account_activation.title">Плата за активацию аккаунта</string>
   <string name="banner.account_activation.description" formatted="false">Сеть %s требует единовременную плату в размере %s.</string>
   <string name="banner.stake.title">Начните стейкинг %s</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">Получайте уведомления о значительном изменении цен на ваши любимые криптоактивы.</string>
   <string name="assets.select_asset">Выберите актив</string>
   <string name="lock.privacy_lock">Блокировка конфиденциальности</string>
-  <string name="receive.your_address">Адрес для получения</string>
   <string name="verify_phrase.title">Подтвердите</string>
   <string name="common.skip">Пропустить</string>
   <string name="common.warning">Внимание</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">Транзакция завершена и подтверждена в сети. Вы можете просмотреть детали, чтобы проверить ее статус.</string>
   <string name="info.lock_time.description">Время блокировки, также известное как период разблокировки или размораживания, — это период времени, в течение которого активы недоступны после вывода стейка.</string>
   <string name="input.enter_amount_to">Пожалуйста введите сумму для</string>
-  <string name="input.transfer">отправки</string>
   <string name="settings.hide_balance">Спрятать баланс</string>
   <string name="common.popular">Популярный</string>
   <string name="errors.dust_threshold">Транзакция не удалась, так как сумма слишком мала для соответствия минимальным требованиям сети %s (порог пыли). Этот предел гарантирует, что сумма транзакции покрывает комиссии и затраты на обработку.</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">Типы</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">Скольжение</string>
-  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">Чтобы использовать актив %s, необходимо сначала включить его в сети %s выполнив особые требования сети.</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">Сохранить в фото</string>
   <string name="permissions.access_denied">Доступ запрещен</string>
   <string name="permissions.image.photo_access.denied.description">У этого приложения нет разрешения на доступ к вашей библиотеке фотографий. Пожалуйста, включите доступ в настройках вашего устройства.</string>
-  <string name="common.magic_button">Волшебная кнопка</string>
   <string name="common.emoji">Эмодзи</string>
   <string name="common.style">Стиль</string>
   <string name="common.avatar">Аватар</string>
   <string name="common.photo">Фото</string>
-  <string name="info.price_impact.title">Влияние цены</string>
   <string name="info.price_impact.description">Влияние цены — это изменение цены токена, вызванное размером вашей сделки. Более высокое влияние цены означает, что вы получаете меньше токенов из-за низкой ликвидности или большого размера заказа.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">Установить целевую цену</string>
   <string name="common.save">Сохранять</string>
   <string name="common.edit">Edit</string>
-  <string name="contacts.no_contacts">Пока нет контактов.</string>
-  <string name="contacts.no_addresses">Адресов пока нет.</string>
-  <string name="contacts.contact">Контакт</string>
-  <string name="contacts.title">Контакты</string>
   <string name="common.percentage">Процент</string>
   <string name="price_alerts.set_alert.current_price">Текущая цена</string>
   <string name="price_alerts.added_for">Установить ценовое оповещение %s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">Совершите свою первую транзакцию</string>
   <string name="stake.state.empty.title">Ваш стейкинг будет отображаться здесь</string>
   <string name="stake.state.empty.description">Начните стейкать %s</string>
-  <string name="wallet_connect.state.empty.title">Ваши связи появятся здесь️</string>
   <string name="wallet_connect.state.empty.description">Отсканируйте или вставьте код для подключения к DApp</string>
   <string name="assets.state.empty.search_description">Вы можете попробовать добавить его вручную.</string>
   <string name="activity.state.empty.search_description">Очистите фильтры, чтобы обновить ваши действия</string>
   <string name="search.state.empty.description">Проверьте орфографию или попробуйте новый поиск.</string>
-  <string name="assets.state.empty.search_title">Активы не найдены</string>
   <string name="networks.state.empty.search_title">Сети не найдены</string>
   <string name="activity.state.empty.search_title">No activities found</string>
   <string name="markets.state.empty.title">Ваши рыночные данные появятся здесь</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">Контракт или токен ID</string>
   <string name="info.asset_status.unverified.description">Неподтверждённые токены не прошли достаточную проверку со стороны надёжных сторонних сервисов. Они могут появиться в вашем кошельке в результате airdrop’ов, переводов или ручного импорта.</string>
   <string name="info.asset_status.suspicious.description">Подозрительные или спам‑токены помечаются как потенциальные мошеннические или вредоносные активы. Они могут появиться в вашем кошельке в результате airdrop‑раздач, переводов или ручного добавления.</string>
-  <string name="errors.insufficient_funds">Недостаточно средств</string>
   <string name="info.insufficient_network_fee_balance.title">Требуется %s</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">Для совершения этой транзакции требуется %s для покрытия сетевой комиссии, уплаченной %s шахтеры, а не Gem WalletУбедитесь, что у вас достаточно средств. %s.</string>
   <string name="brand_name">Gem Wallet</string>
@@ -442,8 +415,8 @@
   <string name="errors.scan_transaction.malicious.description">Эту транзакцию невозможно завершить — адрес кошелька назначения связан с подозрительной или вредоносной активностью.</string>
   <string name="errors.scan_transaction.memo_required">%s адрес кошелька назначения требует тега назначения / заметки</string>
   <string name="common.info">Информация</string>
-  <string name="wallet.deposit">Вклад</string>
-  <string name="wallet.withdraw">Отзывать</string>
+  <string name="wallet.deposit">Внести</string>
+  <string name="wallet.withdraw">Вывести</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -493,18 +466,18 @@
   <string name="info.stake.reserved.description">Небольшая сумма остается в вашем кошельке для покрытия комиссий за такие операции, как отмена стейкинга или получение вознаграждений.</string>
   <string name="perpetual.open_direction">Открыть %s</string>
   <string name="perpetual.close_direction">Закрыть %s</string>
-  <string name="perpetuals.title">Вечные</string>
+  <string name="perpetuals.title">Перпетуалы</string>
   <string name="settings.preferences.title">Настройки</string>
   <string name="perpetuals.markets">Markets</string>
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Рынки не найдены</string>
-  <string name="assets.title">Ресурсы</string>
+  <string name="assets.title">Активы</string>
   <string name="stake.delegations">Делегации</string>
   <string name="info.stake.apr.description">Годовая процентная ставка (APR) — это годовая ставка вознаграждения за стейкинг вашей криптовалюты.</string>
   <string name="receive.warning" formatted="false">Это ваш адрес — отправляйте только %s на %s сеть.</string>
   <string name="perpetual.leverage">Кредитное плечо</string>
   <string name="perpetual.direction">Направление</string>
-  <string name="perpetual.auto_close">Автоматическое закрытие</string>
+  <string name="perpetual.auto_close">Авто закрытие</string>
   <string name="info.perpetual.auto_close.description">Автоматически закрывает позицию по достижении заданного уровня цены. Тейк-профит фиксирует прибыль, стоп-лосс ограничивает убытки.</string>
   <string name="perpetual.auto_close.take_profit">Тейк-профит</string>
   <string name="perpetual.market_price">Рыночная цена</string>
@@ -520,7 +493,7 @@
   <string name="secret_phrase.content_hidden.description">Контент, скрытый во время записи экрана</string>
   <string name="asset.verification.verified">Проверено</string>
   <string name="errors.connections.malicious_origin">Это соединение получено из ненадежного источника.</string>
-  <string name="settings.preferences.default_leverage">Кредитное плечо по умолчанию</string>
+  <string name="settings.preferences.default_leverage">Плечо по умолчанию</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
   <string name="errors.no_data_available">Данные отсутствуют.</string>
@@ -538,7 +511,7 @@
   <string name="rewards.share_text">Создайте Gem Wallet по моей реферальной ссылке и получите вознаграждение: %s</string>
   <string name="rewards.my_referral_code">Мой реферальный код</string>
   <string name="rewards.invite_friends.title">Пригласите друзей</string>
-  <string name="rewards.invite_friends.description">Зарабатывать %s Баллы начисляются за каждого друга, который присоединится.</string>
+  <string name="rewards.invite_friends.description">Зарабатывай %s баллов за каждого друга, который присоединится.</string>
   <string name="common.get_started">Начать</string>
   <string name="rewards.referral_code">Реферальный код</string>
   <string name="rewards.invited_by">Invited By</string>
@@ -546,20 +519,55 @@
   <string name="rewards.referrals">Рефералы</string>
   <string name="rewards.earn_points.title">Зарабатывайте баллы</string>
   <string name="rewards.get_rewards.title">Получайте награды</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">У вас есть реферальный код от друга?</string>
   <string name="rewards.activate_referral_code.title">Активируйте код</string>
   <string name="rewards.create_referral_code.title">Создать имя пользователя</string>
-  <string name="rewards.create_referral_code.info">Это будет ваше личное имя пользователя.</string>
+  <string name="rewards.create_referral_code.info">Это будет ваш никнейм для текущего кошелька.</string>
   <string name="rewards.username">Имя пользователя</string>
   <string name="rewards.ways_spend.title">Способы потратить</string>
-  <string name="rewards.ways_spend.asset.title">Получать %s</string>
+  <string name="rewards.ways_spend.asset.title">Получить %s</string>
   <string name="rewards.insufficient_points">Недостаточно баллов</string>
-  <string name="rewards.confirm_redeem" formatted="false">Получать %s для %s!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Получить %s за %s!</string>
   <string name="transfer.sign_transaction.title">Подписать транзакцию</string>
   <string name="recent_activity.title">Последние</string>
-  <string name="settings.preferences.app_icon">Значок приложения</string>
-  <string name="recent_activity.clear_confirmation">Вы уверены, что хотите удалить все последние записи?</string>
+  <string name="settings.preferences.app_icon">Иконка приложения</string>
   <string name="rewards.pending.title">Ожидается выплата бонуса</string>
   <string name="rewards.pending.description">Доступно в %s</string>
   <string name="rewards.pending.description_ready">Ваш бонус готов!</string>
+  <string name="recent_activity.state.empty.title">Здесь появятся ваши недавние активы</string>
+  <string name="recent_activity.state.empty.description">Здесь будут отображаться активы, которые вы недавно использовали</string>
+  <string name="notifications.inapp.state.empty.title">Уведомлений пока нет.</string>
+  <string name="notifications.inapp.state.empty.description">Здесь вы будете видеть обновления, касающиеся ваших уведомлений.</string>
+  <string name="rewards.nickname">Никнейм</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">Приглашайте друзей и зарабатывайте награды вместе.</string>
+  <string name="nodes.import_node.warning_message">Пользовательские узлы могут быть вредоносными и способны раскрыть данные ваших транзакций или предоставить ложную информацию.</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">Теоретическая рыночная стоимость, если бы все монеты находились в обращении. Рассчитывается как цена, умноженная на максимальное предложение.</string>
+  <string name="info.circulating_supply.description">Количество монет, доступных и торгующихся в настоящее время на рынке.</string>
+  <string name="info.total_supply.description">Общее количество существующих монет, включая заблокированные или зарезервированные монеты.</string>
+  <string name="info.max_supply.title">Максимальное предложение</string>
+  <string name="info.max_supply.description">Максимальное количество монет, которое когда-либо будет существовать.</string>
+  <string name="perpetual.value">Ценить</string>
+  <string name="perpetual.unrealized_pnl">Нереализованный PnL</string>
+  <string name="perpetual.volume">Объем</string>
+  <string name="perpetual.all_time_pnl">PnL за всё время</string>
+  <string name="perpetual.margin_usage">Использование маржи</string>
+  <string name="perpetual.account_leverage">Кредитное плечо счета</string>
+  <string name="asset.all_time_high">Рекордный максимум за все время</string>
+  <string name="asset.all_time_low">Рекордный минимум за все время</string>
+  <string name="errors.swap.minimum_amount">Минимальная сумма сделки — %s. Введите, пожалуйста, сумму побольше.</string>
+  <string name="swap.use_minimum_amount">Использовать минимальное количество</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">Ваши вакансии будут отображаться здесь.</string>
+  <string name="earn.state.empty.description">Внесите свой первый депозит %@</string>
+  <string name="contacts.title">Контакты</string>
+  <string name="contacts.contact">Контакт</string>
+  <string name="contacts.addresses">Адреса</string>
+  <string name="contacts.state.empty.title">Нет контактов</string>
+  <string name="contacts.state.empty.description">Сохраните часто используемые адреса.</string>
+  <string name="charts.price.open">Открытие</string>
+  <string name="charts.price.close">Закрытие</string>
+  <string name="charts.price.high">Максимум</string>
+  <string name="charts.price.low">Минимум</string>
+  <string name="charts.price.change">Изменение</string>
 </resources>

@@ -14,24 +14,20 @@
   <string name="wallet.new.title">نیا پرس</string>
   <string name="receive.title">وصول کریں %s</string>
   <string name="buy.title">خریدیں %s</string>
-  <string name="wallet.import.secret_phrase">Secret Phrase</string>
+  <string name="common.secret_phrase">خفیہ جملہ</string>
   <string name="wallet.name">نام</string>
   <string name="wallet.import.action">درآمد کریں۔</string>
   <string name="common.next">Next</string>
   <string name="common.copy">Copy</string>
   <string name="common.share">Share</string>
-  <string name="wallet.new.backup_warning">Write down your unique Secret Phrase and store it securely; it\'s essential for wallet access and recovery.</string>
   <string name="common.continue">Continue</string>
-  <string name="common.secret_phrase">Secret Phrase</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">Provider</string>
-  <string name="wallet.new.backup_confirm_warning">Confirm that you\'ve written down and stored your Secret Phrase securely before proceeding, as it is crucial for future wallet access and recovery.</string>
   <string name="common.loading">Loading</string>
   <string name="wallet.multicoin">Multi-Coin</string>
   <string name="common.address">Address</string>
   <string name="transfer.network_fee">Network Fee</string>
   <string name="transfer.amount">Amount</string>
-  <string name="transfer.address">Address</string>
   <string name="wallet.import.address_field">Address or Name</string>
   <string name="common.back">Back</string>
   <string name="transfer.memo">Memo</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">Confirm</string>
   <string name="transfer.from">From</string>
   <string name="transfer.to">To</string>
-  <string name="transfer.confirm.maxtotal">Max total</string>
   <string name="common.paste">Paste</string>
   <string name="transfer.max">Max</string>
   <string name="common.delete">Delete</string>
@@ -61,7 +56,7 @@
   <string name="wallet.scan">Scan</string>
   <string name="settings.aboutus">About Us</string>
   <string name="common.wallet">Wallet</string>
-  <string name="common.show">Show %s</string>
+  <string name="common.show">دکھائیں۔ %s</string>
   <string name="transfer.network">Network</string>
   <string name="common.copied">Copied: %s</string>
   <string name="transfer.amount.title">Amount</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">Enable Passcode</string>
   <string name="settings.security.authentication">Authentication</string>
   <string name="wallet.copy_address">Copy Address</string>
-  <string name="assets.hidden">Hidden</string>
   <string name="transfer.insufficient_balance">Insufficient %s balance.</string>
   <string name="transfer.insufficient_network_fee_balance">Insufficient %s balance to cover network fees.</string>
   <string name="asset.balances">Balances</string>
   <string name="asset.balances.available">Available</string>
-  <string name="common.see_all">See All</string>
-  <string name="asset.latest_transactions">Latest Transactions</string>
   <string name="common.no_thanks">No thanks</string>
   <string name="settings.notifications.title">Notifications</string>
   <string name="wallet.watch.tooltip.title">You are watching this wallet.</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">Stake</string>
   <string name="swap.you_pay">You Pay</string>
   <string name="swap.you_receive">You Receive</string>
-  <string name="swap.approve_token">Approve %s to Swap</string>
-  <string name="swap.approve_token_permission">Approve %s token for swap access.</string>
   <string name="common.phrase">Phrase</string>
   <string name="stake.active">Active</string>
   <string name="stake.pending">Pending</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
   <string name="transfer.withdraw.title">واپس لینا</string>
-  <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
   <string name="stake.awaiting_withdrawal">Awaiting Withdrawal</string>
@@ -178,11 +167,10 @@
   <string name="errors.token.invalid_id">Invalid Token ID</string>
   <string name="errors.token.unable_fetch_token_information">Unable to fetch token information: %s</string>
   <string name="assets.add_custom_token">Add Custom Token</string>
-  <string name="errors.token.invalid_metadata">Invalid token metadata</string>
   <string name="asset.name">Name</string>
   <string name="asset.symbol">Symbol</string>
   <string name="asset.decimals">Decimals</string>
-  <string name="asset.token_id">Token ID</string>
+  <string name="asset.token_id">ٹوکن آئی ڈی</string>
   <string name="common.type">Type</string>
   <string name="stake.active_in">Active In</string>
   <string name="errors.import.invalid_secret_phrase">Invalid Secret Phrase</string>
@@ -214,7 +202,6 @@
   <string name="common.url">URL</string>
   <string name="errors.error_occured">An error occurred!</string>
   <string name="settings.language">Language</string>
-  <string name="wallet.import.private_key">%s encoded private key</string>
   <string name="errors.invalid_network_id">Invalid Network ID</string>
   <string name="common.private_key">Private Key</string>
   <string name="nodes.import_node.latency">Latency</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">Error</string>
   <string name="nodes.gem_wallet_node">Gem Wallet Node</string>
   <string name="errors.connections.user_cancelled">User cancelled</string>
-  <string name="errors.swap.no_quote_data">No quote data</string>
   <string name="errors.not_supported">Not Supported</string>
   <string name="errors.permissions_not_granted">Permissions Not Granted</string>
   <string name="errors.decoding">Decoding Error</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">Invalid %s address</string>
   <string name="transaction.title.received">Received</string>
   <string name="transaction.title.sent">Sent</string>
-  <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">Account Activation Fee</string>
   <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
   <string name="banner.stake.title">Start staking %s</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">Get notified when there’s a significant price change in your favorite crypto assets.</string>
   <string name="assets.select_asset">Select Asset</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
-  <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
   <string name="common.warning">وارننگ</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
   <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
   <string name="input.enter_amount_to">Please enter amount to %s</string>
-  <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Popular</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs.</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">Types</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">Slippage</string>
-  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">To use the %s asset, you must first enable it on the %s network by fulfilling the network’s specific requirements.</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">Save to Photos</string>
   <string name="permissions.access_denied">Access Denied</string>
   <string name="permissions.image.photo_access.denied.description">This app does not have permission to access your photo library. Please enable access in your device settings.</string>
-  <string name="common.magic_button">Magic Button</string>
   <string name="common.emoji">Emoji</string>
   <string name="common.style">Style</string>
   <string name="common.avatar">Avatar</string>
   <string name="common.photo">Photo</string>
-  <string name="info.price_impact.title">Price Impact</string>
   <string name="info.price_impact.description">Price impact is the change in token price caused by your trade size. Higher price impact means you receive fewer tokens due to low liquidity or a large order size.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">ہدف کی قیمت مقرر کریں۔</string>
   <string name="common.save">Save</string>
   <string name="common.edit">Edit</string>
-  <string name="contacts.no_contacts">No contacts yet.</string>
-  <string name="contacts.no_addresses">ابھی تک کوئی پتہ نہیں۔</string>
-  <string name="contacts.contact">رابطہ کریں۔</string>
-  <string name="contacts.title">رابطے</string>
   <string name="common.percentage">فیصد</string>
   <string name="price_alerts.set_alert.current_price">موجودہ قیمت</string>
   <string name="price_alerts.added_for">قیمت کا الرٹ مقرر کریں %s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">اپنا پہلا لین دین کریں۔</string>
   <string name="stake.state.empty.title">آپ کے داؤ یہاں ظاہر ہوں گے۔</string>
   <string name="stake.state.empty.description">اپنا پہلا حصہ %s</string>
-  <string name="wallet_connect.state.empty.title">آپ کے کنکشن یہاں ظاہر ہوں گے۔</string>
   <string name="wallet_connect.state.empty.description">DApp سے جڑنے کے لیے کوڈ کو اسکین یا پیسٹ کریں۔</string>
   <string name="assets.state.empty.search_description">آپ اسے دستی طور پر شامل کرنے کی کوشش کر سکتے ہیں۔</string>
   <string name="activity.state.empty.search_description">اپنی سرگرمیوں کو تازہ کرنے کے لیے فلٹرز صاف کریں۔</string>
   <string name="search.state.empty.description">ہجے چیک کریں یا نئی تلاش کی کوشش کریں۔</string>
-  <string name="assets.state.empty.search_title">کوئی اثاثہ نہیں ملا</string>
   <string name="networks.state.empty.search_title">کوئی نیٹ ورک نہیں ملا</string>
   <string name="activity.state.empty.search_title">No activities found</string>
   <string name="markets.state.empty.title">آپ کے بازاروں کا ڈیٹا یہاں ظاہر ہوگا۔</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">کنٹریکٹ یا ٹوکن ID</string>
   <string name="info.asset_status.unverified.description">غیر تصدیق شدہ ٹوکنز کی بھروسہ مند فریق ثالث خدمات کے ذریعہ کافی تصدیق نہیں کی گئی ہے۔ وہ ایئر ڈراپس، ٹرانسفرز، یا دستی درآمدات کی وجہ سے آپ کے بٹوے میں ظاہر ہو سکتے ہیں۔</string>
   <string name="info.asset_status.suspicious.description">مشکوک یا سپیم ٹوکنز کی شناخت ممکنہ گھوٹالوں یا نقصان دہ اثاثوں کے طور پر کی جاتی ہے۔ وہ ایئر ڈراپس، ٹرانسفرز، یا دستی درآمدات کی وجہ سے آپ کے بٹوے میں ظاہر ہو سکتے ہیں۔</string>
-  <string name="errors.insufficient_funds">ناکافی فنڈز</string>
   <string name="info.insufficient_network_fee_balance.title">%s درکار ہے۔</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">اس لین دین کی ضرورت ہے۔ %s نیٹ ورک کی فیس کو پورا کرنے کے لیے %s کان کنوں، نہیں Gem Wallet. یقینی بنائیں کہ آپ کے پاس کافی ہے۔ %s.</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">حوالہ جات</string>
   <string name="rewards.earn_points.title">پوائنٹس حاصل کریں۔</string>
   <string name="rewards.get_rewards.title">انعامات حاصل کریں۔</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">کسی دوست کا حوالہ کوڈ ہے؟</string>
   <string name="rewards.activate_referral_code.title">کوڈ بھنائیں۔</string>
   <string name="rewards.create_referral_code.title">صارف نام بنائیں</string>
-  <string name="rewards.create_referral_code.info">یہ آپ کا ذاتی صارف نام ہوگا۔</string>
+  <string name="rewards.create_referral_code.info">موجودہ بٹوے کے لیے یہ آپ کا ذاتی عرفی نام ہوگا۔</string>
   <string name="rewards.username">صارف نام</string>
   <string name="rewards.ways_spend.title">خرچ کرنے کے طریقے</string>
   <string name="rewards.ways_spend.asset.title">حاصل کریں۔ %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">لین دین پر دستخط کریں۔</string>
   <string name="recent_activity.title">حالیہ</string>
   <string name="settings.preferences.app_icon">ایپ آئیکن</string>
-  <string name="recent_activity.clear_confirmation">کیا آپ واقعی تمام حالیہ کو صاف کرنا چاہتے ہیں؟</string>
   <string name="rewards.pending.title">بونس زیر التواء</string>
   <string name="rewards.pending.description">میں دستیاب ہے۔ %s</string>
   <string name="rewards.pending.description_ready">آپ کا بونس تیار ہے!</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">ابھی تک کوئی اطلاع نہیں ہے۔</string>
+  <string name="notifications.inapp.state.empty.description">آپ یہاں اپنی اطلاعات کے بارے میں اپ ڈیٹس دیکھیں گے۔</string>
+  <string name="rewards.nickname">عرفی نام</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">دوستوں کو مدعو کریں اور مل کر انعامات کمائیں۔</string>
+  <string name="nodes.import_node.warning_message">حسب ضرورت نوڈس بدنیتی پر مبنی ہو سکتے ہیں اور آپ کے لین دین کے ڈیٹا کو بے نقاب کر سکتے ہیں یا غلط معلومات فراہم کر سکتے ہیں۔</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">نظریاتی مارکیٹ کی قیمت اگر تمام سکے گردش میں تھے۔ قیمت کو زیادہ سے زیادہ سپلائی سے ضرب کے حساب سے شمار کیا جاتا ہے۔</string>
+  <string name="info.circulating_supply.description">سککوں کی تعداد جو فی الحال دستیاب ہے اور مارکیٹ میں تجارت کر رہے ہیں۔\"</string>
+  <string name="info.total_supply.description">موجود سکوں کی کل تعداد، بشمول مقفل یا محفوظ سکے</string>
+  <string name="info.max_supply.title">زیادہ سے زیادہ سپلائی</string>
+  <string name="info.max_supply.description">سکوں کی زیادہ سے زیادہ تعداد جو کبھی موجود ہوں گے۔</string>
+  <string name="perpetual.value">قدر</string>
+  <string name="perpetual.unrealized_pnl">غیر حقیقی PnL</string>
+  <string name="perpetual.volume">حجم</string>
+  <string name="perpetual.all_time_pnl">ہر وقت PnL</string>
+  <string name="perpetual.margin_usage">مارجن کا استعمال</string>
+  <string name="perpetual.account_leverage">اکاؤنٹ لیوریج</string>
+  <string name="asset.all_time_high">آل ٹائم ہائی</string>
+  <string name="asset.all_time_low">آل ٹائم لو</string>
+  <string name="errors.swap.minimum_amount">کم از کم تجارتی رقم ہے۔ %s. براہ کرم زیادہ رقم درج کریں۔</string>
+  <string name="swap.use_minimum_amount">کم سے کم رقم استعمال کریں۔</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">آپ کی پوزیشنیں یہاں ظاہر ہوں گی۔</string>
+  <string name="earn.state.empty.description">اپنی پہلی جمع کروائیں۔ %@</string>
+  <string name="contacts.title">رابطے</string>
+  <string name="contacts.contact">رابطہ کریں۔</string>
+  <string name="contacts.addresses">پتے</string>
+  <string name="contacts.state.empty.title">کوئی رابطے نہیں</string>
+  <string name="contacts.state.empty.description">اپنے اکثر استعمال ہونے والے پتے محفوظ کریں۔</string>
+  <string name="charts.price.open">کھولیں۔</string>
+  <string name="charts.price.close">بند</string>
+  <string name="charts.price.high">اعلی</string>
+  <string name="charts.price.low">کم</string>
+  <string name="charts.price.change">تبدیلی</string>
 </resources>

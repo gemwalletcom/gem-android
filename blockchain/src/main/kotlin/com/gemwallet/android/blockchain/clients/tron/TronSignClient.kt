@@ -2,8 +2,10 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.SignClient
+import com.gemwallet.android.blockchain.services.mapper.toGem
 import com.gemwallet.android.domains.asset.subtype
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -11,6 +13,14 @@ import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import uniffi.gemstone.GemChainSigner
+import uniffi.gemstone.GemGasPriceType
+import uniffi.gemstone.GemTransactionInputType
+import uniffi.gemstone.GemTransactionLoadInput
+import uniffi.gemstone.GemTransferDataExtra
+import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
+import uniffi.gemstone.TransferDataOutputAction
+import uniffi.gemstone.TransferDataOutputType
 import uniffi.gemstone.TronStakeData
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
@@ -233,6 +243,55 @@ class TronSignClient(
             }
         }
         return signTransfer(chainData, contract, memo, null,  privateKey)
+    }
+
+    override suspend fun signGenericTransfer(
+        params: ConfirmParams.TransferParams.Generic,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val metadata = (chainData as TronChainData).toGem()
+        val appMetadata = GemWalletConnectionSessionAppMetadata(
+            name = params.name,
+            description = params.description,
+            url = params.url,
+            icon = params.icon,
+        )
+        val extra = GemTransferDataExtra(
+            gasLimit = null,
+            gasPrice = null,
+            data = params.memo?.let { data ->
+                if (data.has0xPrefix()) {
+                    try {
+                        return@let data.decodeHex()
+                    } catch (_: Error) { }
+                }
+                data.toByteArray()
+            },
+            outputType = when (params.inputType) {
+                ConfirmParams.TransferParams.InputType.Signature -> TransferDataOutputType.SIGNATURE
+                ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputType.ENCODED_TRANSACTION
+                null -> throw IllegalArgumentException("Not supported ${params.inputType}")
+            },
+            outputAction = when (params.isSendable) {
+                true -> TransferDataOutputAction.SEND
+                false -> TransferDataOutputAction.SIGN
+            },
+            to = params.destination().address
+        )
+        val gemLoadInput = GemTransactionLoadInput(
+            inputType = GemTransactionInputType.Generic(params.asset.toGem(), appMetadata, extra),
+            senderAddress = params.from.address,
+            destinationAddress = params.destination.address,
+            value = finalAmount.toString(),
+            gasPrice = GemGasPriceType.Regular((fee as? GasFee)?.maxGasPrice.toString()),
+            memo = null,
+            isMaxValue = params.useMaxAmount,
+            metadata = metadata,
+        )
+        return listOf(GemChainSigner(chain.string).signData(gemLoadInput, privateKey).toByteArray())
     }
 
     private fun createVoteContract(votes: List<uniffi.gemstone.TronVote>, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {

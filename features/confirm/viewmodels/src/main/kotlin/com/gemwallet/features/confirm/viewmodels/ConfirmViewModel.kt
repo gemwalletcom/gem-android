@@ -1,5 +1,6 @@
 package com.gemwallet.features.confirm.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -318,16 +319,13 @@ class ConfirmViewModel @Inject constructor(
             val signs = sign(signerParams, session, assetInfo, feePriority)
             when (signerParams.input) {
                 is ConfirmParams.TransferParams.Generic -> {
-                    when ((signerParams.input as ConfirmParams.TransferParams.Generic).inputType) {
-                        ConfirmParams.TransferParams.InputType.Signature -> {
-                            val hash = String(signs.firstOrNull() ?: byteArrayOf())
-                            state.update { ConfirmState.Result(txHash = hash) }
-                            viewModelScope.launch(Dispatchers.Main) {
-                                finishAction(assetId = assetInfo.id(), hash = hash, route = "")
-                            }
-                            return@launch
+                    if (!(signerParams.input as ConfirmParams.TransferParams.Generic).isSendable) {
+                        val hash = String(signs.firstOrNull() ?: byteArrayOf())
+                        state.update { ConfirmState.Result(txHash = hash) }
+                        viewModelScope.launch(Dispatchers.Main) {
+                            finishAction(assetId = assetInfo.id(), hash = hash, route = "")
                         }
-                        else -> {}
+                        return@launch
                     }
                 }
                 else -> {}

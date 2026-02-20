@@ -14,24 +14,20 @@
   <string name="wallet.new.title">Yeni Cüzdan</string>
   <string name="receive.title">%s alın</string>
   <string name="buy.title">%s satın al</string>
-  <string name="wallet.import.secret_phrase">gizli yenileme</string>
+  <string name="common.secret_phrase">Gizli Söz</string>
   <string name="wallet.name">İsim</string>
   <string name="wallet.import.action">Cüzdanı İçe Aktar</string>
   <string name="common.next">Sonraki</string>
   <string name="common.copy">Kopyala</string>
   <string name="common.share">Paylaşmak</string>
-  <string name="wallet.new.backup_warning">Benzersiz Geçersiz Gizli İfade anahtarınızı bir yere yazın ve güvenli bir şekilde saklayın; cüzdan erişimi ve kurtarılması için önemlidir.</string>
   <string name="common.continue">Devam etmek</string>
-  <string name="common.secret_phrase">Geçersiz Gizli İfade</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">Sağlayıcı</string>
-  <string name="wallet.new.backup_confirm_warning">Devam etmeden önce cüzdan bilgilerinizi not ettiğinizi ve güvenli bir şekilde sakladığınızdan emin olun; çünkü bu, cüzdanınıza gelecekteki erişim ve kurtarma işlemleri için çok önemlidir.</string>
   <string name="common.loading">Yükleniyor</string>
   <string name="wallet.multicoin">Çoklu Para</string>
   <string name="common.address">Adres</string>
   <string name="transfer.network_fee">Ağ</string>
   <string name="transfer.amount">Miktar</string>
-  <string name="transfer.address">transfer adresi</string>
   <string name="wallet.import.address_field">Adres veya Ad</string>
   <string name="common.back">Geri</string>
   <string name="transfer.memo">Hafıza</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">Onaylamak</string>
   <string name="transfer.from">Kimden</string>
   <string name="transfer.to">İle</string>
-  <string name="transfer.confirm.maxtotal">Maksimum toplam</string>
   <string name="common.paste">Yapıştırmak</string>
   <string name="transfer.max">Maksimum</string>
   <string name="common.delete">Silmek</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">Şifreyi Etkinleştir</string>
   <string name="settings.security.authentication">Kimlik doğrulama</string>
   <string name="wallet.copy_address">Adresi Kopyala</string>
-  <string name="assets.hidden">Gizlenmiş</string>
   <string name="transfer.insufficient_balance">Yetersiz %s bakiye.</string>
   <string name="transfer.insufficient_network_fee_balance">Yetersiz %s bakiye.</string>
   <string name="asset.balances">Bakiyeler</string>
   <string name="asset.balances.available">Mevcut</string>
-  <string name="common.see_all">Hepsini gör</string>
-  <string name="asset.latest_transactions">Son İşlemler</string>
   <string name="common.no_thanks">Hayır, teşekkürler</string>
   <string name="settings.notifications.title">Bildirimler</string>
   <string name="wallet.watch.tooltip.title">Bu cüzdanı izliyorsunuz.</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">Bahis</string>
   <string name="swap.you_pay">Öde</string>
   <string name="swap.you_receive">Aldığın</string>
-  <string name="swap.approve_token">Onaylamak</string>
-  <string name="swap.approve_token_permission">%s belirtecini takas erişimi için onaylayın.</string>
   <string name="common.phrase">Cümle</string>
   <string name="stake.active">Aktif</string>
   <string name="stake.pending">Beklemede</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">Etkinleştiriliyor</string>
   <string name="stake.deactivating">Devre dışı bırakılıyor</string>
   <string name="transfer.withdraw.title">Çekil</string>
-  <string name="transfer.step">Adım %d</string>
   <string name="sign_message.title">İleti</string>
   <string name="sign_message.message">İleti</string>
   <string name="stake.awaiting_withdrawal">Para Çekme Bekleniyor</string>
@@ -178,7 +167,6 @@
   <string name="errors.token.invalid_id">Geçersiz adres veya ad</string>
   <string name="errors.token.unable_fetch_token_information">Belirteç bilgileri getirilemiyor: %s</string>
   <string name="assets.add_custom_token">Jeton Ekle</string>
-  <string name="errors.token.invalid_metadata">Geçersiz belirteç meta verisi</string>
   <string name="asset.name">İsim</string>
   <string name="asset.symbol">Sembol</string>
   <string name="asset.decimals">Ondalıklar</string>
@@ -214,7 +202,6 @@
   <string name="common.url">URL\'si</string>
   <string name="errors.error_occured">Bilinmeyen bir hata oluştu. Lütfen tekrar deneyin.</string>
   <string name="settings.language">Dil</string>
-  <string name="wallet.import.private_key">%s kodlanmış özel anahtar</string>
   <string name="errors.invalid_network_id">Geçersiz adres veya ad</string>
   <string name="common.private_key">Özel Anahtar</string>
   <string name="nodes.import_node.latency">Gecikme</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">Hata</string>
   <string name="nodes.gem_wallet_node">Gem Cüzdan Düğümü</string>
   <string name="errors.connections.user_cancelled">Kullanıcı iptal etti</string>
-  <string name="errors.swap.no_quote_data">Teklif verisi yok</string>
   <string name="errors.not_supported">Desteklenmiyor</string>
   <string name="errors.permissions_not_granted">İzinler Verilmedi</string>
   <string name="errors.decoding">Çözme Hatası</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">Geçersiz %s adresi</string>
   <string name="transaction.title.received">Kabul edilmiş</string>
   <string name="transaction.title.sent">Gönderilmiş</string>
-  <string name="stake.stake">Bahis</string>
   <string name="banner.account_activation.title">Hesap Aktivasyon Ücreti</string>
   <string name="banner.account_activation.description" formatted="false">%s ağı, tek seferlik bir ücret gerektirir %s.</string>
   <string name="banner.stake.title">%s bahisine başla</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">Favori kripto varlıklarınızda önemli bir fiyat değişikliği olduğunda bildirim alın.</string>
   <string name="assets.select_asset">Varlık Seç</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
-  <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Onaylamak</string>
   <string name="common.skip">Atlamak</string>
   <string name="common.warning">Uyarı</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">İşlem tamamlandı ve ağda onaylandı. Durumunu doğrulamak için ayrıntıları inceleyebilirsiniz.</string>
   <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
   <string name="input.enter_amount_to">Please enter amount to %s</string>
-  <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Popüler</string>
   <string name="errors.dust_threshold">İşlem, tutarın %s ağının minimum gereksinimini (toz eşiği) karşılamak için çok küçük olması nedeniyle başarısız oldu. Bu sınır, işlem değerinin ücretleri ve işlem maliyetlerini karşılamasını sağlar.</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">Türler</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">Slippage</string>
-  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">%s varlığını kullanmak için, öncelikle ağın özel gereksinimlerini karşılayarak %s ağında etkinleştirmeniz gerekir.</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">Fotoğraflara Kaydet</string>
   <string name="permissions.access_denied">Erişim engellendi</string>
   <string name="permissions.image.photo_access.denied.description">Bu uygulama fotoğraf kütüphanenize erişim iznine sahip değil. Lütfen cihaz ayarlarınızda erişimi etkinleştirin.</string>
-  <string name="common.magic_button">Sihirli Düğme</string>
   <string name="common.emoji">Emoji</string>
   <string name="common.style">Stil</string>
   <string name="common.avatar">Avatar</string>
   <string name="common.photo">Fotoğraf</string>
-  <string name="info.price_impact.title">Fiyat Etkisi</string>
   <string name="info.price_impact.description">Fiyat etkisi, işlem boyutunuzdan kaynaklanan token fiyatındaki değişikliktir. Daha yüksek fiyat etkisi, düşük likidite veya büyük sipariş boyutu nedeniyle daha az token aldığınız anlamına gelir.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">Hedef fiyatı belirle</string>
   <string name="common.save">Kaydetmek</string>
   <string name="common.edit">Edit</string>
-  <string name="contacts.no_contacts">Henüz iletişim yok.</string>
-  <string name="contacts.no_addresses">Henüz adres yok.</string>
-  <string name="contacts.contact">Temas etmek</string>
-  <string name="contacts.title">İletişim</string>
   <string name="common.percentage">Yüzde</string>
   <string name="price_alerts.set_alert.current_price">Güncel fiyat</string>
   <string name="price_alerts.added_for">Fiyat uyarısı ayarla %s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">İlk işleminizi yapın</string>
   <string name="stake.state.empty.title">Bahisleriniz burada görünecek</string>
   <string name="stake.state.empty.description">İlk %s bahsinizi yapın</string>
-  <string name="wallet_connect.state.empty.title">Bağlantılarınız burada görünecek️</string>
   <string name="wallet_connect.state.empty.description">DApp\'e bağlanmak için kodu tarayın veya yapıştırın</string>
   <string name="assets.state.empty.search_description">Manuel olarak eklemeyi deneyebilirsiniz</string>
   <string name="activity.state.empty.search_description">Aktivitelerinizi yenilemek için filtreleri temizleyin</string>
   <string name="search.state.empty.description">Yazımını kontrol edin veya yeni bir arama deneyin.</string>
-  <string name="assets.state.empty.search_title">Hiçbir varlık bulunamadı</string>
   <string name="networks.state.empty.search_title">Hiçbir ağ bulunamadı</string>
   <string name="activity.state.empty.search_title">No activities found</string>
   <string name="markets.state.empty.title">Piyasa verileriniz burada görünecek</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">Sözleşme veya Token ID</string>
   <string name="info.asset_status.unverified.description">Doğrulanmamış token\'lar güvenilir üçüncü taraf hizmetleri tarafından yeterince doğrulanmamıştır. Airdrop\'lar, transferler veya manuel içe aktarmalar nedeniyle cüzdanınızda görünebilirler.</string>
   <string name="info.asset_status.suspicious.description">Şüpheli veya spam token\'lar potansiyel dolandırıcılık veya zararlı varlıklar olarak tanımlanır. Airdrop\'lar, transferler veya manuel ithalatlar nedeniyle cüzdanınızda görünebilirler.</string>
-  <string name="errors.insufficient_funds">Yetersiz fon</string>
   <string name="info.insufficient_network_fee_balance.title">%s gerekli</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem gerektirir %s ödenen ağ ücretini karşılamak için %s madenciler, değil Gem WalletYeterli miktarda olduğundan emin olun. %s.</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">Yönlendirmeler</string>
   <string name="rewards.earn_points.title">Puan Kazanın</string>
   <string name="rewards.get_rewards.title">Ödüller Kazanın</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">Arkadaşınızdan aldığınız bir referans kodunuz var mı?</string>
   <string name="rewards.activate_referral_code.title">Kodu kullan</string>
   <string name="rewards.create_referral_code.title">Kullanıcı Adı Oluştur</string>
-  <string name="rewards.create_referral_code.info">Bu sizin kişisel kullanıcı adınız olacak.</string>
+  <string name="rewards.create_referral_code.info">Bu, mevcut cüzdanınız için kullanacağınız kişisel takma adınız olacak.</string>
   <string name="rewards.username">Kullanıcı adı</string>
   <string name="rewards.ways_spend.title">Harcama Yolları</string>
   <string name="rewards.ways_spend.asset.title">Elde etmek %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">İmza İşlemi</string>
   <string name="recent_activity.title">Son Haberler</string>
   <string name="settings.preferences.app_icon">Uygulama Simgesi</string>
-  <string name="recent_activity.clear_confirmation">Son kullanılanları silmek istediğinizden emin misiniz?</string>
   <string name="rewards.pending.title">Bonus Beklemede</string>
   <string name="rewards.pending.description">Mevcuttur %s</string>
   <string name="rewards.pending.description_ready">Bonusunuz hazır!</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">Henüz hiçbir bildirim yok.</string>
+  <string name="notifications.inapp.state.empty.description">Bildirimlerinizle ilgili güncellemeleri burada göreceksiniz.</string>
+  <string name="rewards.nickname">Takma ad</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">Arkadaşlarınızı davet edin ve birlikte ödüller kazanın.</string>
+  <string name="nodes.import_node.warning_message">Özel düğümler kötü amaçlı olabilir ve işlem verilerinizi ifşa edebilir veya yanlış bilgi sağlayabilir.</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">Tüm madeni paraların dolaşımda olması durumunda teorik piyasa değeri. Fiyatın maksimum arzla çarpılmasıyla hesaplanır.</string>
+  <string name="info.circulating_supply.description">Piyasada şu anda mevcut olan ve işlem gören kripto para birimi sayısı.\"</string>
+  <string name="info.total_supply.description">Kilitli veya rezerve edilmiş paralar da dahil olmak üzere mevcut toplam para sayısı.</string>
+  <string name="info.max_supply.title">Maksimum Tedarik</string>
+  <string name="info.max_supply.description">Var olabilecek maksimum madeni para sayısı.</string>
+  <string name="perpetual.value">Değer</string>
+  <string name="perpetual.unrealized_pnl">Gerçekleşmemiş Kar ve Zarar</string>
+  <string name="perpetual.volume">Hacim</string>
+  <string name="perpetual.all_time_pnl">Tüm Zamanların Kar ve Zarar Tablosu</string>
+  <string name="perpetual.margin_usage">Kenar Boşluğu Kullanımı</string>
+  <string name="perpetual.account_leverage">Hesap Kaldıraç</string>
+  <string name="asset.all_time_high">Tüm Zamanların En Yüksek Seviyesi</string>
+  <string name="asset.all_time_low">Tüm Zamanların En Düşük Seviyesi</string>
+  <string name="errors.swap.minimum_amount">Minimum işlem tutarı %s. Lütfen daha yüksek bir tutar girin.</string>
+  <string name="swap.use_minimum_amount">Minimum Tutarı Kullanın</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">Pozisyonlarınız burada görünecektir.</string>
+  <string name="earn.state.empty.description">İlk para yatırma işleminizi gerçekleştirin. %@</string>
+  <string name="contacts.title">İletişim</string>
+  <string name="contacts.contact">Temas etmek</string>
+  <string name="contacts.addresses">Adresler</string>
+  <string name="contacts.state.empty.title">İletişim yok</string>
+  <string name="contacts.state.empty.description">Sık kullandığınız adresleri kaydedin.</string>
+  <string name="charts.price.open">Açık</string>
+  <string name="charts.price.close">Kapalı</string>
+  <string name="charts.price.high">Yüksek</string>
+  <string name="charts.price.low">Düşük</string>
+  <string name="charts.price.change">Değiştirmek</string>
 </resources>

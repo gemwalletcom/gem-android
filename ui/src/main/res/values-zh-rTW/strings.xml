@@ -14,24 +14,20 @@
   <string name="wallet.new.title">新建錢包</string>
   <string name="receive.title">接收%s</string>
   <string name="buy.title">購買%s</string>
-  <string name="wallet.import.secret_phrase">秘密助記詞</string>
+  <string name="common.secret_phrase">秘密短語</string>
   <string name="wallet.name">名字</string>
   <string name="wallet.import.action">導入</string>
   <string name="common.next">下一步</string>
   <string name="common.copy">複製</string>
   <string name="common.share">共享</string>
-  <string name="wallet.new.backup_warning">請寫下並安全保存獨特的[%key_id：317595596%]；它對錢包訪問和恢復至關重要。</string>
   <string name="common.continue">繼續</string>
-  <string name="common.secret_phrase">秘密助記詞</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">供應商</string>
-  <string name="wallet.new.backup_confirm_warning">繼續之前，請確認已安全地記下並保存[%key_id：317595596%]，對將來訪問和恢復錢包至關重要。</string>
   <string name="common.loading">装载中</string>
   <string name="wallet.multicoin">多幣種</string>
   <string name="common.address">地址</string>
   <string name="transfer.network_fee">網絡費用</string>
   <string name="transfer.amount">數量</string>
-  <string name="transfer.address">地址</string>
   <string name="wallet.import.address_field">地址或域名</string>
   <string name="common.back">返回</string>
   <string name="transfer.memo">備忘</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">確認</string>
   <string name="transfer.from">來自</string>
   <string name="transfer.to">發往</string>
-  <string name="transfer.confirm.maxtotal">最大總數</string>
   <string name="common.paste">粘貼</string>
   <string name="transfer.max">最大值</string>
   <string name="common.delete">刪除</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">開啟密碼</string>
   <string name="settings.security.authentication">身份驗證</string>
   <string name="wallet.copy_address">複製地址</string>
-  <string name="assets.hidden">隱藏</string>
   <string name="transfer.insufficient_balance">%s餘額不足</string>
   <string name="transfer.insufficient_network_fee_balance">餘額不足，無法支付網絡費用%s</string>
   <string name="asset.balances">餘額</string>
   <string name="asset.balances.available">可用餘額</string>
-  <string name="common.see_all">查看全部</string>
-  <string name="asset.latest_transactions">最新交易</string>
   <string name="common.no_thanks">不用，謝謝</string>
   <string name="settings.notifications.title">通知</string>
   <string name="wallet.watch.tooltip.title">正在觀察這個錢包。</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">質押</string>
   <string name="swap.you_pay">將支付</string>
   <string name="swap.you_receive">將收到</string>
-  <string name="swap.approve_token">授權%s進行兌換</string>
-  <string name="swap.approve_token_permission">授權%s代幣進行兌換</string>
   <string name="common.phrase">助記詞</string>
   <string name="stake.active">已啟用</string>
   <string name="stake.pending">等待確認</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">啟用設定</string>
   <string name="stake.deactivating">停用</string>
   <string name="transfer.withdraw.title">贖回</string>
-  <string name="transfer.step">第 %d 步</string>
   <string name="sign_message.title">簽名訊息</string>
   <string name="sign_message.message">訊息</string>
   <string name="stake.awaiting_withdrawal">等待贖回</string>
@@ -178,7 +167,6 @@
   <string name="errors.token.invalid_id">無效的代幣 ID</string>
   <string name="errors.token.unable_fetch_token_information">無法取得代幣資訊： %s</string>
   <string name="assets.add_custom_token">添加自訂代幣</string>
-  <string name="errors.token.invalid_metadata">代幣元數據無效</string>
   <string name="asset.name">名稱</string>
   <string name="asset.symbol">代幣符號</string>
   <string name="asset.decimals">小數位數</string>
@@ -214,7 +202,6 @@
   <string name="common.url">網址</string>
   <string name="errors.error_occured">出錯了！</string>
   <string name="settings.language">語言</string>
-  <string name="wallet.import.private_key">%s編碼私鑰</string>
   <string name="errors.invalid_network_id">無效的網路ID</string>
   <string name="common.private_key">私鑰</string>
   <string name="nodes.import_node.latency">延遲</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">錯誤</string>
   <string name="nodes.gem_wallet_node">Gem 錢包節點</string>
   <string name="errors.connections.user_cancelled">用戶已取消</string>
-  <string name="errors.swap.no_quote_data">暫無報價數據</string>
   <string name="errors.not_supported">不支援</string>
   <string name="errors.permissions_not_granted">未授予權限</string>
   <string name="errors.decoding">解碼錯誤</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">無效的 %s 地址</string>
   <string name="transaction.title.received">已收到</string>
   <string name="transaction.title.sent">已發送</string>
-  <string name="stake.stake">質押</string>
   <string name="banner.account_activation.title">帳戶啟動費用</string>
   <string name="banner.account_activation.description" formatted="false">%s 網路需要一次性費用 %s 。</string>
   <string name="banner.stake.title">開始質押 %s</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">當您最喜歡的加密資產發生重大價格變化時收到通知。</string>
   <string name="assets.select_asset">選擇資產</string>
   <string name="lock.privacy_lock">隱私鎖</string>
-  <string name="receive.your_address">您的接收地址</string>
   <string name="verify_phrase.title">確認</string>
   <string name="common.skip">跳過</string>
   <string name="common.warning">警告</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">交易已完成並在網路上確認。您可以查看詳細資訊來驗證其狀態。</string>
   <string name="info.lock_time.description">鎖倉期（又稱解鎖期或解綁期）是指你發起解除質押後，資產在一段時間內無法使用的等待期間。</string>
   <string name="input.enter_amount_to">請輸入您要%s的數量</string>
-  <string name="input.transfer">轉帳</string>
   <string name="settings.hide_balance">隱藏餘額</string>
   <string name="common.popular">熱門</string>
   <string name="errors.dust_threshold">交易失敗，因為金額太小，無法滿足%s網路的最低要求（灰塵閾值）。此限制確保交易價值涵蓋費用和處理成本。</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">類型</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">滑點</string>
-  <string name="swap.quote_fee">報價包括%s Gem交易費用。</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">啟用資產</string>
   <string name="banner.activate_asset.description" formatted="false">要使用%s資產，您必須先透過滿足網路的特定要求在%s網路上啟用它。</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">儲存到照片</string>
   <string name="permissions.access_denied">拒絕訪問</string>
   <string name="permissions.image.photo_access.denied.description">此應用程式無權存取您的照片庫。請在您的裝置設定中啟用存取。</string>
-  <string name="common.magic_button">魔術按鈕</string>
   <string name="common.emoji">表情符號</string>
   <string name="common.style">風格</string>
   <string name="common.avatar">頭像</string>
   <string name="common.photo">照片</string>
-  <string name="info.price_impact.title">價格影響</string>
   <string name="info.price_impact.description">價格影響表示交易對價格的衝擊。價格影響越大，收到的代幣越少，可能因為流動性低或交易金額大。</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">設定目標價格</string>
   <string name="common.save">儲存</string>
   <string name="common.edit">編輯</string>
-  <string name="contacts.no_contacts">尚無聯絡人。</string>
-  <string name="contacts.no_addresses">尚無地址。</string>
-  <string name="contacts.contact">聯絡方式</string>
-  <string name="contacts.title">聯絡方式</string>
   <string name="common.percentage">百分比</string>
   <string name="price_alerts.set_alert.current_price">目前價格</string>
   <string name="price_alerts.added_for">為%s設定價格提醒</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">發起您的第一筆交易</string>
   <string name="stake.state.empty.title">您的質押將顯示在這裡️</string>
   <string name="stake.state.empty.description">質押第一個%s</string>
-  <string name="wallet_connect.state.empty.title">連線將顯示在這裡️</string>
   <string name="wallet_connect.state.empty.description">掃描或複製連結以連接到DApp</string>
   <string name="assets.state.empty.search_description">请嘗試手動新增</string>
   <string name="activity.state.empty.search_description">清空篩選條件後將重新載入交易</string>
   <string name="search.state.empty.description">請檢查拼字或嘗試新的搜尋。</string>
-  <string name="assets.state.empty.search_title">未找到任何資產</string>
   <string name="networks.state.empty.search_title">未找到任何網路</string>
   <string name="activity.state.empty.search_title">未找到任何交易</string>
   <string name="markets.state.empty.title">市場資訊將顯示在此處</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">合約或代幣ID</string>
   <string name="info.asset_status.unverified.description">未驗證代幣是指未經可信任第三方服務充分驗證的代幣。它們可能因空投、轉帳或手動匯入而出現在您的錢包中。</string>
   <string name="info.asset_status.suspicious.description">可疑或垃圾代幣會被識別為潛在的詐騙或有害資產。它們可能因空投、轉帳或手動匯入而出現在您的錢包中。</string>
-  <string name="errors.insufficient_funds">資金不足</string>
   <string name="info.insufficient_network_fee_balance.title">需要%s</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">此交易需要 %s 用於支付網路費用 %s 礦工，而不是 Gem Wallet確保你有足夠的 %s。</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">轉診</string>
   <string name="rewards.earn_points.title">賺取積分</string>
   <string name="rewards.get_rewards.title">獲得獎勵</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">有朋友的推薦碼嗎？</string>
   <string name="rewards.activate_referral_code.title">兌換碼</string>
   <string name="rewards.create_referral_code.title">建立使用者名稱</string>
-  <string name="rewards.create_referral_code.info">這將是您的個人用戶名。</string>
+  <string name="rewards.create_referral_code.info">這將是您為目前錢包起的個人暱稱。</string>
   <string name="rewards.username">使用者名稱</string>
   <string name="rewards.ways_spend.title">消費方式</string>
   <string name="rewards.ways_spend.asset.title">得到 %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">簽署交易</string>
   <string name="recent_activity.title">近期</string>
   <string name="settings.preferences.app_icon">應用程式圖示</string>
-  <string name="recent_activity.clear_confirmation">您確定要清除所有最近使用記錄嗎？</string>
   <string name="rewards.pending.title">獎金待發放</string>
   <string name="rewards.pending.description">有售 %s</string>
   <string name="rewards.pending.description_ready">您的獎金已發放！</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">暫無通知</string>
+  <string name="notifications.inapp.state.empty.description">您可以在這裡查看通知更新。</string>
+  <string name="rewards.nickname">暱稱</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">邀請好友，一起贏取獎勵</string>
+  <string name="nodes.import_node.warning_message">自訂節點可能存在惡意，可能會洩露您的交易資料或提供虛假資訊。</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">如果所有硬幣都在流通，其理論市場價值為：價格乘以最大供應量。</string>
+  <string name="info.circulating_supply.description">目前市場上可供交易的加密貨幣數量。</string>
+  <string name="info.total_supply.description">現存硬幣總數，包括已鎖定或已預留的硬幣。</string>
+  <string name="info.max_supply.title">最大供應</string>
+  <string name="info.max_supply.description">硬幣的最大存世量。</string>
+  <string name="perpetual.value">價值</string>
+  <string name="perpetual.unrealized_pnl">未實現損益</string>
+  <string name="perpetual.volume">體積</string>
+  <string name="perpetual.all_time_pnl">總損益</string>
+  <string name="perpetual.margin_usage">邊際利用率</string>
+  <string name="perpetual.account_leverage">帳戶槓桿</string>
+  <string name="asset.all_time_high">歷史最高點</string>
+  <string name="asset.all_time_low">最低</string>
+  <string name="errors.swap.minimum_amount">最低交易金額為 %s請輸入更高的金額。</string>
+  <string name="swap.use_minimum_amount">使用最低金額</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">您的持倉將顯示在此。</string>
+  <string name="earn.state.empty.description">存入您的第一筆款項 %@</string>
+  <string name="contacts.title">聯絡方式</string>
+  <string name="contacts.contact">接觸</string>
+  <string name="contacts.addresses">地址</string>
+  <string name="contacts.state.empty.title">無聯絡方式</string>
+  <string name="contacts.state.empty.description">儲存您常用的地址</string>
+  <string name="charts.price.open">打開</string>
+  <string name="charts.price.close">關閉</string>
+  <string name="charts.price.high">高的</string>
+  <string name="charts.price.low">低的</string>
+  <string name="charts.price.change">改變</string>
 </resources>

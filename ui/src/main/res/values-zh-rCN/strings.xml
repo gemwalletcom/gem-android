@@ -14,24 +14,20 @@
   <string name="wallet.new.title">新建钱包</string>
   <string name="receive.title">接收%s</string>
   <string name="buy.title">购买%s</string>
-  <string name="wallet.import.secret_phrase">助记词</string>
+  <string name="common.secret_phrase">秘密短语</string>
   <string name="wallet.name">名称</string>
   <string name="wallet.import.action">导入</string>
   <string name="common.next">下一步</string>
   <string name="common.copy">复制</string>
   <string name="common.share">分享</string>
-  <string name="wallet.new.backup_warning">请写下并安全保存独一无二的[%key_id：317595596%]；这一步对恢复钱包至关重要。</string>
   <string name="common.continue">继续</string>
-  <string name="common.secret_phrase">助记词</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">服务商</string>
-  <string name="wallet.new.backup_confirm_warning">继续之前，请确认已写下并安全保存 [%key_id：317595596%]，这一步对恢复钱包非常重要。</string>
   <string name="common.loading">加载中</string>
   <string name="wallet.multicoin">多链</string>
   <string name="common.address">地址</string>
   <string name="transfer.network_fee">网络费用</string>
   <string name="transfer.amount">金额</string>
-  <string name="transfer.address">地址</string>
   <string name="wallet.import.address_field">地址或域名</string>
   <string name="common.back">返回</string>
   <string name="transfer.memo">备注</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">确认</string>
   <string name="transfer.from">来自</string>
   <string name="transfer.to">发往</string>
-  <string name="transfer.confirm.maxtotal">最大总数</string>
   <string name="common.paste">粘贴</string>
   <string name="transfer.max">最大值</string>
   <string name="common.delete">删除</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">启用密码</string>
   <string name="settings.security.authentication">身份验证</string>
   <string name="wallet.copy_address">复制地址</string>
-  <string name="assets.hidden">隐藏</string>
   <string name="transfer.insufficient_balance">%s余额不足</string>
   <string name="transfer.insufficient_network_fee_balance">余额不足，无法支付网络费用%s</string>
   <string name="asset.balances">余额</string>
   <string name="asset.balances.available">可用余额</string>
-  <string name="common.see_all">查看全部</string>
-  <string name="asset.latest_transactions">最新交易</string>
   <string name="common.no_thanks">不用了, 谢谢</string>
   <string name="settings.notifications.title">通知</string>
   <string name="wallet.watch.tooltip.title">正在观察这个钱包。</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">质押</string>
   <string name="swap.you_pay">将支付</string>
   <string name="swap.you_receive">将收到</string>
-  <string name="swap.approve_token">授权 %s 进行兑换</string>
-  <string name="swap.approve_token_permission">授权 %s 代币进行兑换</string>
   <string name="common.phrase">助记词</string>
   <string name="stake.active">已激活</string>
   <string name="stake.pending">待确认</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">激活</string>
   <string name="stake.deactivating">停用</string>
   <string name="transfer.withdraw.title">赎回</string>
-  <string name="transfer.step">第 %d 步</string>
   <string name="sign_message.title">签名消息</string>
   <string name="sign_message.message">消息</string>
   <string name="stake.awaiting_withdrawal">等待赎回</string>
@@ -178,7 +167,6 @@
   <string name="errors.token.invalid_id">代币 ID 无效</string>
   <string name="errors.token.unable_fetch_token_information">无法获取代币信息： %s</string>
   <string name="assets.add_custom_token">添加自定义代币</string>
-  <string name="errors.token.invalid_metadata">代币元数据无效</string>
   <string name="asset.name">名称</string>
   <string name="asset.symbol">代币符号</string>
   <string name="asset.decimals">小数位数</string>
@@ -214,7 +202,6 @@
   <string name="common.url">网址</string>
   <string name="errors.error_occured">出错了！</string>
   <string name="settings.language">语言</string>
-  <string name="wallet.import.private_key">%s 编码私钥</string>
   <string name="errors.invalid_network_id">网络 ID 无效</string>
   <string name="common.private_key">私钥</string>
   <string name="nodes.import_node.latency">延迟</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">错误</string>
   <string name="nodes.gem_wallet_node">Gem 钱包节点</string>
   <string name="errors.connections.user_cancelled">用户已取消</string>
-  <string name="errors.swap.no_quote_data">暂无报价数据</string>
   <string name="errors.not_supported">不支持</string>
   <string name="errors.permissions_not_granted">未授予权限</string>
   <string name="errors.decoding">解码错误</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">无效的 %s 地址</string>
   <string name="transaction.title.received">已收到</string>
   <string name="transaction.title.sent">已发送</string>
-  <string name="stake.stake">质押</string>
   <string name="banner.account_activation.title">账户激活费用</string>
   <string name="banner.account_activation.description" formatted="false">%s 网络需要一次性费用 %s。</string>
   <string name="banner.stake.title">开始质押 %s</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">当关注的加密资产出现大幅波动时，立即收到通知</string>
   <string name="assets.select_asset">选择资产</string>
   <string name="lock.privacy_lock">隐私锁</string>
-  <string name="receive.your_address">接收地址</string>
   <string name="verify_phrase.title">确认</string>
   <string name="common.skip">跳过</string>
   <string name="common.warning">警告</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">交易已完成并已在网络上确认。可查看详情以核实状态。</string>
   <string name="info.lock_time.description">锁仓期（又称为解锁期或解绑期）是指你发起解除质押后，资产在一段时间内无法使用的等待期间。</string>
   <string name="input.enter_amount_to">输入%s的数量</string>
-  <string name="input.transfer">转账</string>
   <string name="settings.hide_balance">隐藏余额</string>
   <string name="common.popular">热门</string>
   <string name="errors.dust_threshold">交易失败，因为金额太小，无法满足%s网络的最低要求（粉尘阈值）。此限制可确保交易金额足以覆盖手续费和处理成本。</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">类型</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">滑点</string>
-  <string name="swap.quote_fee">报价包括 %s Gem 交易费用。</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">启用资产</string>
   <string name="banner.activate_asset.description" formatted="false">要使用 %s 资产，必须先在 %s 网络上启用它，并满足该网络的特定要求。</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">保存到照片</string>
   <string name="permissions.access_denied">拒绝访问</string>
   <string name="permissions.image.photo_access.denied.description">此应用无权访问您的照片库。请在设备设置中启用访问权限。</string>
-  <string name="common.magic_button">魔术按钮</string>
   <string name="common.emoji">表情符号</string>
   <string name="common.style">风格</string>
   <string name="common.avatar">头像</string>
   <string name="common.photo">照片</string>
-  <string name="info.price_impact.title">价格影响</string>
   <string name="info.price_impact.description">价格影响表示交易对价格的冲击。价格影响越大，收到的代币越少，可能由于流动性低或交易金额大。</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">设定目标价格</string>
   <string name="common.save">保存</string>
   <string name="common.edit">编辑</string>
-  <string name="contacts.no_contacts">尚无联系人。</string>
-  <string name="contacts.no_addresses">尚无地址。</string>
-  <string name="contacts.contact">联系方式</string>
-  <string name="contacts.title">联系方式</string>
   <string name="common.percentage">百分比</string>
   <string name="price_alerts.set_alert.current_price">当前价格</string>
   <string name="price_alerts.added_for">为 %s 设置价格提醒</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">发起第一笔交易</string>
   <string name="stake.state.empty.title">质押将显示在这里️</string>
   <string name="stake.state.empty.description">质押第一个%s</string>
-  <string name="wallet_connect.state.empty.title">连接将显示在这里️</string>
   <string name="wallet_connect.state.empty.description">扫描或复制链接以连接到 DApp</string>
   <string name="assets.state.empty.search_description">请尝试手动添加</string>
   <string name="activity.state.empty.search_description">清空筛选条件后将重新加载交易</string>
   <string name="search.state.empty.description">检查拼写或尝试新的搜索。</string>
-  <string name="assets.state.empty.search_title">未找到任何资产</string>
   <string name="networks.state.empty.search_title">未找到任何网络</string>
   <string name="activity.state.empty.search_title">未找到任何交易</string>
   <string name="markets.state.empty.title">市场信息将显示在此处</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">合约或代币ID</string>
   <string name="info.asset_status.unverified.description">未验证代币是指未经可信第三方服务充分验证的代币。它们可能因空投、转账或手动导入而出现在您的钱包中。</string>
   <string name="info.asset_status.suspicious.description">可疑或垃圾代币会被识别为潜在的诈骗或有害资产。它们可能因空投、转账或手动导入而出现在您的钱包中。</string>
-  <string name="errors.insufficient_funds">资金不足</string>
   <string name="info.insufficient_network_fee_balance.title">需要%s</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">此交易需要 %s 用于支付网络费用 %s 矿工，而不是 Gem Wallet确保你有足够的 %s。</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">转诊</string>
   <string name="rewards.earn_points.title">赚取积分</string>
   <string name="rewards.get_rewards.title">获得奖励</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">有朋友的推荐码吗？</string>
   <string name="rewards.activate_referral_code.title">兑换码</string>
   <string name="rewards.create_referral_code.title">创建用户名</string>
-  <string name="rewards.create_referral_code.info">这将是您的个人用户名。</string>
+  <string name="rewards.create_referral_code.info">这将是您为当前钱包起的个人昵称。</string>
   <string name="rewards.username">用户名</string>
   <string name="rewards.ways_spend.title">消费方式</string>
   <string name="rewards.ways_spend.asset.title">得到 %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">签署交易</string>
   <string name="recent_activity.title">近期</string>
   <string name="settings.preferences.app_icon">应用图标</string>
-  <string name="recent_activity.clear_confirmation">您确定要清除所有最近使用记录吗？</string>
   <string name="rewards.pending.title">奖金待发放</string>
   <string name="rewards.pending.description">有售 %s</string>
   <string name="rewards.pending.description_ready">您的奖金已发放！</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">暂无通知</string>
+  <string name="notifications.inapp.state.empty.description">您可以在这里查看通知更新。</string>
+  <string name="rewards.nickname">昵称</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">邀请好友，一起赢取奖励</string>
+  <string name="nodes.import_node.warning_message">自定义节点可能存在恶意，可能会泄露您的交易数据或提供虚假信息。</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">如果所有硬币都在流通，其理论市场价值为：价格乘以最大供应量。</string>
+  <string name="info.circulating_supply.description">目前市场上可供交易的加密货币数量。</string>
+  <string name="info.total_supply.description">现存硬币总数，包括已锁定或已预留的硬币。</string>
+  <string name="info.max_supply.title">最大供应</string>
+  <string name="info.max_supply.description">硬币的最大存世量。</string>
+  <string name="perpetual.value">价值</string>
+  <string name="perpetual.unrealized_pnl">未实现损益</string>
+  <string name="perpetual.volume">体积</string>
+  <string name="perpetual.all_time_pnl">总损益</string>
+  <string name="perpetual.margin_usage">边际利用率</string>
+  <string name="perpetual.account_leverage">账户杠杆</string>
+  <string name="asset.all_time_high">历史最高点</string>
+  <string name="asset.all_time_low">最低</string>
+  <string name="errors.swap.minimum_amount">最低交易金额为 %s请输入更高的金额。</string>
+  <string name="swap.use_minimum_amount">使用最低金额</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">您的持仓将显示在此处。</string>
+  <string name="earn.state.empty.description">存入您的第一笔款项 %@</string>
+  <string name="contacts.title">联系方式</string>
+  <string name="contacts.contact">接触</string>
+  <string name="contacts.addresses">地址</string>
+  <string name="contacts.state.empty.title">无联系方式</string>
+  <string name="contacts.state.empty.description">保存您常用的地址</string>
+  <string name="charts.price.open">打开</string>
+  <string name="charts.price.close">关闭</string>
+  <string name="charts.price.high">高的</string>
+  <string name="charts.price.low">低的</string>
+  <string name="charts.price.change">改变</string>
 </resources>

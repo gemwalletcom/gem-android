@@ -26,3 +26,13 @@ fun GemTransactionLoadMetadata.Tron.toChainData(): TronChainData {
         tronStakeData = stakeData,
     )
 }
+
+fun TronChainData.toGem(): GemTransactionLoadMetadata.Tron = GemTransactionLoadMetadata.Tron(
+    blockNumber = blockNumber,
+    blockVersion = blockVersion,
+    blockTimestamp = blockTimestamp,
+    transactionTreeRoot = txTrieRoot,
+    witnessAddress = witnessAddress,
+    parentHash = parentHash,
+    stakeData = tronStakeData,
+)

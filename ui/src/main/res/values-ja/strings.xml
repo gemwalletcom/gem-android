@@ -14,24 +14,20 @@
   <string name="wallet.new.title">新しいウォレット</string>
   <string name="receive.title">%sを受信</string>
   <string name="buy.title">%sを購入</string>
-  <string name="wallet.import.secret_phrase">シークレットリカバリーフレーズ</string>
+  <string name="common.secret_phrase">秘密のフレーズ</string>
   <string name="wallet.name">名前</string>
   <string name="wallet.import.action">インポート</string>
   <string name="common.next">次へ</string>
   <string name="common.copy">コピー</string>
   <string name="common.share">共有</string>
-  <string name="wallet.new.backup_warning">ユニークなシークレットリカバリーフレーズを書き留め、安全に保管してください。これはウォレットへのアクセスや復元に大切なものです。</string>
   <string name="common.continue">続ける</string>
-  <string name="common.secret_phrase">シークレットリカバリーフレーズ</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">プロバイダー</string>
-  <string name="wallet.new.backup_confirm_warning">進む前に、シークレットリカバリーフレーズを書き留め、安全に保管したことを確認してください。これはウォレットのアクセスや復元にとても重要です。」</string>
   <string name="common.loading">ローディング</string>
   <string name="wallet.multicoin">マルチコイン</string>
   <string name="common.address">アドレス</string>
   <string name="transfer.network_fee">ネットワーク料金</string>
   <string name="transfer.amount">金額</string>
-  <string name="transfer.address">アドレス</string>
   <string name="wallet.import.address_field">アドレスまたはドメイン</string>
   <string name="common.back">戻る</string>
   <string name="transfer.memo">メモ</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">確認</string>
   <string name="transfer.from">から</string>
   <string name="transfer.to">宛て</string>
-  <string name="transfer.confirm.maxtotal">最大合計</string>
   <string name="common.paste">ペースト</string>
   <string name="transfer.max">マックス</string>
   <string name="common.delete">消去</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">パスコードを有効にする</string>
   <string name="settings.security.authentication">認証</string>
   <string name="wallet.copy_address">アドレスをコピー</string>
-  <string name="assets.hidden">隠れた</string>
   <string name="transfer.insufficient_balance">%sの残高が不足しています。</string>
   <string name="transfer.insufficient_network_fee_balance">ネットワーク手数料用の%s残高不足。</string>
   <string name="asset.balances">残高</string>
   <string name="asset.balances.available">利用可能</string>
-  <string name="common.see_all">すべてを見る</string>
-  <string name="asset.latest_transactions">最新の取引</string>
   <string name="common.no_thanks">結構です</string>
   <string name="settings.notifications.title">通知</string>
   <string name="wallet.watch.tooltip.title">このウォレットを見ています。</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">ステーク</string>
   <string name="swap.you_pay">あなたが支払う</string>
   <string name="swap.you_receive">受け取るもの</string>
-  <string name="swap.approve_token">%s をスワップするために承認してください</string>
-  <string name="swap.approve_token_permission">スワップのために%sトークンの承認を行ってください。</string>
   <string name="common.phrase">フレーズ</string>
   <string name="stake.active">アクティブ</string>
   <string name="stake.pending">確認待ち</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">有効化</string>
   <string name="stake.deactivating">非アクティブ化</string>
   <string name="transfer.withdraw.title">引き出す</string>
-  <string name="transfer.step">ステップ %d</string>
   <string name="sign_message.title">メッセージを署名する</string>
   <string name="sign_message.message">メッセージ</string>
   <string name="stake.awaiting_withdrawal">引き出し待ち</string>
@@ -178,7 +167,6 @@
   <string name="errors.token.invalid_id">無効なトークンID</string>
   <string name="errors.token.unable_fetch_token_information">トークン情報を取得できません: %s</string>
   <string name="assets.add_custom_token">カスタム・トークンの追加</string>
-  <string name="errors.token.invalid_metadata">無効なトークンメタデータ</string>
   <string name="asset.name">名前</string>
   <string name="asset.symbol">シンボル</string>
   <string name="asset.decimals">デシマル</string>
@@ -214,7 +202,6 @@
   <string name="common.url">メールアドレス</string>
   <string name="errors.error_occured">エラーが発生しました！</string>
   <string name="settings.language">言語</string>
-  <string name="wallet.import.private_key">%sエンコードされたプライベートキー</string>
   <string name="errors.invalid_network_id">無効なネットワークID</string>
   <string name="common.private_key">プライベートキー</string>
   <string name="nodes.import_node.latency">遅延</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">エラー</string>
   <string name="nodes.gem_wallet_node">Gem Walletノード</string>
   <string name="errors.connections.user_cancelled">ユーザーがキャンセルしました</string>
-  <string name="errors.swap.no_quote_data">見積もりデータなし</string>
   <string name="errors.not_supported">サポートされていません</string>
   <string name="errors.permissions_not_granted">許可が得られていません</string>
   <string name="errors.decoding">デコードエラー</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">無効な %s アドレス</string>
   <string name="transaction.title.received">受け</string>
   <string name="transaction.title.sent">送金</string>
-  <string name="stake.stake">ステーク</string>
   <string name="banner.account_activation.title">アカウントの有効化手数料</string>
   <string name="banner.account_activation.description" formatted="false">%sネットワークは、一回限りの料金が%s必要です。</string>
   <string name="banner.stake.title">%s のステーキングを開始</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">お気に入りの暗号資産の価格が大幅に変動したときに通知を受け取ります。</string>
   <string name="assets.select_asset">資産を選択</string>
   <string name="lock.privacy_lock">プライバシーロック</string>
-  <string name="receive.your_address">受取アドレス</string>
   <string name="verify_phrase.title">確認する</string>
   <string name="common.skip">スキップ</string>
   <string name="common.warning">警告</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">取引は完了し、ネットワーク上で確認されました。詳細を確認してステータスをご確認ください。</string>
   <string name="info.lock_time.description">ロック時間は、アンボンディング期間や凍結解除期間とも呼ばれ、ステーキング解除を決定した後にステークされた資産が利用できなくなる期間のことです。</string>
   <string name="input.enter_amount_to">%sの金額を入力してください</string>
-  <string name="input.transfer">送金する</string>
   <string name="settings.hide_balance">残高を非表示</string>
   <string name="common.popular">人気</string>
   <string name="errors.dust_threshold">金額が%sネットワークの最小要件（ダストしきい値）を満たしていないため、取引は失敗しました。この制限は、取引額が手数料と処理コストをカバーすることを保証するものです。</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">種類</string>
   <string name="fee_rate.gwei">%s</string>
   <string name="swap.slippage">スリッページ</string>
-  <string name="swap.quote_fee">見積もりには %s の手数料が含まれています</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">%sアセットを使用するには、まずネットワークの特定の要件を満たして%sネットワーク上でアセットを有効にする必要があります。</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">写真に保存</string>
   <string name="permissions.access_denied">アクセスが拒否されました</string>
   <string name="permissions.image.photo_access.denied.description">このアプリには写真ライブラリにアクセスする権限がありません。デバイスの設定でアクセスを有効にしてください。</string>
-  <string name="common.magic_button">魔法のボタン</string>
   <string name="common.emoji">絵文字</string>
   <string name="common.style">スタイル</string>
   <string name="common.avatar">アバター</string>
   <string name="common.photo">写真</string>
-  <string name="info.price_impact.title">価格の影響</string>
   <string name="info.price_impact.description">価格影響とは、取引サイズによって生じるトークン価格の変化です。価格影響が大きいということは、流動性が低いか注文サイズが大きいために受け取るトークンが少なくなることを意味します。 </string>
   <string name="social.opensea">オープンシー</string>
   <string name="social.magiceden">マジックエデン</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">目標価格の設定</string>
   <string name="common.save">保存</string>
   <string name="common.edit">編集</string>
-  <string name="contacts.no_contacts">まだ連絡先はありません。</string>
-  <string name="contacts.no_addresses">まだアドレスがありません。</string>
-  <string name="contacts.contact">連絡先</string>
-  <string name="contacts.title">連絡先</string>
   <string name="common.percentage">パーセント</string>
   <string name="price_alerts.set_alert.current_price">現在の価格</string>
   <string name="price_alerts.added_for">価格アラートの設定%s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">最初の取引を行う</string>
   <string name="stake.state.empty.title">ステークはここに表示されます</string>
   <string name="stake.state.empty.description">初めてステーキング %s</string>
-  <string name="wallet_connect.state.empty.title">接続はここに表示されます️</string>
   <string name="wallet_connect.state.empty.description">コードをスキャンするか貼り付けて、DAppに接続してください</string>
   <string name="assets.state.empty.search_description">手動で追加してみてください</string>
   <string name="activity.state.empty.search_description">フィルターをクリアしてアクティビティを更新する</string>
   <string name="search.state.empty.description">スペルを確認するか、新しい検索を試してください。</string>
-  <string name="assets.state.empty.search_title">資産が見つかりません</string>
   <string name="networks.state.empty.search_title">ネットワークが見つかりません</string>
   <string name="activity.state.empty.search_title">アクティビティが見つかりません</string>
   <string name="markets.state.empty.title">マーケットデータがここに表示されます</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">契約またはトークンID</string>
   <string name="info.asset_status.unverified.description">未検証トークンは、信頼できるサードパーティサービスによって十分に検証されていません。エアドロップ、送金、または手動インポートによってウォレットに表示される場合があります。</string>
   <string name="info.asset_status.suspicious.description">疑わしいトークンやスパムトークンは、詐欺や有害な資産の可能性があると判断されます。エアドロップ、送金、または手動インポートによってウォレットに表示される場合があります。</string>
-  <string name="errors.insufficient_funds">資金不足</string>
   <string name="info.insufficient_network_fee_balance.title">%sが必要です</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">この取引には %s ネットワーク料金を賄うために %s 鉱夫ではなく Gem Wallet十分な量があることを確認してください %s。</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">紹介</string>
   <string name="rewards.earn_points.title">ポイントを獲得</string>
   <string name="rewards.get_rewards.title">報酬を獲得</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">友達からの紹介コードをお持ちですか?</string>
   <string name="rewards.activate_referral_code.title">コードを利用する</string>
   <string name="rewards.create_referral_code.title">ユーザー名を作成</string>
-  <string name="rewards.create_referral_code.info">これはあなたの個人ユーザー名になります。</string>
+  <string name="rewards.create_referral_code.info">これは現在のウォレットの個人的なニックネームになります。</string>
   <string name="rewards.username">ユーザー名</string>
   <string name="rewards.ways_spend.title">使い方</string>
   <string name="rewards.ways_spend.asset.title">得る %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">トランザクションに署名</string>
   <string name="recent_activity.title">最近</string>
   <string name="settings.preferences.app_icon">アプリアイコン</string>
-  <string name="recent_activity.clear_confirmation">最近使ったものをすべて消去してもよろしいですか?</string>
   <string name="rewards.pending.title">ボーナス保留中</string>
   <string name="rewards.pending.description">入手可能な %s</string>
   <string name="rewards.pending.description_ready">ボーナスの準備ができました!</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">まだ通知はありません</string>
+  <string name="notifications.inapp.state.empty.description">通知に関する最新情報はここで確認できます</string>
+  <string name="rewards.nickname">ニックネーム</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">友達を招待して一緒に報酬を獲得しましょう</string>
+  <string name="nodes.import_node.warning_message">カスタム ノードは悪意のあるものである可能性があり、トランザクション データが公開されたり、誤った情報が提供されたりする可能性があります。</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">すべてのコインが流通している場合の理論上の市場価値。価格に最大供給量を掛けて計算されます。</string>
+  <string name="info.circulating_supply.description">現在市場で入手可能で取引されているコインの数。</string>
+  <string name="info.total_supply.description">ロックされたコインや予約されたコインを含む、存在するコインの合計数。</string>
+  <string name="info.max_supply.title">最大供給</string>
+  <string name="info.max_supply.description">これまでに存在するコインの最大数。</string>
+  <string name="perpetual.value">価値</string>
+  <string name="perpetual.unrealized_pnl">未実現損益</string>
+  <string name="perpetual.volume">音量</string>
+  <string name="perpetual.all_time_pnl">これまでの損益</string>
+  <string name="perpetual.margin_usage">マージンの使用</string>
+  <string name="perpetual.account_leverage">アカウントレバレッジ</string>
+  <string name="asset.all_time_high">史上最高値</string>
+  <string name="asset.all_time_low">オールタイムロー</string>
+  <string name="errors.swap.minimum_amount">最低取引金額は %sより高い金額を入力してください。</string>
+  <string name="swap.use_minimum_amount">最小量を使用する</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">あなたのポジションはここに表示されます</string>
+  <string name="earn.state.empty.description">最初の入金 %@</string>
+  <string name="contacts.title">連絡先</string>
+  <string name="contacts.contact">接触</string>
+  <string name="contacts.addresses">住所</string>
+  <string name="contacts.state.empty.title">連絡先なし</string>
+  <string name="contacts.state.empty.description">よく使うアドレスを保存する</string>
+  <string name="charts.price.open">開ける</string>
+  <string name="charts.price.close">近い</string>
+  <string name="charts.price.high">高い</string>
+  <string name="charts.price.low">低い</string>
+  <string name="charts.price.change">変化</string>
 </resources>

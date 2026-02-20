@@ -14,24 +14,20 @@
   <string name="wallet.new.title">Dompet Baru</string>
   <string name="receive.title">Terima %s</string>
   <string name="buy.title">Beli %s</string>
-  <string name="wallet.import.secret_phrase">Frasa Pemulihan Rahasia</string>
+  <string name="common.secret_phrase">Frasa Rahasia</string>
   <string name="wallet.name">Nama</string>
   <string name="wallet.import.action">Impor</string>
   <string name="common.next">Selanjutnya</string>
   <string name="common.copy">Salin</string>
   <string name="common.share">Bagikan</string>
-  <string name="wallet.new.backup_warning">Catat Frasa Pemulihan Rahasia unik Anda dan simpan dengan aman; ini sangat penting untuk akses dan pemulihan dompet.</string>
   <string name="common.continue">Lanjutkan</string>
-  <string name="common.secret_phrase">Frasa Pemulihan Rahasia</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">Penyedia</string>
-  <string name="wallet.new.backup_confirm_warning">Pastikan Anda sudah mencatat dan menyimpan Frasa Pemulihan Rahasia Anda dengan aman sebelum melanjutkan, karena frasa ini penting untuk akses dan pemulihan dompet di masa depan.</string>
   <string name="common.loading">Memuat</string>
   <string name="wallet.multicoin">Multi-Koin</string>
   <string name="common.address">Alamat</string>
   <string name="transfer.network_fee">Biaya Jaringan</string>
   <string name="transfer.amount">Jumlah</string>
-  <string name="transfer.address">Alamat</string>
   <string name="wallet.import.address_field">Address or Name</string>
   <string name="common.back">Kembali</string>
   <string name="transfer.memo">Memo</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">Konfirmasi</string>
   <string name="transfer.from">Dari</string>
   <string name="transfer.to">Ke</string>
-  <string name="transfer.confirm.maxtotal">Total maksimum</string>
   <string name="common.paste">Tempel</string>
   <string name="transfer.max">Maksimum</string>
   <string name="common.delete">Hapus</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">Aktifkan Kode Sandi</string>
   <string name="settings.security.authentication">Otentikasi</string>
   <string name="wallet.copy_address">Salin Alamat</string>
-  <string name="assets.hidden">Disembunyikan</string>
   <string name="transfer.insufficient_balance">Saldo %s tidak cukup</string>
   <string name="transfer.insufficient_network_fee_balance">Saldo %s tidak cukup untuk biaya jaringan</string>
   <string name="asset.balances">Saldo</string>
   <string name="asset.balances.available">Tersedia</string>
-  <string name="common.see_all">Lihat Semua</string>
-  <string name="asset.latest_transactions">Transaksi Terkini</string>
   <string name="common.no_thanks">Tidak, terima kasih</string>
   <string name="settings.notifications.title">Notifikasi</string>
   <string name="wallet.watch.tooltip.title">Anda sedang memantau dompet ini.</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">Stake</string>
   <string name="swap.you_pay">Kamu Membayar</string>
   <string name="swap.you_receive">Kamu Menerima</string>
-  <string name="swap.approve_token">Setujui %s untuk Penukaran</string>
-  <string name="swap.approve_token_permission">Setujui %s token untuk akses penukaran</string>
   <string name="common.phrase">Frasa</string>
   <string name="stake.active">Aktif</string>
   <string name="stake.pending">Tertunda</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">Sedang Mengaktifkan</string>
   <string name="stake.deactivating">Sedang Menonaktifkan</string>
   <string name="transfer.withdraw.title">Penarikan</string>
-  <string name="transfer.step">Langkah %d</string>
   <string name="sign_message.title">Tandatangani Pesan</string>
   <string name="sign_message.message">Pesan</string>
   <string name="stake.awaiting_withdrawal">Penarikan Sedang Diproses</string>
@@ -178,7 +167,6 @@
   <string name="errors.token.invalid_id">ID Token Tidak Valid</string>
   <string name="errors.token.unable_fetch_token_information">Gagal mengambil informasi token: %s</string>
   <string name="assets.add_custom_token">Tambahkan Token Kustom</string>
-  <string name="errors.token.invalid_metadata">Metadata token tidak valid</string>
   <string name="asset.name">Nama</string>
   <string name="asset.symbol">Simbol</string>
   <string name="asset.decimals">Desimal</string>
@@ -214,7 +202,6 @@
   <string name="common.url">URL</string>
   <string name="errors.error_occured">Terjadi kesalahan!</string>
   <string name="settings.language">Bahasa</string>
-  <string name="wallet.import.private_key">kunci privat dikodekan %s</string>
   <string name="errors.invalid_network_id">ID Jaringan Tidak Valid</string>
   <string name="common.private_key">Kunci Privat</string>
   <string name="nodes.import_node.latency">Latensi</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">Kesalahan</string>
   <string name="nodes.gem_wallet_node">Node Gem Wallet</string>
   <string name="errors.connections.user_cancelled">Pengguna dibatalkan</string>
-  <string name="errors.swap.no_quote_data">Tidak ada data kutipan</string>
   <string name="errors.not_supported">Tidak didukung</string>
   <string name="errors.permissions_not_granted">Izin tidak diberikan</string>
   <string name="errors.decoding">Kesalahan dalam pemrosesan</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">Alamat %s tidak valid</string>
   <string name="transaction.title.received">Diterima</string>
   <string name="transaction.title.sent">Terkirim</string>
-  <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">Biaya aktivasi akun</string>
   <string name="banner.account_activation.description" formatted="false">Jaringan %s memerlukan biaya satu kali sebesar %s</string>
   <string name="banner.stake.title">Mulai Staking %s</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">Dapatkan pemberitahuan saat ada perubahan harga yang signifikan pada aset kripto favorit Anda.</string>
   <string name="assets.select_asset">Pilih Aset</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
-  <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Mengonfirmasi</string>
   <string name="common.skip">Melewati</string>
   <string name="common.warning">Peringatan</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">Transaksi telah selesai dan dikonfirmasi di jaringan. Anda dapat meninjau detailnya untuk memverifikasi statusnya.</string>
   <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
   <string name="input.enter_amount_to">Please enter amount to %s</string>
-  <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Populer</string>
   <string name="errors.dust_threshold">Transaksi gagal karena jumlahnya terlalu kecil untuk memenuhi persyaratan minimum jaringan %s (ambang batas debu). Batas ini memastikan nilai transaksi mencakup biaya dan ongkos pemrosesan.</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">Jenis</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">Slippage</string>
-  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">Untuk menggunakan aset %s, Anda harus terlebih dahulu mengaktifkannya di jaringan %s dengan memenuhi persyaratan khusus jaringan.</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">Simpan ke Foto</string>
   <string name="permissions.access_denied">Akses ditolak</string>
   <string name="permissions.image.photo_access.denied.description">Aplikasi ini tidak memiliki izin untuk mengakses pustaka foto Anda. Harap aktifkan akses di pengaturan perangkat Anda.</string>
-  <string name="common.magic_button">Tombol Ajaib</string>
   <string name="common.emoji">EMOJI</string>
   <string name="common.style">Gaya</string>
   <string name="common.avatar">Gambar avatarnya</string>
   <string name="common.photo">Foto</string>
-  <string name="info.price_impact.title">Dampak Harga</string>
   <string name="info.price_impact.description">Dampak harga adalah perubahan harga token yang disebabkan oleh ukuran perdagangan Anda. Dampak harga yang lebih tinggi berarti Anda menerima lebih sedikit token karena likuiditas rendah atau ukuran pesanan besar.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">Tetapkan target harga</string>
   <string name="common.save">Menyimpan</string>
   <string name="common.edit">Edit</string>
-  <string name="contacts.no_contacts">Belum ada kontak.</string>
-  <string name="contacts.no_addresses">Belum ada alamat.</string>
-  <string name="contacts.contact">Kontak</string>
-  <string name="contacts.title">Kontak</string>
   <string name="common.percentage">Persentase</string>
   <string name="price_alerts.set_alert.current_price">Harga saat ini</string>
   <string name="price_alerts.added_for">Tetapkan peringatan harga %s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">Lakukan transaksi pertama Anda</string>
   <string name="stake.state.empty.title">Taruhan Anda akan muncul di sini</string>
   <string name="stake.state.empty.description">Pasang taruhan %s pertama Anda</string>
-  <string name="wallet_connect.state.empty.title">Koneksi Anda akan muncul di sini️</string>
   <string name="wallet_connect.state.empty.description">Pindai atau tempel kode untuk terhubung ke DApp</string>
   <string name="assets.state.empty.search_description">Anda dapat mencoba menambahkannya secara manual</string>
   <string name="activity.state.empty.search_description">Hapus filter untuk menyegarkan aktivitas Anda</string>
   <string name="search.state.empty.description">Periksa ejaan atau coba pencarian baru.</string>
-  <string name="assets.state.empty.search_title">Tidak ada aset yang ditemukan</string>
   <string name="networks.state.empty.search_title">Tidak ada jaringan yang ditemukan</string>
   <string name="activity.state.empty.search_title">No activities found</string>
   <string name="markets.state.empty.title">Data pasar Anda akan muncul di sini</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">Kontrak atau Token ID</string>
   <string name="info.asset_status.unverified.description">Token yang belum diverifikasi belum diverifikasi secara memadai oleh layanan pihak ketiga yang tepercaya. Token tersebut mungkin muncul di dompet Anda karena airdrop, transfer, atau impor manual.</string>
   <string name="info.asset_status.suspicious.description">Token yang mencurigakan atau spam diidentifikasi sebagai potensi penipuan atau aset berbahaya. Token tersebut mungkin muncul di dompet Anda karena airdrop, transfer, atau impor manual.</string>
-  <string name="errors.insufficient_funds">Dana tidak mencukupi</string>
   <string name="info.insufficient_network_fee_balance.title">%s diperlukan</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">Transaksi ini memerlukan %s untuk menutupi biaya jaringan yang dibayarkan kepada %s penambang, bukan Gem WalletPastikan Anda memiliki cukup %s.</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">Rujukan</string>
   <string name="rewards.earn_points.title">Dapatkan Poin</string>
   <string name="rewards.get_rewards.title">Dapatkan Hadiah</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">Punya kode referensi dari teman?</string>
   <string name="rewards.activate_referral_code.title">Tukarkan kode</string>
   <string name="rewards.create_referral_code.title">Buat Nama Pengguna</string>
-  <string name="rewards.create_referral_code.info">Ini akan menjadi nama pengguna pribadi Anda.</string>
+  <string name="rewards.create_referral_code.info">Ini akan menjadi nama panggilan pribadi Anda untuk dompet saat ini.</string>
   <string name="rewards.username">Nama belakang</string>
   <string name="rewards.ways_spend.title">Cara untuk Berbelanja</string>
   <string name="rewards.ways_spend.asset.title">Mendapatkan %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">Menandatangani Transaksi</string>
   <string name="recent_activity.title">Terbaru</string>
   <string name="settings.preferences.app_icon">Ikon Aplikasi</string>
-  <string name="recent_activity.clear_confirmation">Apakah Anda yakin ingin menghapus semua postingan terbaru?</string>
   <string name="rewards.pending.title">Bonus Tertunda</string>
   <string name="rewards.pending.description">Tersedia dalam %s</string>
   <string name="rewards.pending.description_ready">Bonus Anda sudah siap!</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">Belum ada notifikasi</string>
+  <string name="notifications.inapp.state.empty.description">Anda akan melihat pembaruan tentang notifikasi Anda di sini.</string>
+  <string name="rewards.nickname">Nama panggilan</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">Ajak teman dan dapatkan hadiah bersama.</string>
+  <string name="nodes.import_node.warning_message">Node kustom dapat bersifat berbahaya dan dapat membocorkan data transaksi Anda atau memberikan informasi palsu.</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">Nilai pasar teoretis jika semua koin beredar. Dihitung sebagai harga dikalikan dengan pasokan maksimum.</string>
+  <string name="info.circulating_supply.description">Jumlah koin yang saat ini tersedia dan diperdagangkan di pasar.\"</string>
+  <string name="info.total_supply.description">Jumlah total koin yang ada, termasuk koin yang terkunci atau dicadangkan.</string>
+  <string name="info.max_supply.title">Pasokan Maksimum</string>
+  <string name="info.max_supply.description">Jumlah maksimum koin yang akan pernah ada.</string>
+  <string name="perpetual.value">Nilai</string>
+  <string name="perpetual.unrealized_pnl">Laba Rugi yang Belum Terealisasi</string>
+  <string name="perpetual.volume">Volume</string>
+  <string name="perpetual.all_time_pnl">Laba Rugi Sepanjang Masa</string>
+  <string name="perpetual.margin_usage">Penggunaan Margin</string>
+  <string name="perpetual.account_leverage">Pemanfaatan Akun</string>
+  <string name="asset.all_time_high">Tertinggi Sepanjang Masa</string>
+  <string name="asset.all_time_low">Terendah Sepanjang Masa</string>
+  <string name="errors.swap.minimum_amount">Jumlah transaksi minimum adalah %sSilakan masukkan jumlah yang lebih tinggi.</string>
+  <string name="swap.use_minimum_amount">Gunakan Jumlah Minimum</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">Posisi Anda akan muncul di sini.</string>
+  <string name="earn.state.empty.description">Setorkan pertama Anda %@</string>
+  <string name="contacts.title">Kontak</string>
+  <string name="contacts.contact">Kontak</string>
+  <string name="contacts.addresses">Alamat</string>
+  <string name="contacts.state.empty.title">Tidak ada kontak</string>
+  <string name="contacts.state.empty.description">Simpan alamat yang sering Anda gunakan.</string>
+  <string name="charts.price.open">Membuka</string>
+  <string name="charts.price.close">Menutup</string>
+  <string name="charts.price.high">Tinggi</string>
+  <string name="charts.price.low">Rendah</string>
+  <string name="charts.price.change">Mengubah</string>
 </resources>

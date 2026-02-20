@@ -76,10 +76,7 @@ sealed class WCRequest(
 
         abstract val data: String
 
-        open val confirmParams: ConfirmParams.TransferParams.Generic
-            get() {
-                return walletConnect.decodeSendTransaction(transactionType, data).map(this)
-            }
+        abstract val confirmParams: Generic
 
         class SignTransaction(
             sessionRequest: Wallet.Model.SessionRequest,
@@ -96,6 +93,11 @@ sealed class WCRequest(
 
             override val data: String
                 get() = action.data
+
+            override val confirmParams: Generic
+                get() {
+                    return walletConnect.decodeSendTransaction(transactionType, data).map(this, false)
+                }
 
             fun execute(signature: String): String {
                 return WalletConnect().encodeSignTransaction(action.chain, signature).let {
@@ -123,6 +125,11 @@ sealed class WCRequest(
             override val data: String
                 get() = action.data
 
+            override val confirmParams: Generic
+                get() {
+                    return walletConnect.decodeSendTransaction(transactionType, data).map(this, true)
+                }
+
             fun execute(hash: String): String {
                 return walletConnect.encodeSendTransaction(action.chain, hash).let {
                     when (it) {
@@ -137,7 +144,8 @@ sealed class WCRequest(
 
 private fun WalletConnectTransaction.map(
     request: WCRequest.Transaction,
-): ConfirmParams.TransferParams.Generic {
+    isSendable: Boolean,
+): Generic {
     val asset = request.chain.asset()
     return when (this) {
         is WalletConnectTransaction.Ethereum -> Generic(
@@ -153,6 +161,7 @@ private fun WalletConnectTransaction.map(
             inputType = request.inputType,
             destination = DestinationAddress(data.to),
             amount = data.value?.hexToBigInteger() ?: BigInteger.ZERO,
+            isSendable = isSendable,
         )
         is WalletConnectTransaction.Solana -> Generic(
             requestId = request.requestId.toString(),
@@ -170,6 +179,7 @@ private fun WalletConnectTransaction.map(
             },
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
+            isSendable = isSendable,
         )
         is WalletConnectTransaction.Sui -> Generic(
             requestId = request.requestId.toString(),
@@ -187,6 +197,7 @@ private fun WalletConnectTransaction.map(
             },
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
+            isSendable = isSendable,
         )
         is WalletConnectTransaction.Bitcoin -> Generic(
             requestId = request.requestId.toString(),
@@ -203,6 +214,7 @@ private fun WalletConnectTransaction.map(
             },
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
+            isSendable = isSendable,
         )
         is WalletConnectTransaction.Ton -> Generic(
             requestId = request.requestId.toString(),
@@ -219,11 +231,13 @@ private fun WalletConnectTransaction.map(
             },
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
+            isSendable = isSendable,
         )
 
         is WalletConnectTransaction.Tron -> Generic(
             requestId = request.requestId.toString(),
             asset = asset,
+            memo = data,
             from = request.account,
             name = request.name,
             description = request.description,
@@ -236,6 +250,7 @@ private fun WalletConnectTransaction.map(
             },
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
+            isSendable = isSendable,
         )
     }
 }

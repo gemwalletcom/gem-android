@@ -183,6 +183,7 @@ sealed class ConfirmParams() {
             override val memo: String? = null,
             override val useMaxAmount: Boolean = false,
             override val inputType: InputType? = null,
+            val isSendable: Boolean,
             val name: String,
             val description: String,
             val url: String,

@@ -14,24 +14,20 @@
   <string name="wallet.new.title">کیف پول جدید</string>
   <string name="receive.title">دریافت %s</string>
   <string name="buy.title">خرید %s</string>
-  <string name="wallet.import.secret_phrase">عبارات بازیابی خصوصی</string>
+  <string name="common.secret_phrase">عبارت مخفی</string>
   <string name="wallet.name">نام</string>
   <string name="wallet.import.action">وارد کردن</string>
   <string name="common.next">بعدی</string>
   <string name="common.copy">کپی کردن</string>
   <string name="common.share">اشتراک گذاری</string>
-  <string name="wallet.new.backup_warning">عبارات بازیابی خصوصی منحصربه‌فرد خود را بنویسید و آن را به صورت ایمن ذخیره کنید. برای دسترسی و بازیابی کیف پول ضروری است.</string>
   <string name="common.continue">ادامه</string>
-  <string name="common.secret_phrase">عبارات بازیابی خصوصی</string>
   <string name="application.name">Gem</string>
   <string name="common.provider">ارائه دهنده</string>
-  <string name="wallet.new.backup_confirm_warning">قبل از ادامه، مطمئن شوید که عبارات بازیابی خصوصی خود را به طور ایمن یادداشت کرده و ذخیره کرده اید، زیرا برای دسترسی و بازیابی کیف پول در آینده بسیار مهم است.</string>
   <string name="common.loading">در حال بارگذاری</string>
   <string name="wallet.multicoin">مولتی کوین</string>
   <string name="common.address">آدرس</string>
   <string name="transfer.network_fee">کارمزد شبکه</string>
   <string name="transfer.amount">مبلغ</string>
-  <string name="transfer.address">نشانی</string>
   <string name="wallet.import.address_field">نشانی یا نام</string>
   <string name="common.back">بازگشت</string>
   <string name="transfer.memo">یادداشت</string>
@@ -51,7 +47,6 @@
   <string name="transfer.confirm">تایید کردن</string>
   <string name="transfer.from">از</string>
   <string name="transfer.to">به</string>
-  <string name="transfer.confirm.maxtotal">حداکثر کل</string>
   <string name="common.paste">جای گذاری</string>
   <string name="transfer.max">حداکثر</string>
   <string name="common.delete">پاک کردن</string>
@@ -98,13 +93,10 @@
   <string name="settings.enable_passcode">فعال کردن رمزعبور</string>
   <string name="settings.security.authentication">احراز هویت</string>
   <string name="wallet.copy_address">کپی کردن آدرس</string>
-  <string name="assets.hidden">پنهان شده</string>
   <string name="transfer.insufficient_balance">موجودی %s ناکافی است.</string>
   <string name="transfer.insufficient_network_fee_balance">موجودی %s برای پوشش کارمزد شبکه ناکافی است.</string>
   <string name="asset.balances">موجودی ها</string>
   <string name="asset.balances.available">در دسترس</string>
-  <string name="common.see_all">مشاهده همه</string>
-  <string name="asset.latest_transactions">آخرین تراکنش ها</string>
   <string name="common.no_thanks">خیر. سپاس.</string>
   <string name="settings.notifications.title">اعلان ها</string>
   <string name="wallet.watch.tooltip.title">شما در حال تماشای این کیف پول هستید.</string>
@@ -134,8 +126,6 @@
   <string name="wallet.stake">Stake</string>
   <string name="swap.you_pay">شما پرداخت میکنید</string>
   <string name="swap.you_receive">شما دریافت میکنید</string>
-  <string name="swap.approve_token">برای مبادله دسترسی %s را دهید.</string>
-  <string name="swap.approve_token_permission">برای مبادله توکن %s دسترسی دهید.</string>
   <string name="common.phrase">عبارت</string>
   <string name="stake.active">فعال</string>
   <string name="stake.pending">در انتظار</string>
@@ -159,7 +149,6 @@
   <string name="stake.activating">فعال کردن</string>
   <string name="stake.deactivating">غیر فعال کردن</string>
   <string name="transfer.withdraw.title">برداشت</string>
-  <string name="transfer.step">گام %d</string>
   <string name="sign_message.title">پیام را امضا کنید</string>
   <string name="sign_message.message">پیام</string>
   <string name="stake.awaiting_withdrawal">در انتظار برداشت</string>
@@ -178,7 +167,6 @@
   <string name="errors.token.invalid_id">شناسه توکن نامعتبر است.</string>
   <string name="errors.token.unable_fetch_token_information">خطا در واکشی اطلاعات توکن: %s</string>
   <string name="assets.add_custom_token">افزودن توکن دلخواه/سفارشی.</string>
-  <string name="errors.token.invalid_metadata">ابرداده توکن نامعتبر است.</string>
   <string name="asset.name">نام</string>
   <string name="asset.symbol">نماد</string>
   <string name="asset.decimals">اعشار ها</string>
@@ -214,7 +202,6 @@
   <string name="common.url">URL</string>
   <string name="errors.error_occured">خطایی رخ داد!</string>
   <string name="settings.language">زبان</string>
-  <string name="wallet.import.private_key">%s کلید خصوصی رمزگذاری شده</string>
   <string name="errors.invalid_network_id">شناسه شبکه نامعتبر است.</string>
   <string name="common.private_key">کلید خصوصی</string>
   <string name="nodes.import_node.latency">تاخیر</string>
@@ -224,7 +211,6 @@
   <string name="errors.error">خطا</string>
   <string name="nodes.gem_wallet_node">گره کیف پول الماس</string>
   <string name="errors.connections.user_cancelled">توسط کاربر لغو شد.</string>
-  <string name="errors.swap.no_quote_data">بدون داده نقل قول.</string>
   <string name="errors.not_supported">پشتیبانی نمی شود.</string>
   <string name="errors.permissions_not_granted">دسترسی داده نشده.</string>
   <string name="errors.decoding">خطای رمزگشایی</string>
@@ -247,7 +233,6 @@
   <string name="errors.invalid_asset_address">آدرس %s نامعتبر است.</string>
   <string name="transaction.title.received">دریافت شده.</string>
   <string name="transaction.title.sent">فرستاده شده.</string>
-  <string name="stake.stake">استیک کردن.</string>
   <string name="banner.account_activation.title">کارمزد فعال سازی حساب.</string>
   <string name="banner.account_activation.description" formatted="false">شبکه %s نیاز به کارمزد اولیه %s ای دارد.</string>
   <string name="banner.stake.title">شروع به استیک کردن %s.</string>
@@ -275,7 +260,6 @@
   <string name="price_alerts.get_notified_explain_message">هنگامی که تغییر قیمت قابل توجهی در دارایی های رمزنگاری مورد علاقه شما ایجاد می شود مطلع شوید.</string>
   <string name="assets.select_asset">Asset را انتخاب کنید</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
-  <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">تایید کنید</string>
   <string name="common.skip">پرش کنید</string>
   <string name="common.warning">هشدار</string>
@@ -293,7 +277,6 @@
   <string name="info.transaction.success.description">تراکنش تکمیل و در شبکه تأیید شده است. می‌توانید جزئیات را برای تأیید وضعیت آن بررسی کنید.</string>
   <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
   <string name="input.enter_amount_to">Please enter amount to %s</string>
-  <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">محبوب</string>
   <string name="errors.dust_threshold">تراکنش به دلیل کم بودن مبلغ برای برآورده کردن حداقل لازم شبکه %s (آستانه گرد و غبار) انجام نشد. این محدودیت تضمین می‌کند که ارزش تراکنش، کارمزدها و هزینه‌های پردازش را پوشش می‌دهد.</string>
@@ -310,7 +293,6 @@
   <string name="filter.types">انواع</string>
   <string name="fee_rate.gwei">%s gwei</string>
   <string name="swap.slippage">Slippage</string>
-  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
   <string name="banner.activate_asset.description" formatted="false">برای استفاده از دارایی %s ، ابتدا باید آن را در شبکه %s با انجام الزامات خاص شبکه فعال کنید.</string>
@@ -323,12 +305,10 @@
   <string name="nft.save_to_photos">ذخیره در عکس ها</string>
   <string name="permissions.access_denied">دسترسی ممنوع شد</string>
   <string name="permissions.image.photo_access.denied.description">این برنامه اجازه دسترسی به کتابخانه عکس شما را ندارد. لطفاً دسترسی را در تنظیمات دستگاه خود فعال کنید.</string>
-  <string name="common.magic_button">دکمه جادویی</string>
   <string name="common.emoji">ایموجی</string>
   <string name="common.style">سبک</string>
   <string name="common.avatar">آواتار</string>
   <string name="common.photo">عکس</string>
-  <string name="info.price_impact.title">تاثیر قیمت</string>
   <string name="info.price_impact.description">تاثیر قیمت تغییر در قیمت توکن است که به دلیل اندازه معامله شما ایجاد می شود. تاثیر قیمت بالاتر به این معنی است که به دلیل نقدینگی کم یا حجم سفارش بزرگ، توکن های کمتری دریافت می کنید. </string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
@@ -354,10 +334,6 @@
   <string name="price_alerts.set_alert.set_target_price">تعیین قیمت هدف</string>
   <string name="common.save">ذخیره کنید</string>
   <string name="common.edit">Edit</string>
-  <string name="contacts.no_contacts">هنوز مخاطبی وجود ندارد.</string>
-  <string name="contacts.no_addresses">هنوز آدرسی وجود ندارد.</string>
-  <string name="contacts.contact">تماس بگیرید</string>
-  <string name="contacts.title">مخاطبین</string>
   <string name="common.percentage">درصد</string>
   <string name="price_alerts.set_alert.current_price">قیمت فعلی</string>
   <string name="price_alerts.added_for">تنظیم هشدار قیمت %s</string>
@@ -376,12 +352,10 @@
   <string name="activity.state.empty.description">اولین تراکنش خود را انجام دهید</string>
   <string name="stake.state.empty.title">شرط‌های شما اینجا نمایش داده می‌شوند</string>
   <string name="stake.state.empty.description">اولین %s خود را شرط بندی کنید</string>
-  <string name="wallet_connect.state.empty.title">ارتباطات شما اینجا نمایش داده می‌شود️</string>
   <string name="wallet_connect.state.empty.description">برای اتصال به DApp، کد را اسکن یا جای‌گذاری کنید</string>
   <string name="assets.state.empty.search_description">می‌توانید سعی کنید آن را به صورت دستی اضافه کنید</string>
   <string name="activity.state.empty.search_description">فیلترها را پاک کنید تا فعالیت‌هایتان را به‌روزرسانی کنید</string>
   <string name="search.state.empty.description">املای صحیح را بررسی کنید یا جستجوی جدیدی را امتحان کنید.</string>
-  <string name="assets.state.empty.search_title">هیچ دارایی یافت نشد</string>
   <string name="networks.state.empty.search_title">هیچ شبکه‌ای یافت نشد</string>
   <string name="activity.state.empty.search_title">No activities found</string>
   <string name="markets.state.empty.title">داده‌های بازار شما اینجا نمایش داده می‌شود</string>
@@ -424,7 +398,6 @@
   <string name="wallet.import.contract_address_field">قرارداد یا شناسه توکن</string>
   <string name="info.asset_status.unverified.description">توکن‌های تایید نشده به اندازه کافی توسط سرویس‌های شخص ثالث مورد اعتماد تایید نشده‌اند. آنها ممکن است به دلیل ایردراپ، انتقال یا وارد کردن دستی در کیف پول شما ظاهر شوند.</string>
   <string name="info.asset_status.suspicious.description">توکن‌های مشکوک یا اسپم به عنوان کلاهبرداری‌های بالقوه یا دارایی‌های مضر شناسایی می‌شوند. آنها ممکن است به دلیل ایردراپ‌ها، انتقال‌ها یا واردات دستی در کیف پول شما ظاهر شوند.</string>
-  <string name="errors.insufficient_funds">بودجه ناکافی</string>
   <string name="info.insufficient_network_fee_balance.title">%s مورد نیاز</string>
   <string name="info.insufficient_network_fee_balance.description" formatted="false">این تراکنش مستلزم %s برای پوشش هزینه شبکه پرداخت شده به %s معدنچیان، نه Gem Walletمطمئن شوید که به اندازه کافی دارید. %s.</string>
   <string name="brand_name">Gem Wallet</string>
@@ -546,10 +519,10 @@
   <string name="rewards.referrals">ارجاعات</string>
   <string name="rewards.earn_points.title">امتیاز کسب کنید</string>
   <string name="rewards.get_rewards.title">دریافت پاداش</string>
-  <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
+  <string name="rewards.activate_referral_code.description">کد معرف از دوستتون دارید؟</string>
   <string name="rewards.activate_referral_code.title">کد فعال‌سازی</string>
   <string name="rewards.create_referral_code.title">ایجاد نام کاربری</string>
-  <string name="rewards.create_referral_code.info">این نام کاربری شخصی شما خواهد بود.</string>
+  <string name="rewards.create_referral_code.info">این نام مستعار شخصی شما برای کیف پول فعلی خواهد بود.</string>
   <string name="rewards.username">نام کاربری</string>
   <string name="rewards.ways_spend.title">راه‌های خرج کردن</string>
   <string name="rewards.ways_spend.asset.title">دریافت %s</string>
@@ -558,8 +531,43 @@
   <string name="transfer.sign_transaction.title">ثبت تراکنش</string>
   <string name="recent_activity.title">تازه‌ها</string>
   <string name="settings.preferences.app_icon">آیکون برنامه</string>
-  <string name="recent_activity.clear_confirmation">آیا مطمئن هستید که می‌خواهید تمام موارد اخیر را پاک کنید؟</string>
   <string name="rewards.pending.title">پاداش در انتظار</string>
   <string name="rewards.pending.description">موجود در %s</string>
   <string name="rewards.pending.description_ready">جایزه شما آماده است!</string>
+  <string name="recent_activity.state.empty.title">Your recents will appear here</string>
+  <string name="recent_activity.state.empty.description">Assets you’ve recently used will appear here</string>
+  <string name="notifications.inapp.state.empty.title">هنوز هیچ اعلانی وجود ندارد</string>
+  <string name="notifications.inapp.state.empty.description">به‌روزرسانی‌های مربوط به اعلان‌هایتان را اینجا خواهید دید</string>
+  <string name="rewards.nickname">نام مستعار</string>
+  <string name="notifications.inapp.rewards.invite.subtitle">دوستان را دعوت کنید و با هم پاداش کسب کنید</string>
+  <string name="nodes.import_node.warning_message">گره‌های سفارشی می‌توانند مخرب باشند و ممکن است داده‌های تراکنش شما را افشا کنند یا اطلاعات نادرست ارائه دهند.</string>
+  <string name="info.fully_diluted_valuation.title">Fully Diluted Valuation</string>
+  <string name="info.fully_diluted_valuation.description">ارزش بازار فرضی در صورتی که همه کوین‌ها در گردش باشند. این ارزش از حاصل ضرب قیمت در حداکثر عرضه محاسبه می‌شود.</string>
+  <string name="info.circulating_supply.description">تعداد کوین‌های موجود و قابل معامله در بازار.</string>
+  <string name="info.total_supply.description">تعداد کل سکه‌های موجود، شامل سکه‌های قفل‌شده یا رزرو شده.</string>
+  <string name="info.max_supply.title">حداکثر عرضه</string>
+  <string name="info.max_supply.description">حداکثر تعداد سکه‌هایی که تا به حال وجود خواهد داشت.</string>
+  <string name="perpetual.value">ارزش</string>
+  <string name="perpetual.unrealized_pnl">سود و زیان تحقق نیافته</string>
+  <string name="perpetual.volume">حجم</string>
+  <string name="perpetual.all_time_pnl">سود و زیان تمام وقت</string>
+  <string name="perpetual.margin_usage">استفاده از مارجین</string>
+  <string name="perpetual.account_leverage">اهرم حساب</string>
+  <string name="asset.all_time_high">بالاترین رکورد تمام دوران</string>
+  <string name="asset.all_time_low">پایین‌ترین سطح تمام دوران</string>
+  <string name="errors.swap.minimum_amount">حداقل مبلغ معامله %sلطفا مبلغ بیشتری وارد کنید.</string>
+  <string name="swap.use_minimum_amount">از حداقل مقدار استفاده کنید</string>
+  <string name="common.earn">Earn</string>
+  <string name="earn.state.empty.title">موقعیت‌های شما اینجا نمایش داده می‌شوند</string>
+  <string name="earn.state.empty.description">اولین واریز خود را انجام دهید %@</string>
+  <string name="contacts.title">مخاطبین</string>
+  <string name="contacts.contact">تماس</string>
+  <string name="contacts.addresses">آدرس‌ها</string>
+  <string name="contacts.state.empty.title">بدون مخاطب</string>
+  <string name="contacts.state.empty.description">آدرس‌های پرکاربرد خود را ذخیره کنید</string>
+  <string name="charts.price.open">باز</string>
+  <string name="charts.price.close">بستن</string>
+  <string name="charts.price.high">بالا</string>
+  <string name="charts.price.low">کم</string>
+  <string name="charts.price.change">تغییر</string>
 </resources>

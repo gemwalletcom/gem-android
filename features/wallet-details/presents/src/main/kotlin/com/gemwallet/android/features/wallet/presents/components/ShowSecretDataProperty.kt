@@ -10,7 +10,6 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.models.ListPosition
-import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
 @Composable

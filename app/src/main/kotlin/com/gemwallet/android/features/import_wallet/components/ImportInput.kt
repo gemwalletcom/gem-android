@@ -108,7 +108,7 @@ internal fun ImportInput(
                             text = when (importType.walletType) {
                                 WalletType.View -> stringResource(R.string.wallet_import_address_field)
                                 WalletType.PrivateKey -> stringResource(R.string.common_private_key)
-                                else -> stringResource(R.string.wallet_import_secret_phrase)
+                                else -> stringResource(R.string.common_secret_phrase)
                             },
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.secondary,
