@@ -22,6 +22,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.WalletType
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -199,7 +200,7 @@ open class BaseAssetSelectViewModel(
         searchTokensCase.search(
             query = query,
             currency = session?.currency ?: Currency.USD,
-            chains = session?.wallet?.accounts?.map { it.chain } ?: emptyList(),
+            chains = session?.wallet?.takeIf { it.type == WalletType.Multicoin }?.accounts?.map { it.chain } ?: emptyList(),
             tags = tags?.let { listOf(it) } ?: emptyList(),
         )
         searchState.update { SearchState.Idle }
