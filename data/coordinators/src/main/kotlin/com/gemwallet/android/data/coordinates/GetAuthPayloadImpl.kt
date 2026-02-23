@@ -6,6 +6,7 @@ import com.gemwallet.android.application.device.coordinators.GetDeviceId
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
+import com.gemwallet.android.domains.referral.values.ReferralError
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.math.toHexString
 import com.wallet.core.primitives.AuthPayload
@@ -25,18 +26,20 @@ class GetAuthPayloadImpl(
     override suspend fun getAuthPayload(wallet: Wallet, chain: Chain): AuthPayload {
         val account = wallet.getAccount(chain) ?: throw Exception() // TODO
         val deviceId = getDeviceId.getDeviceId()
-        val nonce = gemDeviceApiClient.getAuthNonce()
-        val message = uniffi.gemstone.createAuthMessage(
-            chain = Chain.Ethereum.string,
-            address = account.address,
-            authNonce = GemAuthNonce(nonce.nonce, nonce.timestamp)
-        )
         val key = loadPrivateKeyOperator(
             wallet,
             chain,
             passwordStore.getPassword(wallet.id)
         )
+
         try {
+            val nonce = gemDeviceApiClient.getAuthNonce() ?: throw ReferralError.NetworkError
+            val message = uniffi.gemstone.createAuthMessage(
+                chain = Chain.Ethereum.string,
+                address = account.address,
+                authNonce = GemAuthNonce(nonce.nonce, nonce.timestamp)
+            )
+
             val signature = PrivateKey(key).sign(message.hash, WCChainTypeProxy()(chain).curve())
                 .toHexString()
             return AuthPayload(

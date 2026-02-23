@@ -32,7 +32,7 @@ class NftRepository(
     override suspend fun loadNFT(wallet: Wallet) {
 
         val response = gemDeviceApiClient.getNFTs(walletId = wallet.id)
-        val collections = response.map {
+        val collections = response?.map {
             DbNFTCollection(
                 id = it.collection.id,
                 name = it.collection.name,
@@ -44,8 +44,8 @@ class NftRepository(
                 originalSourceUrl = it.collection.images.preview.url,
                 isVerified = it.collection.isVerified,
             )
-        }
-        val fullAsset = response.map { item ->
+        } ?: emptyList()
+        val fullAsset = response?.flatMap { item ->
             item.assets.map { asset ->
                 Pair(
                     DbNFTAsset(
@@ -70,18 +70,18 @@ class NftRepository(
                     }
                 )
             }
-        }.flatten()
+        } ?: emptyList()
         val assets = fullAsset.map { it.first }
-        val attributes = fullAsset.map { it.second }.flatten()
+        val attributes = fullAsset.flatMap { it.second }
         val associations = assets.map {
             DbNFTAssociation(
                 wallet.id,
                 it.id
             )
         }
-        val links = response.map { it.collection }
-            .map { it.links.map { link -> DbNFTCollectionLink(it.id, link.name, link.url) } }
-            .flatten()
+        val links = response
+            ?.map { it.collection }
+            ?.flatMap { it.links.map { link -> DbNFTCollectionLink(it.id, link.name, link.url) } } ?: emptyList()
         nftDao.updateNft(
             wallet.id,
             collections,

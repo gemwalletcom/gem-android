@@ -37,13 +37,13 @@ interface GemDeviceApiClient {
     suspend fun getDevice(): Device?
 
     @POST("/v2/devices")
-    suspend fun registerDevice(@Body request: Device): Device
+    suspend fun registerDevice(@Body request: Device): Device?
 
     @POST("/v2/devices/migrate")
-    suspend fun migrateDevice(@Body request: MigrateDeviceIdRequest): Device
+    suspend fun migrateDevice(@Body request: MigrateDeviceIdRequest): Device?
 
     @PUT("/v2/devices")
-    suspend fun updateDevice(@Body request: Device): Device
+    suspend fun updateDevice(@Body request: Device): Device?
 
     @GET("/v2/devices/is_registered")
     suspend fun isDeviceRegistered(): Boolean
@@ -70,7 +70,7 @@ interface GemDeviceApiClient {
 
     // Rewards
     @GET("/v2/devices/rewards")
-    suspend fun getRewards(@Header(WALLET_ID_HEADER) walletId: String): Rewards
+    suspend fun getRewards(@Header(WALLET_ID_HEADER) walletId: String): Rewards?
 
     @GET("/v2/devices/rewards/events")
     suspend fun getRewardsEvents(@Header(WALLET_ID_HEADER)  walletId: String): List<RewardEvent>
@@ -82,7 +82,7 @@ interface GemDeviceApiClient {
 //    suspend fun getRewardsLeaderboard(@Path("device_id") deviceId: String): ReferralLeaderboard
 
     @POST("/v2/devices/rewards/referrals/create")
-    suspend fun createReferral(@Header(WALLET_ID_HEADER)  walletId: String, @Body body: AuthenticatedRequest<ReferralCode>): Rewards
+    suspend fun createReferral(@Header(WALLET_ID_HEADER)  walletId: String, @Body body: AuthenticatedRequest<ReferralCode>): Rewards?
 
     @POST("/v2/devices/rewards/referrals/use")
     suspend fun useReferralCode(@Header(WALLET_ID_HEADER)  walletId: String, @Body body: AuthenticatedRequest<ReferralCode>): List<RewardEvent>
@@ -95,14 +95,14 @@ interface GemDeviceApiClient {
     suspend fun getTransactions(
         @Header(WALLET_ID_HEADER)  walletId: String,
         @Query("from_timestamp") from: Long,
-    ): TransactionsResponse
+    ): TransactionsResponse?
 
     @GET("/v2/devices/transactions")
     suspend fun getTransactions(
         @Header(WALLET_ID_HEADER)  walletId: String,
         @Query("asset_id") assetId: String,
         @Query("from_timestamp") from: Long,
-    ): TransactionsResponse
+    ): TransactionsResponse?
 
     @POST("/v2/devices/scan/transaction")
     suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): ScanTransaction
@@ -113,11 +113,11 @@ interface GemDeviceApiClient {
 
     // NFT
     @GET("/v2/devices/nft_assets")
-    suspend fun getNFTs(@Header(WALLET_ID_HEADER)  walletId: String): List<NFTData>
+    suspend fun getNFTs(@Header(WALLET_ID_HEADER)  walletId: String): List<NFTData>?
 
     // AUTH
     @GET("/v2/devices/auth/nonce")
-    suspend fun getAuthNonce(): AuthNonce
+    suspend fun getAuthNonce(): AuthNonce?
 
     // BUY
     @GET("/v2/devices/fiat/quotes/{type}/{asset_id}")
@@ -127,12 +127,12 @@ interface GemDeviceApiClient {
         @Path("asset_id") assetId: String,
         @Query("amount") amount: Double,
         @Query("currency") currency: String,
-    ): FiatQuotes
+    ): FiatQuotes?
 
     @GET("/v2/devices/fiat/quotes/{quote_id}/url")
     suspend fun getFiatQuoteUrl(
         @Header(WALLET_ID_HEADER) walletId: String,
         @Path("quote_id") quoteId: String
-    ): FiatQuoteUrl
+    ): FiatQuoteUrl?
 
 }

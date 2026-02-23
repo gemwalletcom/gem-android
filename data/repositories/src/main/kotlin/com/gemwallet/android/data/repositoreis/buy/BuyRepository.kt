@@ -7,6 +7,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.FiatQuote
 import com.wallet.core.primitives.FiatQuoteType
+import okio.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,7 +47,7 @@ class BuyRepository @Inject constructor(
                 currency = fiatCurrency,
                 walletId = walletId,
                 type = type.string,
-            ).quotes
+            )?.quotes ?: throw IOException()
         } catch (err: Throwable) {
             throw Exception("Quotes not found", err)
         }
@@ -57,7 +58,7 @@ class BuyRepository @Inject constructor(
             gemDeviceApiClient.getFiatQuoteUrl(
                 walletId = walletId,
                 quoteId = quoteId,
-            ).redirectUrl
+            )?.redirectUrl
         } catch (_: Throwable) {
             null
         }

@@ -31,11 +31,11 @@ class RedeemImpl(
 
     override suspend fun redeem(wallet: Wallet, rewards: Rewards, option: RewardRedemptionOption): RedemptionResult {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
-        val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
-        if (rewards.points < option.points) {
-            throw ReferralError.InsufficientPoints
-        }
         return try {
+            val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
+            if (rewards.points < option.points) {
+                throw ReferralError.InsufficientPoints
+            }
             val result = gemDeviceApiClient.redeem(
                 walletId = wallet.id,
                 request = AuthenticatedRequest(

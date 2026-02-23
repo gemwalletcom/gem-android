@@ -13,6 +13,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ReferralCode
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
+import okio.IOException
 import retrofit2.HttpException
 
 class CreateReferralImpl(
@@ -23,8 +24,8 @@ class CreateReferralImpl(
 
     override suspend fun createReferral(code: String, wallet: Wallet): Rewards {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
-        val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
         return try {
+            val authPayload = getAuthPayload.getAuthPayload(wallet, account.chain)
             gemDeviceApiClient.createReferral(
                 walletId = wallet.id,
                 body = AuthenticatedRequest(
@@ -33,7 +34,7 @@ class CreateReferralImpl(
                         code = code
                     )
                 )
-            )
+            ) ?: throw ReferralError.NetworkError
         } catch (err: HttpException) {
             val body = err.response()?.errorBody()?.string() ?: throw ReferralError.NetworkError
             val errorBody = jsonEncoder.decodeFromString<ResponseError>(body)
