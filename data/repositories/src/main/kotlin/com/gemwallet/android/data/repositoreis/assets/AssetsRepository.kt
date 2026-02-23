@@ -112,8 +112,8 @@ class AssetsRepository @Inject constructor(
 
     suspend fun syncAssetInfo(assetId: AssetId, wallet: Wallet) = withContext(Dispatchers.IO) {
         val account = wallet.getAccount(assetId) ?: return@withContext
-        val asset = getTokenInfo(assetId).firstOrNull()?.asset ?: return@withContext
-        add(walletId = wallet.id, accountAddress = account.address, asset = asset, false)
+        val asset = getTokenInfo(assetId).firstOrNull() ?: return@withContext
+        add(walletId = wallet.id, accountAddress = account.address, asset = asset.asset, asset.metadata?.isEnabled ?: true)
         val updateBalancesJob = async { updateBalances(assetId) }
         val getAssetFull = async { syncMarketInfo(assetId, account) }
         priceClient.addAssetId(assetId)
