@@ -69,6 +69,9 @@ fun TransactionItem(
 private fun TransactionStatusBadge(data: TransactionDataAggregate) {
     val text = data.getBadgeText()
     val color = data.getBadgeColor()
+    if (text.isEmpty()) {
+        return
+    }
     Row(
         Modifier
             .padding(start = 5.dp)
@@ -78,9 +81,6 @@ private fun TransactionStatusBadge(data: TransactionDataAggregate) {
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (text.isEmpty()) {
-            return
-        }
         Text(
             modifier = Modifier.padding(
                 start = 5.dp,
