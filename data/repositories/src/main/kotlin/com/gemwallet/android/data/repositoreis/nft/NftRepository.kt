@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.nft
 
+import android.net.http.HttpException
 import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
@@ -23,14 +24,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import okio.IOException
 
 class NftRepository(
     private val gemDeviceApiClient: GemDeviceApiClient,
     private val nftDao: NftDao,
 ) : LoadNFTCase, GetListNftCase, GetAssetNft {
 
+    @Throws(HttpException::class, IOException::class)
     override suspend fun loadNFT(wallet: Wallet) {
-
         val response = gemDeviceApiClient.getNFTs(walletId = wallet.id)
         val collections = response?.map {
             DbNFTCollection(

@@ -53,11 +53,11 @@ class AddressChainViewModel @Inject constructor(
         }
         state.update { State(isLoading = true) }
         nameResolveJob = viewModelScope.launch(Dispatchers.IO) {
-            try {
+            runCatching {
                 delay(500L)
                 val nameRecord = gemClient.resolve(input.lowercase(Locale.getDefault()), chain.string)
                 setNameRecord(nameRecord, input)
-            } catch (_: Throwable) {}
+            }
         }
     }
 

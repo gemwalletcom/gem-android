@@ -47,7 +47,7 @@ class NftListViewModels @Inject constructor(
         flow {
             if (!state.first) return@flow
             emit(true)
-            loadNft.loadNFT(state.second.wallet)
+            runCatching { loadNft.loadNFT(state.second.wallet) }
             emit(false)
             loadState.update { false }
         }

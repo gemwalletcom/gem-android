@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.device
 
 import android.content.Context
+import android.net.http.HttpException
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.jvm.Throws
 import kotlin.math.max
 
 class DeviceRepository(
@@ -161,38 +163,40 @@ class DeviceRepository(
         }
     }
 
+    @Throws(HttpException::class)
     private suspend fun handlePushToken(pushToken: String, device: Device) {
         val device = device.copy(token = pushToken)
 
-        if (isDeviceRegistered()) {
-            updateDevice(device)
-        } else {
-            registerDevice(device)
-        }
+        try {
+            if (isDeviceRegistered()) {
+                updateDevice(device)
+            } else {
+                registerDevice(device)
+            }
+        } catch (_: Throwable) {}
     }
 
+    @Throws(HttpException::class)
     private suspend fun isDeviceRegistered(): Boolean {
         val local = context.dataStore.data.map { it[Key.DeviceRegistered] }.firstOrNull() == true
         return local || gemDeviceApiClient.isDeviceRegistered()
     }
 
-    private suspend fun registerDevice(device: Device) = try {
+    private suspend fun registerDevice(device: Device) {
         gemDeviceApiClient.registerDevice(device)
         val isRegistered = (gemDeviceApiClient.isDeviceRegistered())
         setDeviceRegistered(isRegistered)
-    } catch (_: Throwable) {}
+    }
 
     private suspend fun updateDevice(device: Device) {
-        try {
-            val remote = gemDeviceApiClient.getDevice()
+        val remote = gemDeviceApiClient.getDevice()
 
-            if (remote?.hasChanges(device) == true) {
-                val subscriptionsVersion = max(device.subscriptionsVersion, remote.subscriptionsVersion) + 1
-                setSubscriptionVersion(subscriptionsVersion)
-                gemDeviceApiClient.updateDevice(request = device.copy(subscriptionsVersion = subscriptionsVersion))
-                setDeviceRegistered(true)
-            }
-        } catch (_: Throwable) { }
+        if (remote?.hasChanges(device) == true) {
+            val subscriptionsVersion = max(device.subscriptionsVersion, remote.subscriptionsVersion) + 1
+            setSubscriptionVersion(subscriptionsVersion)
+            gemDeviceApiClient.updateDevice(request = device.copy(subscriptionsVersion = subscriptionsVersion))
+            setDeviceRegistered(true)
+        }
     }
 
     private suspend fun setDeviceRegistered(isRegistered: Boolean = true) {
