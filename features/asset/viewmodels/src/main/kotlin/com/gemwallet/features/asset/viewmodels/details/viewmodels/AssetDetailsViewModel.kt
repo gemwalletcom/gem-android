@@ -1,7 +1,6 @@
 package com.gemwallet.features.asset.viewmodels.details.viewmodels
 
 import android.text.format.DateUtils
-import android.util.TimeUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

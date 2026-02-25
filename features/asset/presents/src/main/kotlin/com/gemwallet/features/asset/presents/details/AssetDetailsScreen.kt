@@ -16,7 +16,6 @@ import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState
 import com.gemwallet.features.asset.viewmodels.details.models.AssetStateError
 import com.gemwallet.features.asset.viewmodels.details.viewmodels.AssetDetailsViewModel
 import com.wallet.core.primitives.AssetId
-import kotlinx.coroutines.channels.ticker
 
 @Composable
 fun AssetDetailsScreen(
