@@ -570,4 +570,5 @@
   <string name="charts.price.high">উচ্চ</string>
   <string name="charts.price.low">কম</string>
   <string name="charts.price.change">পরিবর্তন</string>
+  <string name="contacts.add_to_contacts">পরিচিতিতে যোগ করুন</string>
 </resources>

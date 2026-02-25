@@ -570,4 +570,5 @@
   <string name="charts.price.high">Vysoký</string>
   <string name="charts.price.low">Nízký</string>
   <string name="charts.price.change">Přeměna</string>
+  <string name="contacts.add_to_contacts">Přidat do kontaktů</string>
 </resources>

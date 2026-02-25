@@ -570,4 +570,5 @@
   <string name="charts.price.high">عالي</string>
   <string name="charts.price.low">قليل</string>
   <string name="charts.price.change">يتغير</string>
+  <string name="contacts.add_to_contacts">أضف إلى جهات الاتصال</string>
 </resources>

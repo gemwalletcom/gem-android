@@ -570,4 +570,5 @@
   <string name="charts.price.high">Mataas</string>
   <string name="charts.price.low">Mababa</string>
   <string name="charts.price.change">Pagbabago</string>
+  <string name="contacts.add_to_contacts">Idagdag sa Mga Kontak</string>
 </resources>

@@ -8,14 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class NameRecord (
-	val name: String,
-	val chain: Chain,
-	val address: String,
-	val provider: String
-)
-
-@Serializable
 enum class NameProvider(val string: String) {
 	@SerialName("ud")
 	Ud("ud"),
@@ -50,4 +42,12 @@ enum class NameProvider(val string: String) {
 	@SerialName("alldomains")
 	AllDomains("alldomains"),
 }
+
+@Serializable
+data class NameRecord (
+	val name: String,
+	val chain: Chain,
+	val address: String,
+	val provider: NameProvider
+)
 

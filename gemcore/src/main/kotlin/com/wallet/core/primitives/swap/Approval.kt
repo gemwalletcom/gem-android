@@ -24,9 +24,9 @@ data class QuoteAsset (
 
 @Serializable
 data class SwapProviderData (
-    val provider: SwapProvider,
-    val name: String,
-    val protocolName: String
+	val provider: SwapProvider,
+	val name: String,
+	val protocolName: String
 )
 
 @Serializable
@@ -74,7 +74,5 @@ enum class SwapStatus(val string: String) {
 	Completed("completed"),
 	@SerialName("failed")
 	Failed("failed"),
-	@SerialName("refunded")
-	Refunded("refunded"),
 }
 

@@ -13,6 +13,8 @@ enum class TransactionState(val string: String) {
 	Pending("pending"),
 	@SerialName("confirmed")
 	Confirmed("confirmed"),
+	@SerialName("inTransit")
+	InTransit("inTransit"),
 	@SerialName("failed")
 	Failed("failed"),
 	@SerialName("reverted")

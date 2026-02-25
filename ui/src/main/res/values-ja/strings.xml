@@ -570,4 +570,5 @@
   <string name="charts.price.high">高い</string>
   <string name="charts.price.low">低い</string>
   <string name="charts.price.change">変化</string>
+  <string name="contacts.add_to_contacts">連絡先に追加</string>
 </resources>

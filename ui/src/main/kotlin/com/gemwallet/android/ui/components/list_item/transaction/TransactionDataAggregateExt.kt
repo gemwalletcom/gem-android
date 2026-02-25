@@ -28,6 +28,7 @@ fun TransactionDataAggregate.getBadgeText(): String = when (state) {
     TransactionState.Confirmed -> ""
     TransactionState.Failed -> stringResource(id = R.string.transaction_status_failed)
     TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
+    TransactionState.InTransit -> stringResource(id = R.string.transaction_status_pending)
 }
 
 @Composable
@@ -36,6 +37,7 @@ fun TransactionDataAggregate.getBadgeColor(): Color = when (state) {
     TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
     TransactionState.Reverted,
     TransactionState.Failed -> MaterialTheme.colorScheme.error
+    TransactionState.InTransit -> pendingColor
 }
 
 @Composable

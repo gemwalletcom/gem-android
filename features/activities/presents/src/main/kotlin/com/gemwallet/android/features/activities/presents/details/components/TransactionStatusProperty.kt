@@ -27,12 +27,14 @@ fun TransactionStatusProperty(asset: Asset, property: TransactionDetailsValue.St
             PropertyDataText(
                 text = when (property.data) {
                     TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
+                    TransactionState.InTransit -> stringResource(id = R.string.transaction_status_pending)
                     TransactionState.Confirmed -> stringResource(id = R.string.transaction_status_confirmed)
                     TransactionState.Failed -> stringResource(id = R.string.transaction_status_failed)
                     TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
                 },
                 color = when (property.data) {
                     TransactionState.Pending -> pendingColor
+                    TransactionState.InTransit -> pendingColor
                     TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
                     TransactionState.Failed,
                     TransactionState.Reverted -> MaterialTheme.colorScheme.error

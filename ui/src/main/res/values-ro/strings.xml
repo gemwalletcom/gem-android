@@ -570,4 +570,5 @@
   <string name="charts.price.high">Ridicat</string>
   <string name="charts.price.low">Scăzut</string>
   <string name="charts.price.change">Schimba</string>
+  <string name="contacts.add_to_contacts">Adăugați la Contacte</string>
 </resources>

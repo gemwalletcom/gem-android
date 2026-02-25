@@ -570,4 +570,5 @@
   <string name="charts.price.high">Tinggi</string>
   <string name="charts.price.low">Rendah</string>
   <string name="charts.price.change">Perubahan</string>
+  <string name="contacts.add_to_contacts">Tambah ke Kenalan</string>
 </resources>

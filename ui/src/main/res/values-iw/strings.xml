@@ -570,4 +570,5 @@
   <string name="charts.price.high">גָבוֹהַ</string>
   <string name="charts.price.low">נָמוּך</string>
   <string name="charts.price.change">לְשַׁנוֹת</string>
+  <string name="contacts.add_to_contacts">הוסף לאנשי קשר</string>
 </resources>

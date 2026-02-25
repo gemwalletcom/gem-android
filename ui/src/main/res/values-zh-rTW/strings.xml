@@ -570,4 +570,5 @@
   <string name="charts.price.high">高的</string>
   <string name="charts.price.low">低的</string>
   <string name="charts.price.change">改變</string>
+  <string name="contacts.add_to_contacts">加入聯絡人</string>
 </resources>

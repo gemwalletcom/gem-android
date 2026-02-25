@@ -570,4 +570,5 @@
   <string name="charts.price.high">Hoch</string>
   <string name="charts.price.low">Niedrig</string>
   <string name="charts.price.change">Ändern</string>
+  <string name="contacts.add_to_contacts">Zu Kontakten hinzufügen</string>
 </resources>

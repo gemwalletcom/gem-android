@@ -11,7 +11,9 @@ import kotlinx.serialization.SerialName
 data class Contact (
 	val id: String,
 	val name: String,
-	val description: String? = null
+	val description: String? = null,
+	val createdAt: SerializedDate,
+	val updatedAt: SerializedDate
 )
 
 @Serializable
@@ -20,8 +22,7 @@ data class ContactAddress (
 	val contactId: String,
 	val address: String,
 	val chain: Chain,
-	val memo: String? = null,
-	val description: String? = null
+	val memo: String? = null
 )
 
 @Serializable

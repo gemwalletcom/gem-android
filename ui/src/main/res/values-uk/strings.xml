@@ -570,4 +570,5 @@
   <string name="charts.price.high">Максимум</string>
   <string name="charts.price.low">Мінімум</string>
   <string name="charts.price.change">Зміна</string>
+  <string name="contacts.add_to_contacts">Додати до контактів</string>
 </resources>

@@ -570,4 +570,5 @@
   <string name="charts.price.high">Yüksek</string>
   <string name="charts.price.low">Düşük</string>
   <string name="charts.price.change">Değiştirmek</string>
+  <string name="contacts.add_to_contacts">Kişilere Ekle</string>
 </resources>

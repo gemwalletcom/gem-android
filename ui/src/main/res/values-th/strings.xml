@@ -570,4 +570,5 @@
   <string name="charts.price.high">สูง</string>
   <string name="charts.price.low">ต่ำ</string>
   <string name="charts.price.change">เปลี่ยน</string>
+  <string name="contacts.add_to_contacts">เพิ่มลงในรายชื่อติดต่อ</string>
 </resources>

@@ -4,16 +4,13 @@
 
 package com.wallet.core.primitives.swap
 
-import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.TransactionSwapMetadata
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
 data class SwapResult (
-    val status: SwapStatus,
-    val fromChain: Chain,
-    val fromTxHash: String,
-    val toChain: Chain? = null,
-    val toTxHash: String? = null
+	val status: SwapStatus,
+	val metadata: TransactionSwapMetadata? = null
 )
 

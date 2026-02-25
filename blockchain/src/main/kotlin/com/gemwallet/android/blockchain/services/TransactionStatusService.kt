@@ -34,6 +34,7 @@ class TransactionStatusService(
                     uniffi.gemstone.TransactionState.CONFIRMED -> TransactionState.Confirmed
                     uniffi.gemstone.TransactionState.FAILED -> TransactionState.Failed
                     uniffi.gemstone.TransactionState.REVERTED -> TransactionState.Reverted
+                    uniffi.gemstone.TransactionState.IN_TRANSIT -> TransactionState.InTransit
                 },
                 fee = fee,
                 hashChanges = hashChanges?.let { HashChanges(it.old, it.new) }

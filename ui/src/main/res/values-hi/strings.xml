@@ -570,4 +570,5 @@
   <string name="charts.price.high">उच्च</string>
   <string name="charts.price.low">कम</string>
   <string name="charts.price.change">परिवर्तन</string>
+  <string name="contacts.add_to_contacts">संपर्क के खाते में जोड़ दे</string>
 </resources>

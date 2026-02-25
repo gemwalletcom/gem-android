@@ -88,17 +88,20 @@ sealed class InfoSheetEntity(
             TransactionState.Pending -> R.drawable.transaction_state_pending
             TransactionState.Confirmed -> R.drawable.transaction_state_success
             TransactionState.Failed, TransactionState.Reverted -> R.drawable.transaction_state_error
+            TransactionState.InTransit -> R.drawable.transaction_state_pending
         },
         title = when (state) {
             TransactionState.Pending -> R.string.transaction_status_pending
             TransactionState.Confirmed -> R.string.transaction_status_confirmed
             TransactionState.Failed -> R.string.transaction_status_failed
             TransactionState.Reverted -> R.string.transaction_status_reverted
+            TransactionState.InTransit -> R.string.transaction_status_pending
         },
         description = when (state) {
             TransactionState.Pending -> R.string.info_transaction_pending_description
             TransactionState.Confirmed -> R.string.info_transaction_success_description
             TransactionState.Failed, TransactionState.Reverted -> R.string.info_transaction_error_description
+            TransactionState.InTransit -> R.string.info_transaction_error_description
         },
         infoUrl = { Config().getDocsUrl(DocsUrl.TransactionStatus) },
     )

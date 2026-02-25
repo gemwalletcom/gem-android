@@ -570,4 +570,5 @@
   <string name="charts.price.high">Cao</string>
   <string name="charts.price.low">Thấp</string>
   <string name="charts.price.change">Thay đổi</string>
+  <string name="contacts.add_to_contacts">Thêm vào danh bạ</string>
 </resources>

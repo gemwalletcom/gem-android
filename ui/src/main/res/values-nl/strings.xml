@@ -570,4 +570,5 @@
   <string name="charts.price.high">Hoog</string>
   <string name="charts.price.low">Laag</string>
   <string name="charts.price.change">Wijziging</string>
+  <string name="contacts.add_to_contacts">Toevoegen aan contacten</string>
 </resources>

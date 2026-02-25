@@ -570,4 +570,5 @@
   <string name="charts.price.high">높은</string>
   <string name="charts.price.low">낮은</string>
   <string name="charts.price.change">변화</string>
+  <string name="contacts.add_to_contacts">연락처에 추가</string>
 </resources>
