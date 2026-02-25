@@ -17,6 +17,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -25,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.theme.Spacer16
@@ -81,6 +83,7 @@ fun Scene(
     mainActionPadding: PaddingValues = PaddingValues(paddingDefault),
     snackbar: SnackbarHostState? = null,
     navigationBarPadding: Boolean = true,
+    progress: (() -> Float)? = null,
     content: @Composable ColumnScope.(PaddingValues) -> Unit,
 ) {
     BackHandler(backHandle) {
@@ -90,17 +93,28 @@ fun Scene(
         modifier = Modifier.imePadding(),
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = titleContent,
-                navigationIcon = {
-                    if (onClose != null) {
-                        IconButton(onClick = onClose) {
-                            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "back")
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CenterAlignedTopAppBar(
+                    title = titleContent,
+                    navigationIcon = {
+                        if (onClose != null) {
+                            IconButton(onClick = onClose) {
+                                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "back")
+                            }
                         }
-                    }
-                },
-                actions = actions,
-            )
+                    },
+                    actions = actions,
+                )
+                progress?.let {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                        progress = { it() },
+                        trackColor = Color.Transparent,
+                    )
+                }
+            }
         },
         bottomBar = {
             if (mainAction != null) {

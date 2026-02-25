@@ -1,5 +1,7 @@
 package com.gemwallet.features.asset.viewmodels.details.viewmodels
 
+import android.text.format.DateUtils
+import android.util.TimeUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +19,7 @@ import com.gemwallet.android.domains.pricealerts.values.PriceAlertsStateEvent
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
+import com.gemwallet.android.ext.tickerFlow
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetInfo
@@ -73,10 +76,25 @@ class AssetDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val tickerState = tickerFlow(true, 5 * DateUtils.MINUTE_IN_MILLIS)
+        .onEach {
+            if (it.complete) {
+                refresh()
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process))
+
     private val assetId = savedStateHandle.getStateFlow(assetIdArg, "").map { it.toAssetId() }
         .onEach { assetId ->
             assetId ?: return@onEach
-            priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.Request(assetId))
+            priceAlertsStateCoordinator.priceAlertState(PriceAlertsStateEvent.Request(assetId))
+
+            syncAssetInfo(assetId)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -86,15 +104,10 @@ class AssetDetailsViewModel @Inject constructor(
             assetId?.let { id -> assetsRepository.getTokenInfo(id).mapNotNull { it } } ?: emptyFlow()
         }
 
-    val session = sessionRepository.session()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
     val isOperationEnabled = session.filterNotNull().flatMapLatest {
         hasMultiSign.hasMultiSign(it.wallet).mapLatest { !it }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, true)
-
-    val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process))
 
     private val model = assetInfo
         .map {
@@ -168,15 +181,15 @@ class AssetDetailsViewModel @Inject constructor(
             is PriceAlertsStateEvent.Enable -> PriceAlertsStateEvent.Disable(assetId)
             else -> return@launch
         }
-        priceAlertsStateCoordinator.changePriceAlertState(event)
+        priceAlertsStateCoordinator.priceAlertState(event)
     }
 
     fun pushGranted() {
-        priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.PushGranted(assetId.value ?: return))
+        priceAlertsStateCoordinator.priceAlertState(PriceAlertsStateEvent.PushGranted(assetId.value ?: return))
     }
 
     fun pushRejected() {
-        priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.PushRejected(assetId.value ?: return))
+        priceAlertsStateCoordinator.priceAlertState(PriceAlertsStateEvent.PushRejected(assetId.value ?: return))
     }
 
     fun pin() = viewModelScope.launch(Dispatchers.IO) {

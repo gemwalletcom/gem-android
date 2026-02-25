@@ -100,7 +100,7 @@ class PriceAlertsStateCoordinatorImpl(
         }
     }
 
-    override fun changePriceAlertState(state: PriceAlertsStateEvent) {
+    override fun priceAlertState(state: PriceAlertsStateEvent) {
         event.update { state }
     }
 }

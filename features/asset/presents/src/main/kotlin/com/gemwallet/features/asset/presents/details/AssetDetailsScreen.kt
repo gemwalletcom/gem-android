@@ -16,6 +16,7 @@ import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState
 import com.gemwallet.features.asset.viewmodels.details.models.AssetStateError
 import com.gemwallet.features.asset.viewmodels.details.viewmodels.AssetDetailsViewModel
 import com.wallet.core.primitives.AssetId
+import kotlinx.coroutines.channels.ticker
 
 @Composable
 fun AssetDetailsScreen(
@@ -33,6 +34,7 @@ fun AssetDetailsScreen(
 ) {
     val viewModel: AssetDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val tickerState by viewModel.tickerState.collectAsStateWithLifecycle()
     val transactions by viewModel.transactions.collectAsStateWithLifecycle()
     val priceAlertEnabled by viewModel.priceAlertEnabled.collectAsStateWithLifecycle()
     val priceAlertsCount by viewModel.priceAlertsCount.collectAsStateWithLifecycle()
@@ -53,6 +55,7 @@ fun AssetDetailsScreen(
             priceAlertEnabled = priceAlertEnabled is PriceAlertsStateEvent.Enable,
             priceAlertsCount = priceAlertsCount,
             syncState = (uiState as AssetInfoUIState.Idle).sync,
+            tickerState = tickerState,
             isOperationEnabled = isOperationEnabled,
             onRefresh = viewModel::refresh,
             onTransfer = onTransfer,

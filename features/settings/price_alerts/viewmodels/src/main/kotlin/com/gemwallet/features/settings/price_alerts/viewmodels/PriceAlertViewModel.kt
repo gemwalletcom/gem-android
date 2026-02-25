@@ -43,7 +43,7 @@ class PriceAlertViewModel @Inject constructor(
 
     val assetId = savedStateHandle.getStateFlow<String?>("assetId", null)
         .mapLatest { it?.toAssetId() }
-        .onEach { priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.Request()) }
+        .onEach { priceAlertsStateCoordinator.priceAlertState(PriceAlertsStateEvent.Request()) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val data = assetId.flatMapLatest { getPriceAlerts.getPriceAlerts(it) }
@@ -74,15 +74,15 @@ class PriceAlertViewModel @Inject constructor(
 
     fun togglePriceAlerts(enable: Boolean) {
         val newState = if (enable) PriceAlertsStateEvent.Enable() else PriceAlertsStateEvent.Disable()
-        priceAlertsStateCoordinator.changePriceAlertState(newState)
+        priceAlertsStateCoordinator.priceAlertState(newState)
     }
 
     fun pushGranted() {
-        priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.PushGranted())
+        priceAlertsStateCoordinator.priceAlertState(PriceAlertsStateEvent.PushGranted())
     }
 
     fun pushRejected() {
-        priceAlertsStateCoordinator.changePriceAlertState(PriceAlertsStateEvent.PushRejected())
+        priceAlertsStateCoordinator.priceAlertState(PriceAlertsStateEvent.PushRejected())
     }
 
     fun excludeAsset(priceAlertId: Int) = viewModelScope.launch(Dispatchers.IO) {
