@@ -16,7 +16,7 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
-import com.gemwallet.android.ui.components.list_item.priceColor
+import com.gemwallet.android.ui.components.list_item.color
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingHalfSmall
@@ -47,7 +47,7 @@ fun PerpetualPositionItem(
                 verticalArrangement = Arrangement.spacedBy(paddingHalfSmall)
             ) {
                 ListItemTitleText(data.marginAmount, color = MaterialTheme.colorScheme.onSurface)
-                ListItemSupportText(data.pnlWithPercentage, color = priceColor(data.pnlState))
+                ListItemSupportText(data.pnlWithPercentage, color = data.pnlState.color())
             }
         },
     )

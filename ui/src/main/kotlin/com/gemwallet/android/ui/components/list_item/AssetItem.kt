@@ -142,7 +142,7 @@ fun PriceInfo(
     isHighlightPercentage: Boolean = false,
     internalPadding: Dp = paddingHalfSmall,
 ) {
-    val color = priceColor(state)
+    val color = state.color()
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -201,7 +201,7 @@ fun PriceInfo(
     isHighlightPercentage: Boolean = false,
     internalPadding: Dp = 16.dp,
 ) {
-    val highlightColor = priceColor(state)
+    val highlightColor = state.color()
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -225,8 +225,15 @@ fun PriceInfo(
     }
 }
 
+//@Composable
+//fun priceColor(state: PriceState) = when (state) {
+//    PriceState.Up -> MaterialTheme.colorScheme.tertiary
+//    PriceState.Down -> MaterialTheme.colorScheme.error
+//    PriceState.None -> MaterialTheme.colorScheme.secondary
+//}
+
 @Composable
-fun priceColor(state: PriceState) = when (state) {
+fun PriceState.color() = when (this) {
     PriceState.Up -> MaterialTheme.colorScheme.tertiary
     PriceState.Down -> MaterialTheme.colorScheme.error
     PriceState.None -> MaterialTheme.colorScheme.secondary

@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.priceColor
+import com.gemwallet.android.ui.components.list_item.color
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
@@ -36,7 +36,7 @@ internal fun LazyListScope.price(
                         DataBadgeChevron {
                             Text(
                                 text = uiState.priceDayChanges,
-                                color = priceColor(uiState.priceChangedType),
+                                color = uiState.priceChangedType.color(),
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                         }

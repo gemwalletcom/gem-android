@@ -6,7 +6,7 @@ import com.gemwallet.android.domains.perpetual.aggregates.PerpetualPositionDetai
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.list_item.priceColor
+import com.gemwallet.android.ui.components.list_item.color
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.models.ListPosition
 
@@ -22,7 +22,7 @@ internal fun LazyListScope.positionProperties(position: PerpetualPositionDetails
         PropertyItem(
             title = stringResource(R.string.perpetual_pnl),
             data = position.pnlWithPercentage,
-            dataColor = priceColor(position.pnlState), // TODO: move price color to extend on pricestate
+            dataColor = position.pnlState.color(), // TODO: move price color to extend on pricestate
             listPosition = ListPosition.Middle,
         )
         PropertyItem(

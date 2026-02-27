@@ -18,6 +18,7 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.Double
 
 @Entity(tableName = "asset", primaryKeys = ["id"])
 data class DbAsset(
@@ -61,7 +62,13 @@ data class DbAssetMarket(
     val totalVolume: Double? = null,
     val circulatingSupply: Double? = null,
     val totalSupply: Double? = null,
-    val maxSupply: Double? = null
+    val maxSupply: Double? = null,
+	val allTimeHigh: Double? = null,
+	val allTimeHighDate: Long? = null,
+	val allTimeHighChangePercentage: Double? = null,
+	val allTimeLow: Double? = null,
+	val allTimeLowDate: Long? = null,
+	val allTimeLowChangePercentage: Double? = null
 )
 
 @Entity(
@@ -125,9 +132,9 @@ fun AssetFull.toRecord() = DbAsset(
     symbol = asset.symbol,
     decimals = asset.decimals,
     type = asset.type,
-    isBuyEnabled = properties.isBuyable == true,
-    isSellEnabled = properties.isSellable == true,
-    isStakeEnabled = properties.isStakeable == true,
+    isBuyEnabled = properties.isBuyable,
+    isSellEnabled = properties.isSellable,
+    isStakeEnabled = properties.isStakeable,
     isSwapEnabled = asset.chain.isSwapSupport(),
     stakingApr = properties.stakingApr,
     rank = score.rank,
@@ -140,9 +147,9 @@ fun AssetBasic.toRecord() = DbAsset(
     symbol = asset.symbol,
     decimals = asset.decimals,
     type = asset.type,
-    isBuyEnabled = properties.isBuyable == true,
-    isSellEnabled = properties.isSellable == true,
-    isStakeEnabled = properties.isStakeable == true,
+    isBuyEnabled = properties.isBuyable,
+    isSellEnabled = properties.isSellable,
+    isStakeEnabled = properties.isStakeable,
     isSwapEnabled = asset.chain.isSwapSupport(),
     stakingApr = properties.stakingApr,
     rank = score.rank,
@@ -173,6 +180,12 @@ fun  AssetMarket.toRecord(assetId: AssetId) = DbAssetMarket(
     circulatingSupply = circulatingSupply,
     totalSupply = totalSupply,
     maxSupply = maxSupply,
+    allTimeHigh = allTimeHigh,
+    allTimeHighDate = allTimeHighDate,
+    allTimeHighChangePercentage = allTimeHighChangePercentage,
+    allTimeLow = allTimeLow,
+    allTimeLowDate = allTimeLowDate,
+    allTimeLowChangePercentage = allTimeLowChangePercentage,
 )
 
 fun  DbAssetMarket.toDTO() = AssetMarket(
@@ -183,4 +196,10 @@ fun  DbAssetMarket.toDTO() = AssetMarket(
     circulatingSupply = circulatingSupply,
     totalSupply = totalSupply,
     maxSupply = maxSupply,
+    allTimeHigh = allTimeHigh,
+    allTimeHighDate = allTimeHighDate,
+    allTimeHighChangePercentage = allTimeHighChangePercentage,
+    allTimeLow = allTimeLow,
+    allTimeLowDate = allTimeLowDate,
+    allTimeLowChangePercentage = allTimeLowChangePercentage,
 )
