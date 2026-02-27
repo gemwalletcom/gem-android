@@ -1,18 +1,22 @@
 package com.gemwallet.android.features.activities.viewmodels
 
+import android.text.format.DateUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.tickerFlow
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -56,6 +60,11 @@ class TransactionsViewModel @Inject constructor(
     .distinctUntilChanged()
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, emptyList())
 
+    val ticker = tickerFlow(true, 5 * DateUtils.SECOND_IN_MILLIS) {
+        if (it.complete) refresh()
+    }
+    .stateIn(viewModelScope, started = WhileSubscribed(5000), null)
+
     init {
         refresh()
     }
@@ -63,7 +72,10 @@ class TransactionsViewModel @Inject constructor(
     fun refresh() = viewModelScope.launch(Dispatchers.IO) {
         _state.update { true }
         syncTransactions.syncTransactions(session.value?.wallet ?: return@launch)
-//        _state.update { false }
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(500)
+            _state.update { false }
+        }
     }
 
     fun onChainFilter(chain: Chain) {

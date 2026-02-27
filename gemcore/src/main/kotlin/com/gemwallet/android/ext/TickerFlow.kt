@@ -4,8 +4,9 @@ import com.gemwallet.android.domains.percentage.formatAsPercentage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 
-fun tickerFlow(runed: Boolean, delay: Long, stepDelay: Long = delay): Flow<TickerState> {
+fun tickerFlow(runed: Boolean, delay: Long, stepDelay: Long = delay, onTick: (TickerState) -> Unit): Flow<TickerState> {
     return flow {
         val steps = (delay / stepDelay)
 
@@ -22,7 +23,7 @@ fun tickerFlow(runed: Boolean, delay: Long, stepDelay: Long = delay): Flow<Ticke
                 )
             }
         }
-    }
+    }.onEach(onTick)
 }
 
 class TickerState(

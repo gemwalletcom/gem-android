@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
+import com.gemwallet.android.ext.TickerState
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.filters.TransactionsFilter
 import com.gemwallet.android.ui.components.list_item.transaction.transactionsList
@@ -42,6 +43,7 @@ import com.wallet.core.primitives.Chain
 internal fun TransactionsScene(
     loading: Boolean,
     transactions: List<TransactionDataAggregate>,
+    ticker: TickerState?,
     chainsFilter: List<Chain>,
     typeFilter: List<TransactionTypeFilter>,
     listState: LazyListState = rememberLazyListState(),

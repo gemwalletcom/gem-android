@@ -21,10 +21,12 @@ fun TransactionsNavScreen(
     val loading by viewModel.state.collectAsStateWithLifecycle()
     val chainFilter by viewModel.chainsFilter.collectAsStateWithLifecycle()
     val typeFilter by viewModel.typeFilter.collectAsStateWithLifecycle()
+    val ticker by viewModel.ticker.collectAsStateWithLifecycle()
 
     TransactionsScene(
         loading = loading,
         transactions = transactions,
+        ticker = ticker,
         chainsFilter = chainFilter,
         typeFilter = typeFilter,
         listState = listState,
