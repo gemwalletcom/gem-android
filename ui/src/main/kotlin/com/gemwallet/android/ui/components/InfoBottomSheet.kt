@@ -176,6 +176,34 @@ sealed class InfoSheetEntity(
         description = R.string.info_funding_rate_description,
         infoUrl = { Config().getDocsUrl(DocsUrl.PerpetualsFundingRate) },
     )
+
+    object FullyDilutedValuation : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.info_fully_diluted_valuation_title,
+        description = R.string.info_fully_diluted_valuation_description,
+        infoUrl = null,
+    )
+
+    object CirculatingSupply : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.asset_circulating_supply,
+        description = R.string.info_circulating_supply_description,
+        infoUrl = null,
+    )
+
+    object TotalSupply : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.asset_total_supply,
+        description = R.string.info_total_supply_description,
+        infoUrl = null,
+    )
+
+    object MaxSupply : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.info_max_supply_title,
+        description = R.string.info_max_supply_description,
+        infoUrl = null,
+    )
 }
 
 /// https://gist.github.com/binrebin/f3dad29956eb8dcb760a38ce86a9553b
@@ -254,18 +282,22 @@ fun InfoBottomSheet(
                 textAlign = TextAlign.Center
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp, horizontal = 32.dp),
-            ) {
-                MainActionButton(
-                    title = item.actionLabel ?: stringResource(R.string.common_learn_more),
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
-                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.open(context, it()) }
-                    },
-                )
+            if (item.action != null || item.infoUrl != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 32.dp),
+                ) {
+                    MainActionButton(
+                        title = item.actionLabel ?: stringResource(R.string.common_learn_more),
+                        onClick = {
+                            scope.launch { sheetState.hide() }
+                                .invokeOnCompletion { onClose.invoke() }
+                            item.action?.let { it() }
+                                ?: item.infoUrl?.let { uriHandler.open(context, it()) }
+                        },
+                    )
+                }
             }
         }
     }

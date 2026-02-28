@@ -25,6 +25,7 @@ import com.gemwallet.android.domains.percentage.formatAsPercentage
 import com.gemwallet.android.domains.price.getPriceState
 import com.gemwallet.android.model.compactFormatter
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.Badge
@@ -139,6 +140,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                 MarketInfoUIModel(
                     type = MarketInfoUIModel.MarketInfoTypeUIModel.FDV,
                     value = currency.compactFormatter(it),
+                    info = InfoSheetEntity.FullyDilutedValuation,
                 )
             )
         }
@@ -150,6 +152,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                 MarketInfoUIModel(
                     type = MarketInfoUIModel.MarketInfoTypeUIModel.CirculatingSupply,
                     value = currency.compactFormatter(it),
+                    info = InfoSheetEntity.CirculatingSupply,
                 )
             )
         }
@@ -158,6 +161,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                 MarketInfoUIModel(
                     type = MarketInfoUIModel.MarketInfoTypeUIModel.TotalSupply,
                     value = currency.compactFormatter(it),
+                    info = InfoSheetEntity.TotalSupply,
                 )
             )
         }
@@ -167,6 +171,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                 MarketInfoUIModel(
                     type = MarketInfoUIModel.MarketInfoTypeUIModel.MaxSupply,
                     value = currency.compactFormatter(it),
+                    info = InfoSheetEntity.MaxSupply,
                 )
             )
         }
@@ -204,7 +209,7 @@ private fun LazyListScope.marketProperties(asset: Asset, explorerName: String, i
             MarketInfoUIModel.MarketInfoTypeUIModel.FDV,
             MarketInfoUIModel.MarketInfoTypeUIModel.CirculatingSupply,
             MarketInfoUIModel.MarketInfoTypeUIModel.TotalSupply,
-            MarketInfoUIModel.MarketInfoTypeUIModel.MaxSupply -> PropertyItem(item.type.label, item.value, listPosition = position)
+            MarketInfoUIModel.MarketInfoTypeUIModel.MaxSupply -> PropertyItem(item.type.label, item.value, listPosition = position, info = item.info)
             MarketInfoUIModel.MarketInfoTypeUIModel.MarketCap -> PropertyItem(
                 title = {
                     PropertyTitleText(
