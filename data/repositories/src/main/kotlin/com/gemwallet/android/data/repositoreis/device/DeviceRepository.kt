@@ -22,7 +22,6 @@ import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.AddressChains
-import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.MigrateDeviceIdRequest
 import com.wallet.core.primitives.Platform
@@ -39,7 +38,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.jvm.Throws
 import kotlin.math.max
 
 class DeviceRepository(
