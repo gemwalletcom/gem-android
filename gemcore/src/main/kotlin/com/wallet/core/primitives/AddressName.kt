@@ -11,6 +11,7 @@ import kotlinx.serialization.SerialName
 data class AddressName (
 	val chain: Chain,
 	val address: String,
-	val name: String
+	val name: String,
+	val type: AddressType? = null
 )
 

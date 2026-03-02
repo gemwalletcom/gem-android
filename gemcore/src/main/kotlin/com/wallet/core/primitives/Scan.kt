@@ -15,6 +15,8 @@ enum class AddressType(val string: String) {
 	Contract("contract"),
 	@SerialName("validator")
 	Validator("validator"),
+	@SerialName("contact")
+	Contact("contact"),
 }
 
 @Serializable

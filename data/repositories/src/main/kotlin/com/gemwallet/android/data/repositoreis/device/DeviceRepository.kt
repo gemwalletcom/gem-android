@@ -21,6 +21,7 @@ import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
+import com.wallet.core.primitives.AddressChains
 import com.wallet.core.primitives.ChainAddress
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.MigrateDeviceIdRequest
@@ -231,9 +232,10 @@ class DeviceRepository(
 
     private fun localSubscriptions(wallets: List<Wallet>): List<WalletSubscription> {
         return wallets.map { wallet ->
-            val subscriptions =  wallet.accounts.map { account ->
-                ChainAddress(account.chain, account.address)
-            }
+            val subscriptions = wallet.accounts.groupBy { account ->  account.address }
+                .map { entry ->
+                    AddressChains(entry.key, entry.value.map { it.chain })
+                }
             WalletSubscription(
                 walletId = wallet.id,
                 source = wallet.source,

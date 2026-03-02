@@ -8,10 +8,16 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class AddressChains (
+	val address: String,
+	val chains: List<Chain>
+)
+
+@Serializable
 data class WalletSubscription (
 	val walletId: String,
 	val source: WalletSource? = null,
-	val subscriptions: List<ChainAddress>
+	val subscriptions: List<AddressChains>
 )
 
 @Serializable
