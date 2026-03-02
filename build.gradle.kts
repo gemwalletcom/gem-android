@@ -47,13 +47,6 @@ allprojects {
                 password = gprToken
             }
         }
-        maven {
-            url = uri("https://maven.pkg.github.com/gemwalletcom/core")
-            credentials {
-                username = gprUsername
-                password = gprToken
-            }
-        }
     }
 
     dependencyLocking {
