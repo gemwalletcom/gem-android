@@ -60,13 +60,13 @@ import com.gemwallet.android.ui.components.DisplayText
 import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.IconWithBadge
-import com.gemwallet.android.ui.components.list_item.PriceInfo
+import com.gemwallet.android.ui.components.list_item.color
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
@@ -99,32 +99,49 @@ fun AmountListHead(
 
             icon?.let { Spacer16() }
 
-            DisplayText(
-                text = amount,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(paddingDefault))
-                    .clickable(onHideBalances != null, onClick = { onHideBalances?.invoke() })
-            )
-            if (!equivalent.isNullOrEmpty()) {
-                Spacer4()
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = equivalent,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.W400,
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(paddingHalfSmall),
+            ) {
+                DisplayText(
+                    text = amount,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(paddingDefault))
+                        .clickable(onHideBalances != null, onClick = { onHideBalances?.invoke() })
                 )
-            }
-            if (changedValue != null) {
-                Spacer16()
-                PriceInfo(
-                    priceValue = changedValue,
-                    changedPercentages = changedPercentages ?: "",
-                    state = changeState,
-                    isHighlightPercentage = true,
-                )
+                if (!equivalent.isNullOrEmpty()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = equivalent,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.W400,
+                    )
+                }
+                if (changedValue != null) {
+                    val highlightColor = changeState.color()
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            text = changedValue,
+                            color = highlightColor,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.W400,
+                        )
+                        Text(
+                            text = changedPercentages?.let { "($it)" } ?: "",
+                            color = highlightColor,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.W400,
+                        )
+                    }
+                }
             }
             if (actions != null) {
                 Spacer(modifier = Modifier.size(10.dp))

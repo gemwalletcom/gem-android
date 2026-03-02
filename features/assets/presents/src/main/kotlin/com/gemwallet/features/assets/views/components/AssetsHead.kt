@@ -17,6 +17,9 @@ internal fun AssetsHead(
 ) {
     AmountListHead(
         amount = walletInfo.totalValueFormatted,
+        changedValue = walletInfo.changedValue,
+        changedPercentages = walletInfo.changedPercentages,
+        changeState = walletInfo.priceState,
         onHideBalances = onHideBalances,
         actions = {
             AssetHeadActions(
