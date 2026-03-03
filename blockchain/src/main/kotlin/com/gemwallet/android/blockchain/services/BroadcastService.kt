@@ -19,8 +19,11 @@ class BroadcastService(
             chain = account.chain.string,
             data = String(signedMessage),
             options = BroadcastOptions(
-                when (account.chain) {
-                    Chain.Solana -> type == TransactionType.Swap
+                skipPreflight = when (account.chain) {
+                    Chain.Solana -> when (type) {
+                        TransactionType.Swap -> true
+                        else -> false
+                    }
                     else -> false
                 }
             )
