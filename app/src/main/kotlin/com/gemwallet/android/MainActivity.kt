@@ -81,8 +81,8 @@ class MainActivity : FragmentActivity(), AuthRequester {
     private var onSuccessAuth: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         prepareBiometricAuth()
 
         viewModel.handleIntent(this@MainActivity.intent)
