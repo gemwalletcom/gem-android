@@ -207,6 +207,7 @@ class MainActivity : FragmentActivity(), AuthRequester {
 
     @Composable
     private fun OnWalletConnect() {
+        val context = LocalContext.current
         val walletConnect by walletConnectViewModel.uiState.collectAsStateWithLifecycle()
 
         Box(
@@ -216,13 +217,22 @@ class MainActivity : FragmentActivity(), AuthRequester {
                 is WalletConnectIntent.AuthRequest,
                 is WalletConnectIntent.ConnectionState,
                 WalletConnectIntent.Idle,
-                WalletConnectIntent.Cancel,
-                WalletConnectIntent.SessionDelete -> {}
-                is WalletConnectIntent.SessionProposal -> ProposalScene(
-                    proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
-                    verifyContext = (walletConnect as WalletConnectIntent.SessionProposal).verifyContext ?: return, // TODO: Show toast
-                    onCancel = walletConnectViewModel::onCancel,
-                )
+                WalletConnectIntent.Cancel -> {}
+                WalletConnectIntent.SessionDelete -> {
+                    makeText(context, "WalletConnect session deleted", Toast.LENGTH_LONG).show()
+                }
+                is WalletConnectIntent.SessionProposal -> {
+                    val verifyContext = (walletConnect as WalletConnectIntent.SessionProposal).verifyContext
+                    if (verifyContext == null) {
+                        makeText(context, "Session Proposal Error: Verify Context is not available", Toast.LENGTH_LONG).show()
+                        return
+                    }
+                    ProposalScene(
+                        proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
+                        verifyContext = verifyContext,
+                        onCancel = walletConnectViewModel::onCancel,
+                    )
+                }
                 is WalletConnectIntent.SessionRequest -> RequestScene(
                     request = (walletConnect as WalletConnectIntent.SessionRequest).request,
                     verifyContext = (walletConnect as WalletConnectIntent.SessionRequest).verifyContext ?: return,
