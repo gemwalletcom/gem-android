@@ -67,7 +67,12 @@ class PhraseAddressImportWalletService(
 
         setupWallet(wallet)
         importAssets.importAssets(wallet)
-        checkAddresses(wallet)
+
+        try {
+            checkAddresses(wallet)
+        } catch (_: Throwable) {
+            // TODO: Improve error handle
+        }
 
         return Result.success(wallet)
     }
