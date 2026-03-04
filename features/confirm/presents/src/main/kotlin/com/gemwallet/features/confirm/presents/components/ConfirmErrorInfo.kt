@@ -25,9 +25,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.InfoSheetEntity.NetworkBalanceRequiredInfo
+import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
@@ -47,11 +50,15 @@ internal fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBotto
     }
     val message = state.message
     val infoSheetEntity = when (message) {
-        is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(
+        is ConfirmError.InsufficientFee -> NetworkBalanceRequiredInfo(
             chain = message.chain,
             value = feeValue,
             actionLabel = stringResource(R.string.asset_buy_asset, message.chain.asset().symbol),
             action = { onBuy(message.chain.asset().id) },
+        )
+        is ConfirmError.MinimumAccountBalanceTooLow -> InfoSheetEntity.MinimumAccountBalanceInfo(
+            asset = message.asset,
+            value = message.asset.format(message.required.toBigInteger(), dynamicPlace = true),
         )
         is ConfirmError.BroadcastError,
         is ConfirmError.Init,
@@ -66,11 +73,8 @@ internal fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBotto
     }
     Column(
         modifier = Modifier
+            .listItem()
             .padding(horizontal = paddingDefault)
-            .background(
-                MaterialTheme.colorScheme.errorContainer.copy(0.3f),
-                shape = MaterialTheme.shapes.medium
-            )
             .fillMaxWidth()
             .defaultPadding()
             .clickable(

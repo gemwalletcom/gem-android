@@ -1,6 +1,5 @@
 package com.gemwallet.features.confirm.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +20,7 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.freezed
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.math.MAX_256
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -41,6 +41,7 @@ import com.gemwallet.features.confirm.models.ConfirmProperty
 import com.gemwallet.features.confirm.models.ConfirmState
 import com.gemwallet.features.confirm.models.FeeUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
@@ -65,6 +66,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uniffi.gemstone.Config
 import java.math.BigInteger
 import java.util.Arrays
 import javax.inject.Inject
@@ -542,6 +544,15 @@ class ConfirmViewModel @Inject constructor(
             }
             if (feeAssetInfo.balance.balance.available.toBigInteger() < feeAmount) {
                 throw ConfirmError.InsufficientFee(chain = feeAssetInfo.asset.chain)
+            }
+
+            val minimumAssetBalance = (Config().getChainConfig(assetInfo.chain.string).minimumAccountBalance?.toLong() ?: 0L)
+
+            if (!signerParams.input.useMaxAmount
+                && assetInfo.asset.type == AssetType.NATIVE
+                && minimumAssetBalance > 0L
+                && (feeAssetInfo.balance.balance.available.toBigInteger() - totalAmount).let { it > -MAX_256 && it < BigInteger.valueOf(minimumAssetBalance)}) {
+                throw ConfirmError.MinimumAccountBalanceTooLow(asset = feeAssetInfo.asset, required = minimumAssetBalance)
             }
         }
     }

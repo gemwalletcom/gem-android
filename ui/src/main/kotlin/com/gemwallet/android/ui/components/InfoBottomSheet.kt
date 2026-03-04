@@ -32,11 +32,13 @@ import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
+import java.math.BigInteger
 
 sealed class InfoSheetEntity(
     val icon: Any,
@@ -66,6 +68,15 @@ sealed class InfoSheetEntity(
         actionLabel = actionLabel,
         titleArgs = listOf(chain.asset().symbol),
         descriptionArgs = listOf("**$value**", "**${chain.asset().name}**", "**${chain.asset().symbol}**"),
+    )
+
+    class MinimumAccountBalanceInfo(asset: Asset, value: String) : InfoSheetEntity(
+        icon = asset.getIconUrl(),
+        title = R.string.info_account_minimum_balance_title,
+        description = R.string.transfer_minimum_account_balance,
+        infoUrl = { Config().getDocsUrl(DocsUrl.AccountMinimalBalance) },
+        titleArgs = listOf(asset.symbol),
+        descriptionArgs = listOf("**$value**"),
     )
 
     class ReserveForFee(icon: Any) : InfoSheetEntity(
