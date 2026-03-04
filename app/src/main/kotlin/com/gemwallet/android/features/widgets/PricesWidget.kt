@@ -2,7 +2,6 @@ package com.gemwallet.android.features.widgets
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.model.ChainSignData
-import uniffi.gemstone.GemResource
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.TronStakeData
 

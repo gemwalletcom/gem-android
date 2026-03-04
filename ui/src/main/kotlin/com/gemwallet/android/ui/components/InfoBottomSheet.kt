@@ -38,7 +38,6 @@ import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
-import java.math.BigInteger
 
 sealed class InfoSheetEntity(
     val icon: Any,

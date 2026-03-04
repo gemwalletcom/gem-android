@@ -4,7 +4,6 @@ import com.gemwallet.android.cases.device.GetDeviceIdOld
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository.ConfigKey
 import com.gemwallet.android.data.service.store.ConfigStore
-import java.util.UUID
 
 class GetDeviceIdOldImpl(
     private val configStore: ConfigStore,

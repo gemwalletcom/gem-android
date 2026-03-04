@@ -3,9 +3,9 @@ package com.gemwallet.android.features.wallet.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.wallet.coordinators.DeleteWallet
 import com.gemwallet.android.application.wallet.coordinators.GetWalletDetails
 import com.gemwallet.android.application.wallet.coordinators.SetWalletName
-import com.gemwallet.android.application.wallet.coordinators.DeleteWallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

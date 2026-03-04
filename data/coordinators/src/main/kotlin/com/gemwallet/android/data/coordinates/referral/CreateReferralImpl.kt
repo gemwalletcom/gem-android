@@ -13,7 +13,6 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ReferralCode
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
-import okio.IOException
 import retrofit2.HttpException
 
 class CreateReferralImpl(
