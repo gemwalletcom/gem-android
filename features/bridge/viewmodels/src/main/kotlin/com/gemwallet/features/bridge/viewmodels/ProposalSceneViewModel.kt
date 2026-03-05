@@ -88,7 +88,7 @@ class ProposalSceneViewModel @Inject constructor(
         proposal: Wallet.Model.SessionProposal,
         verifyContext: Wallet.Model.VerifyContext
     ) {
-        val validation = WalletConnect().validateOrigin(proposal.url, verifyContext.origin, verifyContext.validation.map())
+        val validation = WalletConnect().validateOrigin(proposal.url, verifyContext.origin, verifyContext.map())
         when (validation) {
             WalletConnectionVerificationStatus.UNKNOWN,
             WalletConnectionVerificationStatus.VERIFIED -> {

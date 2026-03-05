@@ -176,7 +176,7 @@ class WCRequestViewModel @Inject constructor(
         val validation = WalletConnect().validateOrigin(
             sessionRequest.peerMetaData?.url ?: "",
             verifyContext.origin,
-            verifyContext.validation.map()
+            verifyContext.map()
         )
         when (validation) {
             WalletConnectionVerificationStatus.UNKNOWN,
