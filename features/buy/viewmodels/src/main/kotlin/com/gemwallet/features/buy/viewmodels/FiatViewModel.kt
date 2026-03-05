@@ -1,5 +1,6 @@
 package com.gemwallet.features.buy.viewmodels
 
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.tickerFlow
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.math.parseNumber
 import com.gemwallet.android.model.Fiat
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -121,8 +124,13 @@ class FiatViewModel @Inject constructor(
     val state: StateFlow<FiatSceneState?> get() = _state
     private val _selectedQuote = MutableStateFlow<FiatQuote?>(null)
 
+    private val ticker = tickerFlow(true, 1 * DateUtils.MINUTE_IN_MILLIS, onTick = {})
+        .filter { it.complete }
+        .map { it.timeMillis }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val quotes = combine(assetInfoUIModel, type, amount, amountValidator) { assetInfo, type, amount, validator ->
+    val quotes = combine(assetInfoUIModel, type, amount, amountValidator, ticker) { assetInfo, type, amount, validator, _ ->
         assetInfo ?: return@combine emptyList()
         if (!validator.validate(amount)) {
             _state.value = FiatSceneState.Error(validator.error)
