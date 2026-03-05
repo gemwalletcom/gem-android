@@ -116,10 +116,17 @@ class BridgesRepository(
 
     suspend fun getConnectionByTopic(topic: String): WalletConnection? {
         val sessions = runCatching { WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null } }
-            .getOrNull() ?: return null
-        val local = getConnections().firstOrNull() ?: emptyList()
-        val sessionId = sessions.firstOrNull { it.topic == topic }?.pairingTopic
-        return local.firstOrNull { it.session.sessionId == sessionId }
+            .getOrNull() ?: return null // TODO Apply chains to local
+        val localConnections = getConnections().firstOrNull() ?: emptyList()
+        val session = sessions.firstOrNull { it.topic == topic }
+        val sessionChains = session?.namespaces?.values
+            ?.fold(emptyList<String>(), { acc, item -> acc + (item.chains ?: emptyList()) })
+            ?.mapNotNull { Chain.getNamespace(it) }
+            ?: emptyList()
+        return localConnections.firstOrNull { it.session.sessionId == session?.pairingTopic }
+            ?.let { connection ->
+                connection.copy(session = connection.session.copy(chains = sessionChains))
+            }
     }
 
     suspend fun getConnections(connectionId: String): Flow<WalletConnection?> {

@@ -231,9 +231,6 @@ class WCRequestViewModel @Inject constructor(
     }
 
     private fun validateChain(chain: Chain, session: WalletConnectionSession) {
-        if (session.chains.isEmpty()) {
-            return
-        }
         if (!session.chains.contains(chain)) {
             throw IllegalAccessException("Unresolve chain id")
         }
