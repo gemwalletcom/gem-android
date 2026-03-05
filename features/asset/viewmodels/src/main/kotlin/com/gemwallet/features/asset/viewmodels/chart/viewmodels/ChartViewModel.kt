@@ -1,10 +1,12 @@
 package com.gemwallet.features.asset.viewmodels.chart.viewmodels
 
+import android.text.format.DateUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.tickerFlow
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -49,8 +52,12 @@ class ChartViewModel @Inject constructor(
     private val chartState = MutableStateFlow(ChartState())
     val chartUIState = chartState.map { ChartUIModel.State(it.loading, it.period, it.empty) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ChartUIModel.State())
+    val ticker = tickerFlow(true, 1 * DateUtils.MINUTE_IN_MILLIS, onTick = {})
+        .filter { it.complete }
+        .map { it.timeMillis }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
 
-    val chartUIModel = assetInfo.combine(chartState) { assetInfo, chartState -> Pair(assetInfo, chartState) }
+    val chartUIModel = combine(assetInfo, chartState, ticker) { assetInfo, chartState, _ -> Pair(assetInfo, chartState) }
         .mapLatest { state ->
             val assetInfo = state.first ?: return@mapLatest ChartUIModel()
             val chartState = state.second
