@@ -65,7 +65,7 @@ class SwapRepository(
                 useMaxAmount = useMaxAmount,
             )
         )
-        val quote = gemSwapper.fetchQuote(swapRequest)
+        val quote = gemSwapper.getQuote(swapRequest)
             .sortedByDescending { BigInteger(it.toValue) }
         return quote
     }
@@ -74,7 +74,7 @@ class SwapRepository(
         val permit = gemSwapper.fetchPermit2ForQuote(quote = quote)
 
         if (permit == null) {
-            return gemSwapper.fetchQuoteData(quote, FetchQuoteData.None)
+            return gemSwapper.getQuoteData(quote, FetchQuoteData.None)
         }
 
         val permit2Single = permit2Single(
@@ -100,7 +100,7 @@ class SwapRepository(
             Arrays.fill(key, 0)
         }
         val permitData = Permit2Data(permit2Single, signature)
-        return gemSwapper.fetchQuoteData(quote, FetchQuoteData.Permit2(permitData))
+        return gemSwapper.getQuoteData(quote, FetchQuoteData.Permit2(permitData))
     }
 
     private fun permit2Single(token: String, spender: String, value: String, nonce: ULong): PermitSingle {

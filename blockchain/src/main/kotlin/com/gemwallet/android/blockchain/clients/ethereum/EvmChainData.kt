@@ -16,10 +16,10 @@ fun GemTransactionLoadMetadata.Evm.toChainData(): EvmChainData {
     return EvmChainData(
         chainId = chainId.toInt(),
         nonce = BigInteger.valueOf(nonce.toLong()),
-        stakeData = stakeData?.let {
+        stakeData = contractCall?.let {
             StakeData(
-                data = it.data,
-                to = it.to
+                data = it.callData,
+                to = it.contractAddress
             )
         }
     )

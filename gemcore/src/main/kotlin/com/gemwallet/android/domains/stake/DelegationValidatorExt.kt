@@ -2,6 +2,7 @@ package com.gemwallet.android.domains.stake
 
 import com.wallet.core.primitives.DelegationValidator
 import uniffi.gemstone.GemDelegationValidator
+import uniffi.gemstone.GemStakeProviderType
 
 fun DelegationValidator.toGem(chain: uniffi.gemstone.Chain): GemDelegationValidator {
     return GemDelegationValidator(
@@ -11,5 +12,6 @@ fun DelegationValidator.toGem(chain: uniffi.gemstone.Chain): GemDelegationValida
         isActive = isActive,
         commission = commission,
         apr = apr,
+        providerType = GemStakeProviderType.STAKE, // TODO: Fix on earn
     )
 }
