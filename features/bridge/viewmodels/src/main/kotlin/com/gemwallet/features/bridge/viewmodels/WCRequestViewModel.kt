@@ -87,7 +87,19 @@ class WCRequestViewModel @Inject constructor(
                     return@launch
                 }
 
-                is WalletConnectAction.SignMessage -> WCRequest.SignMessage(sessionRequest, account, verificationStatus, action)
+                is WalletConnectAction.SignMessage -> {
+                    try {
+                        WalletConnect().validateSignMessage(
+                            action.chain,
+                            signType = action.signType,
+                            action.data,
+                            sessionDomain = sessionRequest.peerMetaData?.url ?: ""
+                        )
+                    } catch (_: Throwable) {
+                        throw BridgeRequestError.ScamSession
+                    }
+                    WCRequest.SignMessage(sessionRequest, account, verificationStatus, action)
+                }
 
                 is WalletConnectAction.SendTransaction -> WCRequest.Transaction.SendTransaction(
                     sessionRequest,
