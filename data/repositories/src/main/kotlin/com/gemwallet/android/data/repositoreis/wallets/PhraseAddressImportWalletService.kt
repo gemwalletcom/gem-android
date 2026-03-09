@@ -51,7 +51,7 @@ class PhraseAddressImportWalletService(
         importType: ImportType,
         walletName: String,
         data: String
-    ): Result<Wallet> {
+    ): Wallet {
         val wallet = try {
             when (importType.walletType) {
                 WalletType.Multicoin -> handlePhrase(importType, walletName, data, WalletSource.Import)
@@ -60,10 +60,8 @@ class PhraseAddressImportWalletService(
                 WalletType.PrivateKey -> handlePrivateKey(importType.chain!!, walletName, data)
             }
         } catch (err: ImportError.DuplicatedWallet) {
-            return Result.success(err.wallet)
-        } catch (err: Throwable) {
-            return Result.failure(err)
-        }
+            return err.wallet
+        } // Other exception handle on call
 
         setupWallet(wallet)
         importAssets.importAssets(wallet)
@@ -74,21 +72,16 @@ class PhraseAddressImportWalletService(
             // TODO: Improve error handle
         }
 
-        return Result.success(wallet)
+        return wallet
     }
 
-    override suspend fun createWallet(walletName: String, data: String): Result<Wallet> =
-        withContext(Dispatchers.IO) {
-            val wallet = try {
-                handlePhrase(ImportType(WalletType.Multicoin), walletName, data, WalletSource.Create)
-            } catch (err: Throwable) {
-                return@withContext Result.failure(err)
-            }
+    override suspend fun createWallet(walletName: String, data: String): Wallet {
+        val wallet = handlePhrase(ImportType(WalletType.Multicoin), walletName, data, WalletSource.Create)
 
-            setupWallet(wallet)
+        setupWallet(wallet)
 
-            Result.success(wallet)
-        }
+        return wallet
+    }
 
     private suspend fun setupWallet(wallet: Wallet) {
         assetsRepository.createAssets(wallet)

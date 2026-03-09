@@ -58,20 +58,21 @@ class ImportViewModel @Inject constructor(
         data: String,
         nameRecord: NameRecord?,
         onImported: () -> Unit
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(Dispatchers.IO) {
         state.update { it.copy(loading = true) }
 
-        withContext(Dispatchers.IO) {
+        try {
             importWalletService.importWallet(
                 importType = state.value.importType,
                 walletName = name.ifEmpty { generatedName },
                 data = if (nameRecord?.address.isNullOrEmpty()) data.trim() else nameRecord.address,
             )
-        }.onFailure {  err ->
-            state.update { it.copy(dataError = (err as? ImportError) ?: ImportError.CreateError("Unknown error"), loading = false) }
-        }.onSuccess {
             state.update { it.copy(dataError = null, loading = false) }
-            onImported()
+            withContext(Dispatchers.Main) {
+                onImported()
+            }
+        } catch (err: Throwable) {
+            state.update { it.copy(dataError = (err as? ImportError) ?: ImportError.CreateError("Unknown error"), loading = false) }
         }
     }
 }

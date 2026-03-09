@@ -58,19 +58,17 @@ class CreateWalletViewModel @Inject constructor(
 
     fun handleCreate(onCreated: () -> Unit) {
         state.update { it.copy(isShowSafeMessage = true, loading = true) }
-        viewModelScope.launch {
-            val newState = withContext(Dispatchers.IO) {
-                val phrase = state.value.data.joinToString(" ")
+        viewModelScope.launch(Dispatchers.IO) {
+            val phrase = state.value.data.joinToString(" ")
+            val newState = try {
                 importWalletService.createWallet(state.value.name, phrase)
-            }.fold(
-                onSuccess = {
+                withContext(Dispatchers.Main){
                     onCreated()
-                    state.value.copy(loading = false)
-                },
-                onFailure = { err ->
-                    state.value.copy(loading = false, dataError = err.message ?: "Unknown error")
                 }
-            )
+                state.value.copy(loading = false)
+            } catch (err: Throwable) {
+                state.value.copy(loading = false, dataError = err.message ?: "Unknown error")
+            }
             state.update { newState }
         }
     }

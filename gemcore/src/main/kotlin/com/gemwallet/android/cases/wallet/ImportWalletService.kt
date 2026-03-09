@@ -8,23 +8,23 @@ interface ImportWalletService {
         importType: ImportType,
         walletName: String,
         data: String,
-    ): Result<Wallet>
+    ): Wallet
 
     suspend fun createWallet(
         walletName: String,
         data: String,
-    ): Result<Wallet>
+    ): Wallet
 }
 
 sealed class ImportError(message: String = "") : Exception(message) {
 
-    data object InvalidationSecretPhrase : ImportError()
+    object InvalidationSecretPhrase : ImportError()
 
-    data object InvalidationPrivateKey : ImportError()
+    object InvalidationPrivateKey : ImportError()
 
     class InvalidWords(val words: List<String>) : ImportError()
 
-    data object InvalidAddress : ImportError()
+    object InvalidAddress : ImportError()
 
     class CreateError(message: String) : ImportError(message)
 
