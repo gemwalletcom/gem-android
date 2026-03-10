@@ -54,19 +54,6 @@ allprojects {
             }
         }
     }
-
-    dependencyLocking {
-        lockAllConfigurations()
-    }
-}
-
-subprojects {
-    dependencyLocking {
-        lockAllConfigurations()
-    }
-    configurations.configureEach {
-        resolutionStrategy.activateDependencyLocking()
-    }
 }
 
 tasks.register("clean", Delete::class) {
