@@ -19,9 +19,11 @@ import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemDeviceApiClient
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.AddressChains
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.MigrateDeviceIdRequest
 import com.wallet.core.primitives.Platform
@@ -38,6 +40,9 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.collections.firstOrNull
+import kotlin.collections.map
+import kotlin.collections.plus
 import kotlin.math.max
 
 class DeviceRepository(
@@ -141,17 +146,10 @@ class DeviceRepository(
         }
     }
 
-    override suspend fun syncSubscription(wallets: List<Wallet>, added: Boolean) { // TODO: WalletID Migration: remove when back will ready
-        val localSubscriptions = localSubscriptions(wallets)
+    override suspend fun syncSubscription(wallets: List<Wallet>) {
         val remoteSubscriptions = getRemoteSubscriptions()
 
-        val toRemove = remoteSubscriptions.filter { remote ->
-            localSubscriptions.firstOrNull { it.walletId == remote.walletId && it.subscriptions.size == remote.chains.size } == null
-        }.map { WalletSubscriptionChains(walletId = it.walletId, chains = it.chains) }
-
-        val toAdd = localSubscriptions.filter { local ->
-            remoteSubscriptions.firstOrNull { it.walletId == local.walletId && local.subscriptions.size == it.chains.size } == null
-        }
+        val (toAdd, toRemove) = wallets.subscriptionsDiff(remoteSubscriptions)
 
         addSubscriptions(toAdd)
         removeSubscriptions(toRemove)
@@ -228,20 +226,6 @@ class DeviceRepository(
         } catch (_: Throwable) { }
     }
 
-    private fun localSubscriptions(wallets: List<Wallet>): List<WalletSubscription> {
-        return wallets.map { wallet ->
-            val subscriptions = wallet.accounts.groupBy { account ->  account.address }
-                .map { entry ->
-                    AddressChains(entry.key, entry.value.map { it.chain })
-                }
-            WalletSubscription(
-                walletId = wallet.id,
-                source = wallet.source,
-                subscriptions = subscriptions
-            )
-        }
-    }
-
     private fun getSubscriptionVersion(): Int {
         return configStore.getInt(Keys.SubscriptionVersion.string)
     }
@@ -294,4 +278,40 @@ class DeviceRepository(
             return  locale.language
         }
     }
+}
+
+// TODO: Temp solution. Move to App Layer with subscriptions subsystem when will prepared.
+fun List<Wallet>.subscriptionsDiff(remote: List<WalletSubscriptionChains>): Pair<List<WalletSubscription>, List<WalletSubscriptionChains>> {
+    val wallets = this
+
+    val remoteIndex = remote.groupBy { it.walletId }
+        .mapValues { item -> item.value.map { it.chains }.flatten() }
+
+    val diffs = wallets.map { wallet -> walletSubscriptionsDiff(wallet, remoteIndex[wallet.id] ?: emptyList()) }
+    val toRemove = diffs.map { it.second }.filter { it.chains.isNotEmpty() } +
+            remote.filter { remote -> wallets.firstOrNull { it.id == remote.walletId} == null }
+
+    val toAdd = diffs.map { it.first }.filter { it.subscriptions.isNotEmpty() }
+    return Pair(toAdd, toRemove)
+}
+
+private fun walletSubscriptionsDiff(wallet: Wallet, remote: List<Chain>): Pair<WalletSubscription, WalletSubscriptionChains> {
+    val toAdd = wallet.accounts.filter { !remote.contains(it.chain) }
+        .groupBy { account ->  account.address }
+        .map { entry ->
+            AddressChains(entry.key, entry.value.map { it.chain })
+        }
+
+    val toRemove = remote.filter { wallet.getAccount(it) == null }
+    return Pair(
+        WalletSubscription(
+            walletId = wallet.id,
+            source = wallet.source,
+            subscriptions = toAdd
+        ),
+        WalletSubscriptionChains(
+            walletId = wallet.id,
+            chains = toRemove
+        ),
+    )
 }

@@ -65,7 +65,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AssetDetailsViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
+    savedStateHandle: SavedStateHandle,
     private val assetsRepository: AssetsRepository,
     private val getTransactions: GetTransactions,
     private val priceAlertsStateCoordinator: PriceAlertsStateCoordinator,
@@ -73,7 +74,6 @@ class AssetDetailsViewModel @Inject constructor(
     private val getPriceAlerts: GetPriceAlerts,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
     private val hasMultiSign: HasMultiSign,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     val session = sessionRepository.session()
@@ -232,7 +232,7 @@ class AssetDetailsViewModel @Inject constructor(
 
             return AssetInfoUIModel(
                 assetInfo = assetInfo,
-                name = if (asset.type == AssetType.NATIVE) {
+                name = if (asset.type == AssetType.NATIVE) { // TODO: ????
                     asset.id.chain.asset().name
                 } else {
                     asset.name
@@ -249,8 +249,8 @@ class AssetDetailsViewModel @Inject constructor(
                 tokenType = asset.type,
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
-                explorerName = explorerName,
-                explorerAddressUrl = assetInfo.owner?.address?.let {
+                explorerName = explorerName, //  TODO: Out to separate state and model
+                explorerAddressUrl = assetInfo.owner?.address?.let {//  TODO: Out to separate state
                     Explorer(asset.chain.string).getAddressUrl(explorerName,  it)
                 },
                 accountInfoUIModel = AssetInfoUIModel.AccountInfoUIModel(
