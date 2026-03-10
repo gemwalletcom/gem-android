@@ -48,6 +48,7 @@ jobs:
         run: |
           echo "gpr.username=${{ github.actor }}" > local.properties
           echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
+          echo "jitpack.token=${{ secrets.JITPACK_TOKEN }}" >> local.properties
           echo "# Automatically generated for CI build" >> local.properties
 
       - name: Determine ref to build

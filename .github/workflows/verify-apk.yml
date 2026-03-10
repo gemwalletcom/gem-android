@@ -77,6 +77,7 @@ jobs:
         run: |
           echo "gpr.username=${{ github.actor }}" > local.properties
           echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
+          echo "jitpack.token=${{ secrets.JITPACK_TOKEN }}" >> local.properties
           echo "# Automatically generated for verify-apk workflow" >> local.properties
 
       - name: Download official APK
