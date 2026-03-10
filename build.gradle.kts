@@ -35,17 +35,10 @@ allprojects {
         }
         val gprUsername = properties["gpr.username"] as? String ?: System.getenv("GPR_USERNAME")
         val gprToken = properties["gpr.token"] as? String ?: System.getenv("GPR_TOKEN")
-        val jitpackToken = properties["jitpack.token"] as? String ?: System.getenv("JITPACK_TOKEN")
-
         google()
         mavenCentral()
         mavenLocal()
-        maven {
-            url = uri("https://jitpack.io")
-            if (!jitpackToken.isNullOrEmpty()) {
-                credentials { username = jitpackToken }
-            }
-        }
+        maven { url = uri("https://jitpack.io") }
         maven {
             url = uri("https://maven.pkg.github.com/trustwallet/wallet-core")
             credentials {
@@ -54,6 +47,7 @@ allprojects {
             }
         }
     }
+
 }
 
 tasks.register("clean", Delete::class) {

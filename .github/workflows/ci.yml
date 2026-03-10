@@ -67,17 +67,16 @@ jobs:
             ~/.android/adb*
           key: avd-29-2g-${{ runner.os }}
 
-      - name: Gradle cache
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+          cache-disabled: true
 
       - name: Build tests
         run: just build-test
         env:
           GPR_USERNAME: ${{ github.actor }}
           GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JITPACK_TOKEN: ${{ secrets.JITPACK_TOKEN }}
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -92,4 +91,3 @@ jobs:
         env:
           GPR_USERNAME: ${{ github.actor }}
           GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JITPACK_TOKEN: ${{ secrets.JITPACK_TOKEN }}
