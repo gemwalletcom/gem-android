@@ -1,11 +1,9 @@
 package com.gemwallet.android.data.repositoreis.device
 
 import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AddressChains
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
-import com.wallet.core.primitives.WalletSubscription
 import com.wallet.core.primitives.WalletSubscriptionChains
 import com.wallet.core.primitives.WalletType
 import org.junit.Assert.assertEquals
@@ -231,7 +229,7 @@ class DeviceRepositoryTest {
             )
         )
 
-        val (toAdd, toRemove) = listOf(wallet).subscriptionsDiff(emptyList())
+        val (toAdd, _) = listOf(wallet).subscriptionsDiff(emptyList())
 
         assertEquals(1, toAdd.size)
         assertEquals("wallet1", toAdd[0].walletId)
