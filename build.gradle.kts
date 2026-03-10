@@ -35,6 +35,7 @@ allprojects {
         }
         val gprUsername = properties["gpr.username"] as? String ?: System.getenv("GPR_USERNAME")
         val gprToken = properties["gpr.token"] as? String ?: System.getenv("GPR_TOKEN")
+
         google()
         mavenCentral()
         mavenLocal()
