@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.asset.aggregates.AssetInfoDataAggregate
 import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.models.CryptoFormattedUIModel
@@ -31,27 +32,26 @@ import com.wallet.core.primitives.Asset
 
 @Composable
 fun AssetListItem(
-    asset: AssetItemUIModel,
+    asset: AssetInfoDataAggregate,
     modifier: Modifier = Modifier,
     listPosition: ListPosition,
 ) {
     ListItem(
         modifier = modifier,
         listPosition = listPosition,
-        leading = @Composable { IconWithBadge(asset.asset) },
-        title = @Composable { ListItemTitleText(asset.name) },
-        subtitle = if (asset.price.fiatFormatted.isEmpty()) {
-            null
-        } else {
+        leading = @Composable { IconWithBadge(asset.icon) },
+        title = @Composable { ListItemTitleText(asset.title) },
+        subtitle = asset.price?.let {
             {
                 PriceInfo(
-                    price = asset.price,
-                    style = MaterialTheme.typography.bodyMedium,
-                    internalPadding = 4.dp
+                    it.priceValueFormated,
+                    it.dayChangePercentageFormatted,
+                    it.state,
+                    modifier,
                 )
             }
         },
-        trailing = { getBalanceInfo(asset).invoke() },
+        trailing = { getBalanceInfo(asset.balance, asset.balanceEquivalent, asset.isZeroBalance).invoke() },
     )
 }
 
@@ -185,6 +185,24 @@ fun getBalanceInfo(crypto: CryptoFormattedUIModel, fiatFormattedUIModel: FiatFor
             if (!crypto.isZeroAmount && fiatFormattedUIModel.fiatFormatted.isNotEmpty()) {
                 Spacer2()
                 ListItemSupportText(fiatFormattedUIModel.fiatFormatted)
+            }
+        }
+    })
+}
+
+fun getBalanceInfo(crypto: String, equivalent: String, isZero: Boolean): @Composable () -> Unit {
+    return (@Composable {
+        val color = MaterialTheme.colorScheme.let {
+            if (isZero) it.secondary else it.onSurface
+        }
+        Column(
+            modifier = Modifier.defaultMinSize(40.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            ListItemTitleText(crypto, color = color)
+            if (!isZero && equivalent.isNotEmpty()) {
+                Spacer2()
+                ListItemSupportText(equivalent)
             }
         }
     })

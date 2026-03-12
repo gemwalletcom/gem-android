@@ -4,8 +4,7 @@ import com.gemwallet.android.domains.price.PriceState
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-interface PriceUIModel : FiatFormattedUIModel,
-    PercentageFormattedUIModel {
+interface PriceUIModel : FiatFormattedUIModel, PercentageFormattedUIModel {
     val state: PriceState
         get() {
             val df = DecimalFormat("#.##")

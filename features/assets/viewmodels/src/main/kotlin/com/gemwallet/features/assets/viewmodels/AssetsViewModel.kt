@@ -2,6 +2,7 @@ package com.gemwallet.features.assets.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.application.assets.coordinators.GetActiveAssetsInfo
 import com.gemwallet.android.application.wallet_import.coordinators.GetImportWalletState
 import com.gemwallet.android.application.wallet_import.values.ImportWalletState
 import com.gemwallet.android.cases.banners.HasMultiSign
@@ -13,13 +14,11 @@ import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isSwapSupport
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.features.assets.viewmodels.model.PriceUIState
 import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId
@@ -58,6 +57,7 @@ class AssetsViewModel @Inject constructor(
     private val userConfig: UserConfig,
     private val hasMultiSign: HasMultiSign,
     private val getImportWalletState: GetImportWalletState,
+    getActiveAssetsInfo: GetActiveAssetsInfo,
 ) : ViewModel() {
 
     private val session = sessionRepository.session()
@@ -95,20 +95,15 @@ class AssetsViewModel @Inject constructor(
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val assets = combine(
-        assetsState,
-        isHideBalances
-    ) { assets, isHideBalances ->
-        assets.map { AssetInfoUIModel(it, isHideBalances) }.distinctBy { it.asset.id.toIdentifier() }
-    }
-    .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    private val assets = getActiveAssetsInfo.getAssetsInfo(isHideBalances)
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val pinnedAssets = assets
-        .map { items -> items.filter { asset -> asset.metadata?.isPinned == true } }
+        .map { items -> items.filter { asset -> asset.pinned } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets
-        .map { it.filter { asset -> asset.metadata?.isPinned != true } }
+        .map { it.filter { asset -> !asset.pinned } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = combine(
