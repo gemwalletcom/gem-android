@@ -10,7 +10,9 @@ import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.domains.percentage.formatAsPercentage
 import com.gemwallet.android.domains.price.PriceState
+import com.gemwallet.android.domains.price.getPriceState
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isSwapSupport
@@ -19,7 +21,7 @@ import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
-import com.gemwallet.features.assets.viewmodels.model.PriceUIState
+//import com.gemwallet.features.assets.viewmodels.model.PriceUIState
 import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -227,8 +229,8 @@ class AssetsViewModel @Inject constructor(
                 cryptoTotalValue = cryptoTotal,
                 totalValueFormatted = currency.format(totalValue, dynamicPlace = true),
                 changedValue = currency.format(changedValue, dynamicPlace = true, maxDecimals = 2),
-                changedPercentages = PriceUIState.formatPercentage(changedPercentages, showSign = false),
-                priceState = PriceUIState.getState(changedPercentages),
+                changedPercentages = changedPercentages.formatAsPercentage(isShowSign = false),
+                priceState = changedPercentages.getPriceState(),
                 type = wallet.type,
                 operationsEnabled = operationsEnabled,
                 isSwapEnabled = isSwapEnabled,
