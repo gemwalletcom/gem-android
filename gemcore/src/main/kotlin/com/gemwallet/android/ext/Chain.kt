@@ -226,13 +226,6 @@ fun BitcoinChain.fullAddress(address: String) = when (this) {
     else -> address
 }
 
-val Chain.keyEncodingTypes: List<EncodingType>
-    get() = when (this) {
-        Chain.Solana -> listOf(EncodingType.Base58, EncodingType.Hex)
-        Chain.Stellar -> listOf(EncodingType.Base32, EncodingType.Hex)
-        else -> listOf(EncodingType.Hex)
-    }
-
 fun uniffi.gemstone.Chain.toChain(): Chain? {
     return Chain.entries.firstOrNull { it.string == this }
 }

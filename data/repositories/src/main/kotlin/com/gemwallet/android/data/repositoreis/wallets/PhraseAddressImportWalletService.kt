@@ -15,22 +15,15 @@ import com.gemwallet.android.cases.wallet.ImportError
 import com.gemwallet.android.cases.wallet.ImportWalletService
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.keyEncodingTypes
-import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ImportType
 import com.wallet.core.primitives.AddressStatus
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import wallet.core.jni.Base32
-import wallet.core.jni.Base58
 import wallet.core.jni.PrivateKey
 
 class PhraseAddressImportWalletService(
@@ -172,43 +165,7 @@ class PhraseAddressImportWalletService(
     companion object {
 
         fun decodePrivateKey(chain: Chain, data: String): ByteArray {
-            chain.keyEncodingTypes.forEach { type ->
-                when (type) {
-                    EncodingType.Base58 -> {
-                        val decoded = Base58.decodeNoCheck(data)
-                            ?.takeIf { it.size % 32 == 0 }?.slice(0..< 32)
-                            ?.toByteArray()
-                        if (decoded != null) {
-                            return decoded
-                        }
-                    }
-                    EncodingType.Base32 -> {
-                        val decoded = decodeBase32(chain, data)
-                        if (decoded != null) {
-                            return decoded
-                        }
-                    }
-                    EncodingType.Hex -> return data.decodeHex()
-                }
-            }
-            throw IllegalArgumentException("Invalid private key encoding")
-        }
-
-        fun decodeBase32(chain: Chain, data: String): ByteArray? {
-            return when (chain) {
-                Chain.Stellar -> {
-                    if (data.length != 56 || !data.startsWith("S")) {
-                        return null
-                    }
-                    val decoded = Base32.decode(data)
-                    if (decoded.size == 35 && decoded[0] == 0x90.toByte()) {
-                        decoded.slice(1 .. 32).toByteArray()
-                    } else {
-                        null
-                    }
-                }
-                else -> null
-            }
+            return uniffi.gemstone.decodePrivateKey(chain = chain.string, data)
         }
     }
 }
