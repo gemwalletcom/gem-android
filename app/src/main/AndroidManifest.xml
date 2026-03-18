@@ -12,7 +12,8 @@
 
     <application
         android:allowBackup="false"
-        android:fullBackupContent="@xml/backup_rules"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/backup_rules"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/application.name"
