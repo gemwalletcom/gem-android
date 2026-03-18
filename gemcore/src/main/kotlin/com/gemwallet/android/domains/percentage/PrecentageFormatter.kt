@@ -4,6 +4,7 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
+// TODO: Join with status calculation
 fun Double?.formatAsPercentage(minimumFractionDigits: Int = 2, isShowSign: Boolean = true, isShowZero: Boolean = true): String {
     val percents = this ?: 0.0
     return if (percents == 0.0 && !isShowZero) {
@@ -14,7 +15,7 @@ fun Double?.formatAsPercentage(minimumFractionDigits: Int = 2, isShowSign: Boole
         df.minimumFractionDigits = minimumFractionDigits
         val formattedValue = df.format(percents.absoluteValue)
         val afterFormat = df.parse(df.format(percents))?.toDouble() ?: 0.0
-        return (if (isShowSign) if (afterFormat > 0) "+" else if (afterFormat < 0) "-" else "" else "") +
+        (if (isShowSign) if (afterFormat > 0) "+" else if (afterFormat < 0) "-" else "" else "") +
                 "${if (afterFormat == 0.0) if (isShowZero) "0.00" else "" else formattedValue}%"
     }
 }

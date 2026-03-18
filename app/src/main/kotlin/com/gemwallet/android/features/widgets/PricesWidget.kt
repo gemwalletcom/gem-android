@@ -45,36 +45,30 @@ import coil3.toBitmap
 import com.gemwallet.android.data.repositoreis.di.WidgetEntryPoint
 import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.domains.percentage.formatAsPercentage
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingSmall
-import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.Currency
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 
-class PricesWidget() : GlanceAppWidget() {
+class PricesWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(
         context: Context,
         id: GlanceId
     ) {
         val assetsRepository = EntryPointAccessors.fromApplication(context, WidgetEntryPoint::class.java).assetsRepository()
+        val sessionRepository = EntryPointAccessors.fromApplication(context, WidgetEntryPoint::class.java).sessionRepository()
         val noData = context.getString(R.string.errors_no_data_available)
         val assets = try {
-            (assetsRepository.getTokensInfo(
-                listOf(
-                    AssetId(Chain.Bitcoin).toIdentifier(),
-                    AssetId(Chain.Ethereum).toIdentifier(),
-                    AssetId(Chain.Solana).toIdentifier(),
-                )
-            ).firstOrNull() ?: emptyList()).reversed()
+            val currency = sessionRepository.session().firstOrNull()?.currency ?: Currency.USD
+            assetsRepository.getWidgetTokens(currency)
         } catch (_: Throwable) {
             emptyList()
         }

@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -9,4 +10,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface WidgetEntryPoint {
     fun assetsRepository(): AssetsRepository
+    fun sessionRepository(): SessionRepository
 }

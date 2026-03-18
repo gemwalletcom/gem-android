@@ -37,7 +37,7 @@ class SyncPerpetualPositionsImpl @Inject constructor(
         .map { it.wallet.accounts.filter { chains.contains(it.chain) } }
         .flatMapLatest { accounts ->
             flow {
-                if (BuildConfig.DEBUG) {
+                if (false) {
                     while (true) {
                         val summaries = withContext(Dispatchers.IO) {
                             accounts.map {

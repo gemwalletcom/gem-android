@@ -41,7 +41,8 @@ data class AssetFull (
 	val score: AssetScore,
 	val tags: List<String>,
 	val links: List<AssetLink>,
-	val perpetuals: List<PerpetualBasic>
+	val perpetuals: List<PerpetualBasic>,
+	val price: Price,
 )
 
 @Serializable

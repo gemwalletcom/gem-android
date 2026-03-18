@@ -33,6 +33,7 @@ import com.gemwallet.android.ext.swapSupport
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.Account
@@ -40,6 +41,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
+import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
@@ -218,8 +220,7 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
-        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .flatMapLatest { assetInfo ->
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).flatMapLatest { assetInfo ->
             if (assetInfo == null) {
                 assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toDTO() }
             } else {
@@ -232,6 +233,45 @@ class AssetsRepository @Inject constructor(
     fun getTokensInfo(assetsId: List<String>): Flow<List<AssetInfo>> {
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
             .map { items -> items.distinctBy { it.id() } }
+    }
+
+    suspend fun getWidgetTokens(currency: Currency): List<AssetInfo> = withContext(Dispatchers.IO) {
+        val widgetAssetIds = listOf(AssetId(Chain.Bitcoin), AssetId(Chain.Ethereum), AssetId(Chain.Solana))
+
+        if (getTokensInfo(widgetAssetIds.map { it.toIdentifier() }).firstOrNull().isNullOrEmpty()) {
+            searchTokensCase.search(widgetAssetIds, currency)
+        }
+
+        val prices = widgetAssetIds.map { assetId ->
+            async {
+                try {
+                    gemApi.getAsset(assetId.toIdentifier())
+                } catch (_: Throwable) {
+                    null
+                }
+            }
+        }
+        .awaitAll()
+        .filterNotNull()
+        (getTokensInfo(widgetAssetIds.map { it.toIdentifier() }).firstOrNull() ?: emptyList())
+            .map { assetInfo ->
+                val price = prices.firstOrNull { it.asset.id == assetInfo.asset.id }
+                if (price == null) {
+                    assetInfo
+                } else {
+                    assetInfo.copy(
+                        price = AssetPriceInfo(
+                            currency = currency,
+                            price = AssetPrice(
+                                assetId = assetInfo.asset.id,
+                                price = price.price.price,
+                                priceChangePercentage24h = price.price.priceChangePercentage24h,
+                                updatedAt = System.currentTimeMillis()
+                            )
+                        )
+                    )
+                }
+            }
     }
 
     suspend fun searchToken(assetId: AssetId, currency: Currency): Boolean {
