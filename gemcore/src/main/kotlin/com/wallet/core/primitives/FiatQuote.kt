@@ -14,7 +14,8 @@ data class FiatQuote (
 	val type: FiatQuoteType,
 	val fiatAmount: Double,
 	val fiatCurrency: String,
-	val cryptoAmount: Double
+	val cryptoAmount: Double,
+	val paymentMethods: List<PaymentType>
 )
 
 @Serializable

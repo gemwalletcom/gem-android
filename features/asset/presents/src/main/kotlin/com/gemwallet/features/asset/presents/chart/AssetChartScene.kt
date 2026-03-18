@@ -186,14 +186,15 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
     }
 
     val allTime = mutableListOf<AllTimeUIModel>().apply {
-        if (marketInfo.allTimeHigh != null && marketInfo.allTimeHighDate != null && marketInfo.allTimeHighChangePercentage != null) {
+        marketInfo.allTimeHighValue?.let {
             add(
-                AllTimeUIModel.High(marketInfo.allTimeHighDate!!, marketInfo.allTimeHigh!!, marketInfo.allTimeHighChangePercentage!!)
+                AllTimeUIModel.High(it.date, it.value.toDouble(), it.percentage.toDouble())
             )
         }
-        if (marketInfo.allTimeLow != null && marketInfo.allTimeLowDate != null && marketInfo.allTimeLowChangePercentage != null) {
+
+        marketInfo.allTimeLowValue?.let {
             add(
-                AllTimeUIModel.Low(marketInfo.allTimeLowDate!!, marketInfo.allTimeLow!!, marketInfo.allTimeLowChangePercentage!!)
+                AllTimeUIModel.Low(it.date, it.value.toDouble(), it.percentage.toDouble())
             )
         }
     }

@@ -571,4 +571,14 @@
   <string name="charts.price.low">낮은</string>
   <string name="charts.price.change">변화</string>
   <string name="contacts.add_to_contacts">연락처에 추가</string>
+  <string name="common.method">방법</string>
+  <string name="simulation.header.unlimited_asset">제한 없는 %@</string>
+  <string name="common.token">토큰</string>
+  <string name="common.suspicious_address">의심스러운 주소</string>
+  <string name="simulation.warning.unlimited_token_approval.description">이렇게 하면 사용자가 승인을 취소하거나 만료될 때까지 해당 토큰을 사용할 수 있습니다.</string>
+  <string name="simulation.warning.nft_collection_approval.title">NFT 컬렉션 전체 접근 권한이 요청되었습니다.</string>
+  <string name="simulation.warning.unlimited_token_approval.title">무제한 토큰 승인</string>
+  <string name="transfer.review_request">검토 요청</string>
+  <string name="wallet.portfolio.title">포트폴리오</string>
+  <string name="wallet.portfolio.footer">현재 보유량과 시장 가격을 기준으로 산정한 추정 가치입니다.</string>
 </resources>

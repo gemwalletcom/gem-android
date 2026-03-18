@@ -287,8 +287,8 @@ class EvmSignClient(
             throw Exception("Doesn't support")
         }
         val meta = chainData as EvmChainData
-        val toAddress = meta.stakeData?.to ?: throw java.lang.IllegalArgumentException("No stake data")
-        val stakeData = meta.stakeData.data?.decodeHex() ?: throw java.lang.IllegalArgumentException("No stake data")
+        val toAddress = meta.stakeData?.contractAddress ?: throw java.lang.IllegalArgumentException("No stake data")
+        val stakeData = meta.stakeData.callData.decodeHex() ?: throw java.lang.IllegalArgumentException("No stake data")
         val fee = fee as GasFee
         val valueData = when (params) {
             is ConfirmParams.Stake.DelegateParams -> finalAmount.toByteArray()

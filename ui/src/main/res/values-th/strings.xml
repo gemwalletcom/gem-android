@@ -399,7 +399,7 @@
   <string name="info.asset_status.unverified.description">โทเค็นที่ไม่ได้รับการตรวจสอบนั้นไม่ได้รับการตรวจสอบอย่างเพียงพอโดยบริการบุคคลที่สามที่เชื่อถือได้ โทเค็นเหล่านี้อาจปรากฏในกระเป๋าเงินของคุณเนื่องจากการส่งทางอากาศ การโอน หรือการนำเข้าด้วยตนเอง</string>
   <string name="info.asset_status.suspicious.description">โทเค็นที่น่าสงสัยหรือเป็นสแปมจะถูกระบุว่าเป็นการหลอกลวงหรือทรัพย์สินที่เป็นอันตราย โทเค็นเหล่านี้อาจปรากฏในกระเป๋าเงินของคุณเนื่องจากการส่งทางอากาศ การโอน หรือการนำเข้าด้วยตนเอง</string>
   <string name="info.insufficient_network_fee_balance.title">%s จำเป็น</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้ต้องการ %s เพื่อชดเชยค่าธรรมเนียมเครือข่ายที่จ่ายไป %s ไม่ใช่คนงานเหมือง Gem Walletตรวจสอบให้แน่ใจว่าคุณมีเพียงพอ %s-</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้ต้องการ %s เพื่อชดเชยค่าธรรมเนียมเครือข่ายที่จ่ายไป %s ไม่ใช่คนงานเหมือง Gem Walletตรวจสอบให้แน่ใจว่าคุณมีเพียงพอ %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">ยอดเงินคงเหลือไม่เพียงพอ</string>
   <string name="info.insufficient_balance.description">คุณมี %s ไม่เพียงพอสำหรับการทำธุรกรรมนี้ โปรดเติมเงิน รับ หรือแลกเปลี่ยนในกระเป๋าสตางค์ของคุณแล้วลองอีกครั้ง</string>
@@ -571,4 +571,14 @@
   <string name="charts.price.low">ต่ำ</string>
   <string name="charts.price.change">เปลี่ยน</string>
   <string name="contacts.add_to_contacts">เพิ่มลงในรายชื่อติดต่อ</string>
+  <string name="common.method">วิธี</string>
+  <string name="simulation.header.unlimited_asset">ไม่จำกัด %@</string>
+  <string name="common.token">โทเค็น</string>
+  <string name="common.suspicious_address">ที่อยู่น่าสงสัย</string>
+  <string name="simulation.warning.unlimited_token_approval.description">これにより ผู้ใช้สามารถใช้โทเค็นนี้ได้จนกว่าคุณจะเพิกถอนการอนุมัติหรือโทเค็นหมดอายุ</string>
+  <string name="simulation.warning.nft_collection_approval.title">ขอสิทธิ์เข้าถึงคอลเลกชัน NFT ทั้งหมด</string>
+  <string name="simulation.warning.unlimited_token_approval.title">อนุมัติโทเค็นได้ไม่จำกัดจำนวน</string>
+  <string name="transfer.review_request">คำขอตรวจสอบ</string>
+  <string name="wallet.portfolio.title">ผลงาน</string>
+  <string name="wallet.portfolio.footer">มูลค่าโดยประมาณคำนวณจากสินทรัพย์ที่มีอยู่และราคาตลาด</string>
 </resources>

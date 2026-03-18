@@ -8,6 +8,13 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class ChartValuePercentage (
+	val date: SerializedDate,
+	val value: Float,
+	val percentage: Float
+)
+
+@Serializable
 data class PerpetualAccountSummary (
 	val accountValue: Double,
 	val accountLeverage: Double,
@@ -29,6 +36,33 @@ data class PerpetualPortfolio (
 	val month: PerpetualPortfolioTimeframeData? = null,
 	val allTime: PerpetualPortfolioTimeframeData? = null,
 	val accountSummary: PerpetualAccountSummary? = null
+)
+
+@Serializable
+data class PortfolioAllocation (
+	val assetId: AssetId,
+	val percentage: Float,
+	val value: Float
+)
+
+@Serializable
+data class PortfolioAsset (
+	val assetId: AssetId,
+	val value: String
+)
+
+@Serializable
+data class PortfolioAssets (
+	val totalValue: Float,
+	val values: List<ChartValue>,
+	val allTimeHigh: ChartValuePercentage? = null,
+	val allTimeLow: ChartValuePercentage? = null,
+	val allocation: List<PortfolioAllocation>
+)
+
+@Serializable
+data class PortfolioAssetsRequest (
+	val assets: List<PortfolioAsset>
 )
 
 @Serializable

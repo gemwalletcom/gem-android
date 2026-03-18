@@ -571,4 +571,14 @@
   <string name="charts.price.low">Rendah</string>
   <string name="charts.price.change">Mengubah</string>
   <string name="contacts.add_to_contacts">Tambahkan ke Kontak</string>
+  <string name="common.method">Metode</string>
+  <string name="simulation.header.unlimited_asset">Tak terbatas %@</string>
+  <string name="common.token">Token</string>
+  <string name="common.suspicious_address">Alamat mencurigakan</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Ini memberi pihak yang mengeluarkan dana akses untuk menggunakan token ini hingga Anda mencabut persetujuan atau token tersebut kedaluwarsa.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Akses penuh ke koleksi NFT diminta.</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Persetujuan token tanpa batas</string>
+  <string name="transfer.review_request">Permintaan Peninjauan</string>
+  <string name="wallet.portfolio.title">Portofolio</string>
+  <string name="wallet.portfolio.footer">Perkiraan nilai berdasarkan kepemilikan saat ini dan harga pasar.</string>
 </resources>

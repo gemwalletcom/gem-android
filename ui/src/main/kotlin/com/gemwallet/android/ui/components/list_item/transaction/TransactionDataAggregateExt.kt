@@ -56,12 +56,14 @@ fun TransactionDataAggregate.formatAddress(): String? = when (type) {
     TransactionType.StakeWithdraw,
     TransactionType.AssetActivation,
     TransactionType.StakeRewards,
+    TransactionType.EarnDeposit,
+    TransactionType.EarnWithdraw,
     TransactionType.SmartContractCall,
     TransactionType.PerpetualOpenPosition,
     TransactionType.StakeFreeze,
     TransactionType.StakeUnfreeze,
     TransactionType.PerpetualClosePosition,
-    TransactionType.PerpetualModifyPosition
+    TransactionType.PerpetualModifyPosition,
         -> null
 }
 
@@ -78,7 +80,10 @@ fun TransactionDataAggregate.getValueColor(): Color = when (type) {
 // TODO: Deprecating it
 fun TransactionType.getTitle(direction: TransactionDirection? = null, state: TransactionState? = null): Int {
     return when (this) {
+        TransactionType.EarnDeposit,
         TransactionType.StakeDelegate -> R.string.transfer_stake_title
+        TransactionType.EarnWithdraw,
+        TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
         TransactionType.StakeUndelegate -> R.string.transfer_unstake_title
         TransactionType.StakeRedelegate -> R.string.transfer_redelegate_title
         TransactionType.StakeRewards -> R.string.transfer_rewards_title
@@ -95,7 +100,6 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
 
         TransactionType.Swap -> R.string.wallet_swap
         TransactionType.TokenApproval -> R.string.transfer_approve_title
-        TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
         TransactionType.AssetActivation -> R.string.transfer_activate_asset_title
         TransactionType.TransferNFT -> R.string.transfer_title
         TransactionType.SmartContractCall -> R.string.transfer_smart_contract_title

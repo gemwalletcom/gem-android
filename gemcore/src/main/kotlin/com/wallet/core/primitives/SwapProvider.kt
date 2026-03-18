@@ -31,8 +31,6 @@ enum class SwapProvider(val string: String) {
 	Oku("oku"),
 	@SerialName("wagmi")
 	Wagmi("wagmi"),
-	@SerialName("cetus")
-	Cetus("cetus"),
 	@SerialName("stonfi_v2")
 	StonfiV2("stonfi_v2"),
 	@SerialName("mayan")

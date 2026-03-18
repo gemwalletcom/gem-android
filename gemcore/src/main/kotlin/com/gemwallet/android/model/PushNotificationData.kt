@@ -1,11 +1,14 @@
 package com.gemwallet.android.model
 
 import com.wallet.core.primitives.PushNotificationTypes
+import com.wallet.core.primitives.WalletId
 import kotlinx.serialization.Serializable
 
 sealed interface PushNotificationData {
 
-    data class Asset (val assetId: String): PushNotificationData
+    data class Asset(val assetId: String): PushNotificationData
+
+    data class Stake(val assetId: String, val walletId: WalletId): PushNotificationData
 
     data class PushNotificationPayloadType (
         val type: PushNotificationTypes,

@@ -571,4 +571,14 @@
   <string name="charts.price.low">Ƙasa</string>
   <string name="charts.price.change">Sauyi</string>
   <string name="contacts.add_to_contacts">Ƙara zuwa Lambobin Sadarwa</string>
+  <string name="common.method">Hanyar</string>
+  <string name="simulation.header.unlimited_asset">Unlimited %@</string>
+  <string name="common.token">Alamar Token</string>
+  <string name="common.suspicious_address">Adireshin da ake zargi</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Wannan yana ba mai kashe kuɗi damar amfani da wannan alamar har sai kun soke amincewa ko kuma ta ƙare.</string>
+  <string name="simulation.warning.nft_collection_approval.title">An nemi cikakken damar tattara NFT</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Amincewa da alamar mara iyaka</string>
+  <string name="transfer.review_request">Buƙatar Bita</string>
+  <string name="wallet.portfolio.title">Fayil ɗin Fayil</string>
+  <string name="wallet.portfolio.footer">Kimanta darajar bisa ga hannun jari na yanzu da farashin kasuwa.</string>
 </resources>

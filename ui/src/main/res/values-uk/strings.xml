@@ -399,7 +399,7 @@
   <string name="info.asset_status.unverified.description">Неперевірені токени не були достатньо перевірені надійними сторонніми сервісами. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
   <string name="info.asset_status.suspicious.description">Підозрілі або спам-токени ідентифікуються як потенційні шахрайські або шкідливі активи. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
   <string name="info.insufficient_network_fee_balance.title">Потрібно %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ця транзакція вимагає %s для покриття сплаченої мережевої плати %s шахтарі, а не Gem WalletПереконайтеся, що у вас достатньо %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ця транзакція вимагає %s для покриття мережевої комісії, що виплачується майнерам %s , а не Gem Wallet. Переконайтеся, що у вас достатньо %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Недостатній баланс</string>
   <string name="info.insufficient_balance.description">У вас недостатньо %s для завершення цієї транзакції. Будь ласка, поповніть, отримайте або обміняйте свій гаманець і спробуйте ще раз.</string>
@@ -553,8 +553,8 @@
   <string name="perpetual.all_time_pnl">PnL за весь час</string>
   <string name="perpetual.margin_usage">Використання маржі</string>
   <string name="perpetual.account_leverage">Кредитне плече рахунку</string>
-  <string name="asset.all_time_high">Рекордний максимум за весь час</string>
-  <string name="asset.all_time_low">Найнижчий показник за весь час</string>
+  <string name="asset.all_time_high">Історичний максимум</string>
+  <string name="asset.all_time_low">Історичний мінімум</string>
   <string name="errors.swap.minimum_amount">Мінімально дозволена сума угоди становить %s. Будь ласка, введіть більшу суму.</string>
   <string name="swap.use_minimum_amount">Використовуйте мінімальну суму</string>
   <string name="common.earn">Earn</string>
@@ -571,4 +571,14 @@
   <string name="charts.price.low">Мінімум</string>
   <string name="charts.price.change">Зміна</string>
   <string name="contacts.add_to_contacts">Додати до контактів</string>
+  <string name="common.method">Метод</string>
+  <string name="simulation.header.unlimited_asset">Безлімітний %@</string>
+  <string name="common.token">Токен</string>
+  <string name="common.suspicious_address">Підозріла адреса</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Це надає споживачеві доступ до використання цього токена, доки ви не скасуєте схвалення або термін його дії не закінчиться.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Запитується повний доступ до колекції NFT</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Необмежене схвалення токенів</string>
+  <string name="transfer.review_request">Запит на перегляд</string>
+  <string name="wallet.portfolio.title">Портфоліо</string>
+  <string name="wallet.portfolio.footer">Оціночна вартість базується на поточних запасах та ринкових цінах.</string>
 </resources>

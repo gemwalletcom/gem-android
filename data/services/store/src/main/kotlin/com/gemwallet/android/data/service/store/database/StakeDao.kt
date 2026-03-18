@@ -33,7 +33,7 @@ abstract class StakeDao {
 
     @Query("SELECT * FROM stake_delegation_validator WHERE " +
             "chain=:chain AND " +
-            "is_active=:isActive " +
+            "isActive=:isActive " +
             "ORDER BY apr DESC")
     abstract suspend fun getStakeValidators(chain: Chain, isActive: Boolean = true): List<DbDelegationValidator>
 
@@ -48,7 +48,7 @@ abstract class StakeDao {
             "validator.id as validatorId," +
             "validator.chain as chain," +
             "validator.name as name," +
-            "validator.is_active as isActive," +
+            "validator.isActive as isActive," +
             "validator.commission as commission," +
             "validator.apr as apr," +
             "base.address as address," +
@@ -74,7 +74,7 @@ abstract class StakeDao {
                 "validator.id as validatorId," +
                 "validator.chain as chain," +
                 "validator.name as name," +
-                "validator.is_active as isActive," +
+                "validator.isActive as isActive," +
                 "validator.commission as commission," +
                 "validator.apr as apr," +
                 "base.address as address," +

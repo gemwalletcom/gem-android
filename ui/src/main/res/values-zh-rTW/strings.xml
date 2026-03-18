@@ -571,4 +571,14 @@
   <string name="charts.price.low">低的</string>
   <string name="charts.price.change">改變</string>
   <string name="contacts.add_to_contacts">加入聯絡人</string>
+  <string name="common.method">方法</string>
+  <string name="simulation.header.unlimited_asset">無限 %@</string>
+  <string name="common.token">令牌</string>
+  <string name="common.suspicious_address">可疑地址</string>
+  <string name="simulation.warning.unlimited_token_approval.description">這樣，消費者就可以一直使用該代幣，直到你撤銷授權或代幣過期為止。</string>
+  <string name="simulation.warning.nft_collection_approval.title">請求訪問完整的NFT收藏集</string>
+  <string name="simulation.warning.unlimited_token_approval.title">無限代幣批准</string>
+  <string name="transfer.review_request">審查請求</string>
+  <string name="wallet.portfolio.title">資料夾</string>
+  <string name="wallet.portfolio.footer">根據現有持倉和市場價格估算的價值。</string>
 </resources>

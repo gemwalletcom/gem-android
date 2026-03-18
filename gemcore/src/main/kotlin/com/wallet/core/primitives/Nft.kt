@@ -60,7 +60,7 @@ data class NFTCollection (
 	val chain: Chain,
 	val contractAddress: String,
 	val images: NFTImages,
-	val isVerified: Boolean,
+	val status: VerificationStatus,
 	val links: List<AssetLink>
 )
 

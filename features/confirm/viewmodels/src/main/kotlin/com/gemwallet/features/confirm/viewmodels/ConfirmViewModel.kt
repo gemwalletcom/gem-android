@@ -521,6 +521,7 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.TokenApproval,
                 TransactionType.AssetActivation,
                 TransactionType.StakeFreeze -> amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
+                TransactionType.EarnDeposit,
                 TransactionType.StakeDelegate -> if (assetInfo.stakeChain?.freezed() == true) {
                     amount
                 } else {
@@ -530,6 +531,7 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
                 TransactionType.StakeWithdraw,
+                TransactionType.EarnWithdraw,
                 TransactionType.StakeUnfreeze,
                 TransactionType.TransferNFT -> amount
                 TransactionType.SmartContractCall -> TODO()

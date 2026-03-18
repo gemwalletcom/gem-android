@@ -125,6 +125,8 @@ class TransactionDetailsAggregateImpl(
                         TransactionType.StakeRewards,
                         TransactionType.StakeRedelegate,
                         TransactionType.StakeWithdraw,
+                        TransactionType.EarnWithdraw,
+                        TransactionType.EarnDeposit,
                         TransactionType.Swap,
                         TransactionType.StakeFreeze,
                         TransactionType.StakeUnfreeze,
@@ -177,6 +179,8 @@ class TransactionDetailsAggregateImpl(
         TransactionType.StakeFreeze,
         TransactionType.StakeUnfreeze,
         TransactionType.PerpetualModifyPosition,
+        TransactionType.EarnWithdraw,
+        TransactionType.EarnDeposit,
         TransactionType.StakeWithdraw -> null
         TransactionType.Swap -> this@TransactionDetailsAggregateImpl.swapProvider?.let { TransactionDetailsValue.Destination.Provider(it) }
         TransactionType.Transfer,

@@ -571,4 +571,14 @@
   <string name="charts.price.low">Faible</string>
   <string name="charts.price.change">Changement</string>
   <string name="contacts.add_to_contacts">Ajouter aux contacts</string>
+  <string name="common.method">Méthode</string>
+  <string name="simulation.header.unlimited_asset">Illimité %@</string>
+  <string name="common.token">Jeton</string>
+  <string name="common.suspicious_address">Adresse suspecte</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Cela donne au détenteur du jeton l\'accès à utiliser jusqu\'à ce que vous révoquiez l\'autorisation ou que celle-ci expire.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Demande d\'accès à l\'intégralité de la collection NFT</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Approbation illimitée des jetons</string>
+  <string name="transfer.review_request">Demande de révision</string>
+  <string name="wallet.portfolio.title">Portefeuille</string>
+  <string name="wallet.portfolio.footer">Valeur estimée basée sur les avoirs actuels et les prix du marché.</string>
 </resources>

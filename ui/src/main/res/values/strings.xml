@@ -571,4 +571,14 @@
   <string name="charts.price.low">Low</string>
   <string name="charts.price.change">Change</string>
   <string name="contacts.add_to_contacts">Add to Contacts</string>
+  <string name="common.method">Method</string>
+  <string name="simulation.header.unlimited_asset">Unlimited %@</string>
+  <string name="common.token">Token</string>
+  <string name="common.suspicious_address">Suspicious address</string>
+  <string name="simulation.warning.unlimited_token_approval.description">This gives the spender access to use this token until you revoke the approval or it expires.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Full NFT collection access requested</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Unlimited token approval</string>
+  <string name="transfer.review_request">Review Request</string>
+  <string name="wallet.portfolio.title">Portfolio</string>
+  <string name="wallet.portfolio.footer">Estimated value based on current holdings and market prices.</string>
 </resources>

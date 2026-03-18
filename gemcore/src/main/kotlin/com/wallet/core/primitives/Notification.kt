@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class InAppNotification (
-	val walletId: String,
+	val walletId: WalletId,
 	val readAt: SerializedDate? = null,
 	val createdAt: SerializedDate,
 	val item: CoreListItem

@@ -7,6 +7,7 @@ import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.Price
+import com.wallet.core.primitives.StakeProviderType
 
 data class RoomDelegation(
     val validatorId: String,
@@ -25,6 +26,7 @@ data class RoomDelegation(
     val price: Double? = null,
     val priceChange: Double? = null,
     val shares: String? = null,
+    val providerType: StakeProviderType? = null,
 ) {
     fun toModel(): Delegation? {
         return Delegation(
@@ -34,7 +36,8 @@ data class RoomDelegation(
                 name = name,
                 isActive = isActive,
                 commission = commission,
-                apr = apr
+                apr = apr,
+                providerType = providerType ?: StakeProviderType.Stake,
             ),
             base = DelegationBase(
                 assetId = assetId.toAssetId() ?: return null,

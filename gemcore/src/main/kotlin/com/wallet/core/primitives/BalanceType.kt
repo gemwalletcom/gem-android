@@ -25,5 +25,7 @@ enum class BalanceType(val string: String) {
 	rewards("rewards"),
 	@SerialName("reserved")
 	reserved("reserved"),
+	@SerialName("earn")
+	earn("earn"),
 }
 

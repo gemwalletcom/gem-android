@@ -16,6 +16,7 @@ import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ChartValuePercentage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -179,12 +180,12 @@ fun  AssetMarket.toRecord(assetId: AssetId) = DbAssetMarket(
     circulatingSupply = circulatingSupply,
     totalSupply = totalSupply,
     maxSupply = maxSupply,
-    allTimeHigh = allTimeHigh,
-    allTimeHighDate = allTimeHighDate,
-    allTimeHighChangePercentage = allTimeHighChangePercentage,
-    allTimeLow = allTimeLow,
-    allTimeLowDate = allTimeLowDate,
-    allTimeLowChangePercentage = allTimeLowChangePercentage,
+    allTimeHigh = allTimeHighValue?.value?.toDouble(),
+    allTimeHighDate = allTimeHighValue?.date,
+    allTimeHighChangePercentage = allTimeHighValue?.percentage?.toDouble(),
+    allTimeLow = allTimeLowValue?.value?.toDouble(),
+    allTimeLowDate = allTimeLowValue?.date,
+    allTimeLowChangePercentage = allTimeLowValue?.percentage?.toDouble(),
 )
 
 fun  DbAssetMarket.toDTO() = AssetMarket(
@@ -195,10 +196,18 @@ fun  DbAssetMarket.toDTO() = AssetMarket(
     circulatingSupply = circulatingSupply,
     totalSupply = totalSupply,
     maxSupply = maxSupply,
-    allTimeHigh = allTimeHigh,
-    allTimeHighDate = allTimeHighDate,
-    allTimeHighChangePercentage = allTimeHighChangePercentage,
-    allTimeLow = allTimeLow,
-    allTimeLowDate = allTimeLowDate,
-    allTimeLowChangePercentage = allTimeLowChangePercentage,
+    allTimeHighValue = allTimeHigh?.let {
+        ChartValuePercentage(
+            value = it.toFloat(),
+            date = allTimeHighDate ?: 0L,
+            percentage = allTimeHighChangePercentage?.toFloat() ?: 0F
+        )
+    },
+    allTimeLowValue = allTimeLow?.let {
+        ChartValuePercentage(
+            value = it.toFloat(),
+            date = allTimeLowDate ?: 0L,
+            percentage = allTimeLowChangePercentage?.toFloat() ?: 0F
+        )
+    },
 )

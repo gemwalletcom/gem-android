@@ -399,7 +399,7 @@
   <string name="info.asset_status.unverified.description">Doğrulanmamış token\'lar güvenilir üçüncü taraf hizmetleri tarafından yeterince doğrulanmamıştır. Airdrop\'lar, transferler veya manuel içe aktarmalar nedeniyle cüzdanınızda görünebilirler.</string>
   <string name="info.asset_status.suspicious.description">Şüpheli veya spam token\'lar potansiyel dolandırıcılık veya zararlı varlıklar olarak tanımlanır. Airdrop\'lar, transferler veya manuel ithalatlar nedeniyle cüzdanınızda görünebilirler.</string>
   <string name="info.insufficient_network_fee_balance.title">%s gerekli</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem gerektirir %s ödenen ağ ücretini karşılamak için %s madenciler, değil Gem WalletYeterli miktarda olduğundan emin olun. %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem %s \'un %s madencilerine ödenen ağ ücretini karşılamasını gerektirir, Gem Walletdeğil. Yeterli %solduğundan emin olun.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Yetersiz Bakiye</string>
   <string name="info.insufficient_balance.description">Bu işlemi tamamlamak için yeterli %s iniz yok. Lütfen cüzdanınıza para yükleyin, alın veya takas edin ve tekrar deneyin.</string>
@@ -553,8 +553,8 @@
   <string name="perpetual.all_time_pnl">Tüm Zamanların Kar ve Zarar Tablosu</string>
   <string name="perpetual.margin_usage">Kenar Boşluğu Kullanımı</string>
   <string name="perpetual.account_leverage">Hesap Kaldıraç</string>
-  <string name="asset.all_time_high">Tüm Zamanların En Yüksek Seviyesi</string>
-  <string name="asset.all_time_low">Tüm Zamanların En Düşük Seviyesi</string>
+  <string name="asset.all_time_high">Tarihi zirve</string>
+  <string name="asset.all_time_low">Tarihi dip</string>
   <string name="errors.swap.minimum_amount">Minimum işlem tutarı %s. Lütfen daha yüksek bir tutar girin.</string>
   <string name="swap.use_minimum_amount">Minimum Tutarı Kullanın</string>
   <string name="common.earn">Earn</string>
@@ -571,4 +571,14 @@
   <string name="charts.price.low">Düşük</string>
   <string name="charts.price.change">Değiştirmek</string>
   <string name="contacts.add_to_contacts">Kişilere Ekle</string>
+  <string name="common.method">Yöntem</string>
+  <string name="simulation.header.unlimited_asset">Sınırsız %@</string>
+  <string name="common.token">Token</string>
+  <string name="common.suspicious_address">Şüpheli adres</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Bu, harcama yapan kişiye, siz onayı iptal edene veya süresi dolana kadar bu belirteci kullanma erişimi sağlar.</string>
+  <string name="simulation.warning.nft_collection_approval.title">NFT koleksiyonunun tamamına erişim talep edildi.</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Sınırsız token onayı</string>
+  <string name="transfer.review_request">İnceleme Talebi</string>
+  <string name="wallet.portfolio.title">Portföy</string>
+  <string name="wallet.portfolio.footer">Mevcut varlıklar ve piyasa fiyatlarına göre tahmini değer.</string>
 </resources>

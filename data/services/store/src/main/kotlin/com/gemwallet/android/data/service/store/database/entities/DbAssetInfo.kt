@@ -222,6 +222,9 @@ fun DbAssetInfo.toDTO(): AssetInfo? {
             rankScore = entity.assetRank,
             isActive = true,
             isBalanceEnabled = true,// TODO: Add to db
+            isEarnEnabled = false,
+            stakingApr = entity.stakingApr,
+            earnApr = null,
         ),
         rank = entity.assetRank,
         walletName = entity.walletName ?: "",

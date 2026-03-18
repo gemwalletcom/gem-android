@@ -571,4 +571,14 @@
   <string name="charts.price.low">Basso</string>
   <string name="charts.price.change">Modifica</string>
   <string name="contacts.add_to_contacts">Aggiungi ai contatti</string>
+  <string name="common.method">Metodo</string>
+  <string name="simulation.header.unlimited_asset">Illimitato %@</string>
+  <string name="common.token">Gettone</string>
+  <string name="common.suspicious_address">Indirizzo sospetto</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Ciò consente allo spender di utilizzare questo token finché non revochi l\'approvazione o finché non scade.</string>
+  <string name="simulation.warning.nft_collection_approval.title">È richiesto l\'accesso completo alla collezione NFT</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Approvazione token illimitata</string>
+  <string name="transfer.review_request">Richiesta di revisione</string>
+  <string name="wallet.portfolio.title">Portfolio</string>
+  <string name="wallet.portfolio.footer">Valore stimato in base alle partecipazioni attuali e ai prezzi di mercato.</string>
 </resources>

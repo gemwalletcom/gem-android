@@ -571,4 +571,14 @@
   <string name="charts.price.low">Lav</string>
   <string name="charts.price.change">Forandring</string>
   <string name="contacts.add_to_contacts">Føj til Kontakter</string>
+  <string name="common.method">Metode</string>
+  <string name="simulation.header.unlimited_asset">Ubegrænset %@</string>
+  <string name="common.token">Token</string>
+  <string name="common.suspicious_address">Mistænkelig adresse</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Dette giver brugeren adgang til at bruge denne token, indtil du tilbagekalder godkendelsen, eller den udløber.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Fuld adgang til NFT-samling anmodes</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Ubegrænset tokengodkendelse</string>
+  <string name="transfer.review_request">Anmodning om gennemgang</string>
+  <string name="wallet.portfolio.title">Portefølje</string>
+  <string name="wallet.portfolio.footer">Estimeret værdi baseret på nuværende beholdninger og markedspriser.</string>
 </resources>

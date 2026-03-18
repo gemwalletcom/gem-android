@@ -571,4 +571,14 @@
   <string name="charts.price.low">کم</string>
   <string name="charts.price.change">تغییر</string>
   <string name="contacts.add_to_contacts">اضافه کردن به مخاطبین</string>
+  <string name="common.method">روش</string>
+  <string name="simulation.header.unlimited_asset">نامحدود %@</string>
+  <string name="common.token">توکن</string>
+  <string name="common.suspicious_address">آدرس مشکوک</string>
+  <string name="simulation.warning.unlimited_token_approval.description">این به خرج‌کننده دسترسی می‌دهد تا زمانی که تأییدیه را لغو کنید یا منقضی شود، از این توکن استفاده کند.</string>
+  <string name="simulation.warning.nft_collection_approval.title">دسترسی کامل به مجموعه NFT درخواست شد</string>
+  <string name="simulation.warning.unlimited_token_approval.title">تایید نامحدود توکن</string>
+  <string name="transfer.review_request">درخواست بررسی</string>
+  <string name="wallet.portfolio.title">نمونه کارها</string>
+  <string name="wallet.portfolio.footer">ارزش تخمینی بر اساس دارایی‌های فعلی و قیمت‌های بازار.</string>
 </resources>

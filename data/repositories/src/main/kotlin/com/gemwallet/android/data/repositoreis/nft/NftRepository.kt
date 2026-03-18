@@ -19,6 +19,7 @@ import com.wallet.core.primitives.NFTCollection
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NFTImages
 import com.wallet.core.primitives.NFTResource
+import com.wallet.core.primitives.VerificationStatus
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +45,7 @@ class NftRepository(
                 imageUrl = it.collection.images.preview.url,
                 previewImageUrl = it.collection.images.preview.url,
                 originalSourceUrl = it.collection.images.preview.url,
-                isVerified = it.collection.isVerified,
+                status = it.collection.status,
             )
         } ?: emptyList()
         val fullAsset = response?.flatMap { item ->
@@ -140,7 +141,7 @@ private fun DbNFTCollection.mapToModel(links: List<DbNFTCollectionLink>) = NFTCo
     chain = this.chain,
     contractAddress = this.contractAddress,
     images = NFTImages(NFTResource(this.imageUrl, "")),
-    isVerified = this.isVerified,
+    status = this.status ?: VerificationStatus.Verified,
     links = links.map { AssetLink(it.name, it.url) },
 )
 

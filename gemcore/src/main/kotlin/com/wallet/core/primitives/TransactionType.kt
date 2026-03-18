@@ -41,5 +41,9 @@ enum class TransactionType(val string: String) {
 	PerpetualClosePosition("perpetualClosePosition"),
 	@SerialName("perpetualModifyPosition")
 	PerpetualModifyPosition("perpetualModifyPosition"),
+	@SerialName("earnDeposit")
+	EarnDeposit("earnDeposit"),
+	@SerialName("earnWithdraw")
+	EarnWithdraw("earnWithdraw"),
 }
 

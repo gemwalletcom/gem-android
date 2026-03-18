@@ -63,6 +63,7 @@ object DatabaseModule {
         .addMigrations(Migration_63_64(context, passwordStore))
         .addMigrations(Migration_64_65)
         .addMigrations(Migration_65_66)
+        .addMigrations(Migration_66_67)
         .build()
 
     @Singleton

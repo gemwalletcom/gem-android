@@ -571,4 +571,14 @@
   <string name="charts.price.low">কম</string>
   <string name="charts.price.change">পরিবর্তন</string>
   <string name="contacts.add_to_contacts">পরিচিতিতে যোগ করুন</string>
+  <string name="common.method">পদ্ধতি</string>
+  <string name="simulation.header.unlimited_asset">সীমাহীন %@</string>
+  <string name="common.token">টোকেন</string>
+  <string name="common.suspicious_address">সন্দেহজনক ঠিকানা</string>
+  <string name="simulation.warning.unlimited_token_approval.description">এটি ব্যয়কারীকে এই টোকেনটি ব্যবহার করার অনুমতি দেয় যতক্ষণ না আপনি অনুমোদন প্রত্যাহার করেন অথবা এটির মেয়াদ শেষ হয়ে যায়।</string>
+  <string name="simulation.warning.nft_collection_approval.title">সম্পূর্ণ NFT সংগ্রহের অ্যাক্সেসের অনুরোধ করা হয়েছে</string>
+  <string name="simulation.warning.unlimited_token_approval.title">সীমাহীন টোকেন অনুমোদন</string>
+  <string name="transfer.review_request">পর্যালোচনার অনুরোধ</string>
+  <string name="wallet.portfolio.title">পোর্টফোলিও</string>
+  <string name="wallet.portfolio.footer">বর্তমান মালিকানা এবং বাজার মূল্যের উপর ভিত্তি করে আনুমানিক মূল্য।</string>
 </resources>

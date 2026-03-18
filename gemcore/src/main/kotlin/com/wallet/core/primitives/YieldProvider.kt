@@ -8,11 +8,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class AddressName (
-	val chain: Chain,
-	val address: String,
-	val name: String,
-	val type: AddressType? = null,
-	val status: VerificationStatus
-)
+enum class YieldProvider(val string: String) {
+	@SerialName("yo")
+	Yo("yo"),
+}
 

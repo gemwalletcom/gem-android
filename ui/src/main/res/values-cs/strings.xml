@@ -571,4 +571,14 @@
   <string name="charts.price.low">Nízký</string>
   <string name="charts.price.change">Přeměna</string>
   <string name="contacts.add_to_contacts">Přidat do kontaktů</string>
+  <string name="common.method">Metoda</string>
+  <string name="simulation.header.unlimited_asset">Neomezený %@</string>
+  <string name="common.token">Žeton</string>
+  <string name="common.suspicious_address">Podezřelá adresa</string>
+  <string name="simulation.warning.unlimited_token_approval.description">To dává útratě přístup k používání tohoto tokenu, dokud schválení nezrušíte nebo dokud nevyprší jeho platnost.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Požadován plný přístup k NFT kolekci</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Neomezené schvalování tokenů</string>
+  <string name="transfer.review_request">Žádost o kontrolu</string>
+  <string name="wallet.portfolio.title">Portfolio</string>
+  <string name="wallet.portfolio.footer">Odhadovaná hodnota na základě aktuálních aktiv a tržních cen.</string>
 </resources>

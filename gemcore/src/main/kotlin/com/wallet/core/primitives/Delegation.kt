@@ -42,7 +42,8 @@ data class DelegationValidator (
 	val name: String,
 	val isActive: Boolean,
 	val commission: Double,
-	val apr: Double
+	val apr: Double,
+	val providerType: StakeProviderType
 )
 
 @Serializable

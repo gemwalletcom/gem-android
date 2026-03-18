@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NFTType
+import com.wallet.core.primitives.VerificationStatus
 
 @Entity(tableName = "nft_collection")
 data class DbNFTCollection(
@@ -13,11 +14,11 @@ data class DbNFTCollection(
     val name: String,
     val description: String? = null,
     val chain: Chain,
-    @ColumnInfo(name = "contract_address") val contractAddress: String,
-    @ColumnInfo(name = "image_url") val imageUrl: String,
-    @ColumnInfo(name = "preview_image_url") val previewImageUrl: String,
-    @ColumnInfo(name = "original_image_url") val originalSourceUrl: String,
-    @ColumnInfo(name = "is_verified") val isVerified: Boolean,
+    val contractAddress: String,
+    val imageUrl: String,
+    val previewImageUrl: String,
+    val originalSourceUrl: String,
+    val status:  VerificationStatus?,
 )
 
 @Entity(

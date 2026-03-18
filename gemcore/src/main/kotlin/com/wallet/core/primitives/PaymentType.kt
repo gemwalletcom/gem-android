@@ -15,5 +15,15 @@ enum class PaymentType(val string: String) {
 	GooglePay("google_pay"),
 	@SerialName("apple_pay")
 	ApplePay("apple_pay"),
+	@SerialName("cash_app")
+	CashApp("cash_app"),
+	@SerialName("venmo")
+	Venmo("venmo"),
+	@SerialName("sepa")
+	Sepa("sepa"),
+	@SerialName("ach")
+	Ach("ach"),
+	@SerialName("wire")
+	Wire("wire"),
 }
 

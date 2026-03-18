@@ -571,4 +571,14 @@
   <string name="charts.price.low">低い</string>
   <string name="charts.price.change">変化</string>
   <string name="contacts.add_to_contacts">連絡先に追加</string>
+  <string name="common.method">方法</string>
+  <string name="simulation.header.unlimited_asset">無制限 %@</string>
+  <string name="common.token">トークン</string>
+  <string name="common.suspicious_address">不審な住所</string>
+  <string name="simulation.warning.unlimited_token_approval.description">これにより、承認を取り消すか期限が切れるまで、支出者はこのトークンを使用できるようになります。</string>
+  <string name="simulation.warning.nft_collection_approval.title">NFTコレクションへのフルアクセスをリクエスト</string>
+  <string name="simulation.warning.unlimited_token_approval.title">無制限のトークン承認</string>
+  <string name="transfer.review_request">レビューリクエスト</string>
+  <string name="wallet.portfolio.title">ポートフォリオ</string>
+  <string name="wallet.portfolio.footer">現在の保有資産と市場価格に基づいた推定値。</string>
 </resources>

@@ -6,6 +6,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.StakeProviderType
 import uniffi.gemstone.GemDelegationState
 import uniffi.gemstone.GemGateway
 
@@ -29,6 +30,7 @@ class StakeService(
                     isActive = item.isActive,
                     commission = item.commission,
                     apr = item.apr,
+                    providerType = StakeProviderType.Stake,
                 )
             }
         } catch (_: Throwable) {

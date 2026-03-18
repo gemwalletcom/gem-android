@@ -571,4 +571,14 @@
   <string name="charts.price.low">Thấp</string>
   <string name="charts.price.change">Thay đổi</string>
   <string name="contacts.add_to_contacts">Thêm vào danh bạ</string>
+  <string name="common.method">Phương pháp</string>
+  <string name="simulation.header.unlimited_asset">Không giới hạn %@</string>
+  <string name="common.token">Mã thông báo</string>
+  <string name="common.suspicious_address">Địa chỉ đáng ngờ</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Điều này cho phép người chi tiêu có quyền sử dụng mã thông báo này cho đến khi bạn thu hồi sự chấp thuận hoặc mã thông báo hết hạn.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Yêu cầu quyền truy cập đầy đủ vào bộ sưu tập NFT</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Phê duyệt mã thông báo không giới hạn</string>
+  <string name="transfer.review_request">Yêu cầu xem xét</string>
+  <string name="wallet.portfolio.title">Danh mục đầu tư</string>
+  <string name="wallet.portfolio.footer">Giá trị ước tính dựa trên lượng hàng tồn kho hiện có và giá thị trường.</string>
 </resources>

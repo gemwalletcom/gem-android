@@ -144,6 +144,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.Transfer,
             TransactionType.Swap,
             TransactionType.StakeFreeze -> Crypto(assetInfo.balance.balance.available)
+            TransactionType.EarnDeposit,
             TransactionType.StakeDelegate -> if (assetInfo.stakeChain?.freezed() == true) {
                 Crypto(assetInfo.balance.balance.getDelegatePreparedAmount())
             } else {
@@ -157,6 +158,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRewards -> Crypto(BigInteger(delegation?.base?.rewards ?: "0"))
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
+            TransactionType.EarnWithdraw,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
             TransactionType.PerpetualOpenPosition -> throw IllegalArgumentException() // TODO: HyperCore
             TransactionType.PerpetualClosePosition -> throw IllegalArgumentException() // TODO: HyperCore
@@ -230,6 +232,7 @@ class AmountViewModel @Inject constructor(
                 Resource.Bandwidth -> Crypto(assetInfo.balance.balance.frozen)
                 Resource.Energy -> Crypto(assetInfo.balance.balance.locked)
             }
+            TransactionType.EarnDeposit,
             TransactionType.StakeDelegate -> if (assetInfo.stakeChain?.freezed() == true) {
                 Crypto(assetInfo.balance.balance.getDelegatePreparedAmount())
             } else {
@@ -242,6 +245,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.TokenApproval,
             TransactionType.StakeRewards,
             TransactionType.StakeWithdraw,
+            TransactionType.EarnWithdraw,
             TransactionType.AssetActivation,
             TransactionType.SmartContractCall,
             TransactionType.PerpetualOpenPosition,
@@ -307,6 +311,7 @@ class AmountViewModel @Inject constructor(
         val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue, maxAmount.value)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(destination!!, memo)
+            TransactionType.EarnDeposit,
             TransactionType.StakeDelegate -> builder.delegate(validator ?: return)
             TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return)
             TransactionType.StakeRewards -> {
@@ -315,6 +320,7 @@ class AmountViewModel @Inject constructor(
                 builder.rewards(validators)
             }
             TransactionType.StakeRedelegate -> builder.redelegate(validator!!, delegation!!)
+            TransactionType.EarnWithdraw,
             TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)
             TransactionType.AssetActivation -> builder.activate()
             TransactionType.StakeFreeze -> builder.freeze(resource.value)
@@ -396,6 +402,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.TokenApproval,
             TransactionType.StakeFreeze,
             TransactionType.StakeRewards -> Crypto(assetInfo.balance.balance.available)
+            TransactionType.EarnDeposit,
             TransactionType.StakeDelegate -> if (assetInfo.stakeChain?.freezed() == true) {
                 Crypto(assetInfo.balance.balance.getDelegatePreparedAmount())
             } else {
@@ -403,6 +410,7 @@ class AmountViewModel @Inject constructor(
             }
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
+            TransactionType.EarnWithdraw,
             TransactionType.StakeWithdraw -> if (BigInteger(assetInfo.balance.balance.frozen) > BigInteger.ZERO) {
                 Crypto(assetInfo.balance.balance.frozen)
             } else {

@@ -20,6 +20,13 @@ interface ShowSystemNotification {
         title: String?,
         subtitle: String?,
         channelId: String?,
+        data: PushNotificationData.Stake
+    )
+
+    fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
         data: PushNotificationData.Asset
     )
 

@@ -399,7 +399,7 @@
   <string name="info.asset_status.unverified.description">لم يتم التحقق من الرموز غير المُوثَّقة بشكل كافٍ من قِبل خدمات خارجية موثوقة. قد تظهر في محفظتك نتيجةً لعمليات الإنزال الجوي، أو التحويلات، أو الاستيراد اليدوي.</string>
   <string name="info.asset_status.suspicious.description">يتم تحديد الرموز المشبوهة أو غير المرغوب فيها على أنها عمليات احتيال محتملة أو أصول ضارة. قد تظهر في محفظتك نتيجةً لعمليات الإنزال الجوي أو التحويلات أو الاستيراد اليدوي.</string>
   <string name="info.insufficient_network_fee_balance.title">%s مطلوب</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة %s لتغطية رسوم الشبكة المدفوعة إلى %s عمال المناجم، وليس Gem Walletتأكد من أن لديك ما يكفي %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة %s لتغطية رسوم الشبكة المدفوعة لعمال التعدين %s ، وليس Gem Wallet. تأكد من أن لديك ما يكفي %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">رصيد غير كاف</string>
   <string name="info.insufficient_balance.description">ليس لديك رصيد كافٍ %s لإتمام هذه المعاملة. يُرجى شحن رصيدك أو استلامه أو استبداله في محفظتك والمحاولة مرة أخرى.</string>
@@ -571,4 +571,14 @@
   <string name="charts.price.low">قليل</string>
   <string name="charts.price.change">يتغير</string>
   <string name="contacts.add_to_contacts">أضف إلى جهات الاتصال</string>
+  <string name="common.method">طريقة</string>
+  <string name="simulation.header.unlimited_asset">غير محدود %@</string>
+  <string name="common.token">رمز مميز</string>
+  <string name="common.suspicious_address">عنوان مشبوه</string>
+  <string name="simulation.warning.unlimited_token_approval.description">يمنح هذا المنفق إمكانية استخدام هذا الرمز المميز حتى تقوم بإلغاء الموافقة أو تنتهي صلاحيته.</string>
+  <string name="simulation.warning.nft_collection_approval.title">تم طلب الوصول الكامل إلى مجموعة NFT</string>
+  <string name="simulation.warning.unlimited_token_approval.title">الموافقة على الرموز المميزة غير محدودة</string>
+  <string name="transfer.review_request">طلب مراجعة</string>
+  <string name="wallet.portfolio.title">مَلَفّ</string>
+  <string name="wallet.portfolio.footer">القيمة التقديرية مبنية على الحيازات الحالية وأسعار السوق.</string>
 </resources>

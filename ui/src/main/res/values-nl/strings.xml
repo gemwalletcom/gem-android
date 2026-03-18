@@ -571,4 +571,14 @@
   <string name="charts.price.low">Laag</string>
   <string name="charts.price.change">Wijziging</string>
   <string name="contacts.add_to_contacts">Toevoegen aan contacten</string>
+  <string name="common.method">Methode</string>
+  <string name="simulation.header.unlimited_asset">Onbeperkt %@</string>
+  <string name="common.token">Token</string>
+  <string name="common.suspicious_address">Verdacht adres</string>
+  <string name="simulation.warning.unlimited_token_approval.description">Dit geeft de gebruiker toegang tot het gebruik van dit token totdat u de goedkeuring intrekt of het token verloopt.</string>
+  <string name="simulation.warning.nft_collection_approval.title">Volledige toegang tot de NFT-collectie aangevraagd</string>
+  <string name="simulation.warning.unlimited_token_approval.title">Onbeperkte tokengoedkeuring</string>
+  <string name="transfer.review_request">Beoordelingsverzoek</string>
+  <string name="wallet.portfolio.title">Portefeuille</string>
+  <string name="wallet.portfolio.footer">Geschatte waarde op basis van de huidige portefeuille en marktprijzen.</string>
 </resources>

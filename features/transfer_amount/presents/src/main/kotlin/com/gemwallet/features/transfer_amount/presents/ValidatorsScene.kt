@@ -15,6 +15,7 @@ import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.features.transfer_amount.models.ValidatorsUIState
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.StakeProviderType
 
 @Composable
 fun ValidatorsScene(
@@ -74,6 +75,7 @@ fun PreviewValidatorsScene() {
                         isActive = true,
                         commission = 0.5,
                         apr = 9.10,
+                        providerType = StakeProviderType.Stake,
                     ),
                     DelegationValidator(
                         chain = Chain.Sei,
@@ -82,6 +84,7 @@ fun PreviewValidatorsScene() {
                         isActive = true,
                         commission = 0.5,
                         apr = 10.000,
+                        providerType = StakeProviderType.Stake,
                     ),
                     DelegationValidator(
                         chain = Chain.Sei,
@@ -90,6 +93,7 @@ fun PreviewValidatorsScene() {
                         isActive = true,
                         commission = 0.5,
                         apr = 9.50,
+                        providerType = StakeProviderType.Stake,
                     ),
                 ),
             ),

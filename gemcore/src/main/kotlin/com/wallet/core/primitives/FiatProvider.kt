@@ -11,6 +11,23 @@ import kotlinx.serialization.SerialName
 data class FiatProvider (
 	val id: String,
 	val name: String,
-	val imageUrl: String? = null
+	val imageUrl: String? = null,
+	val paymentMethods: List<PaymentType>
 )
+
+@Serializable
+enum class FiatProviderName(val string: String) {
+	@SerialName("mercuryo")
+	Mercuryo("mercuryo"),
+	@SerialName("transak")
+	Transak("transak"),
+	@SerialName("moonpay")
+	MoonPay("moonpay"),
+	@SerialName("banxa")
+	Banxa("banxa"),
+	@SerialName("paybis")
+	Paybis("paybis"),
+	@SerialName("flashnet")
+	Flashnet("flashnet"),
+}
 

@@ -24,6 +24,7 @@ import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.StakeProviderType
 
 @Composable
 fun ValidatorItem(
@@ -112,6 +113,7 @@ fun PreviewValidatorItem() {
                 isActive = true,
                 commission = 0.5,
                 apr = 9.10,
+                providerType = StakeProviderType.Stake,
             ),
             isSelected = false,
             listPosition = ListPosition.Middle,
@@ -132,6 +134,7 @@ fun PreviewValidatorItemSelected() {
                 isActive = true,
                 commission = 0.5,
                 apr = 9.10,
+                providerType = StakeProviderType.Stake,
             ),
             listPosition = ListPosition.Single,
             isSelected = true,
