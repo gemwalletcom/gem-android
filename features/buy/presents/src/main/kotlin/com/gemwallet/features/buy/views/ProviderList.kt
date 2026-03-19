@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import com.gemwallet.android.domains.asset.getFiatProviderIcon
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
@@ -42,7 +43,7 @@ fun ProviderList(
                     title = {
                         PropertyTitleText(
                             text = item.provider.name,
-                            trailing = { AsyncImage("file:///android_asset/fiat/${item.provider.name.lowercase()}.png") }
+                            trailing = { AsyncImage(item.provider.getFiatProviderIcon()) }
                         )
                     },
                     data = {

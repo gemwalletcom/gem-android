@@ -66,7 +66,7 @@ fun Asset.getIconUrl(): String {
 
 fun Asset.getSupportIconUrl(): String? = id.getSupportIconUrl()
 
-fun FiatProvider.getFiatProviderIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
+fun FiatProvider.getFiatProviderIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.svg"
 
 fun SwapperProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
