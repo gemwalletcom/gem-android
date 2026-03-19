@@ -78,7 +78,7 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.ACROSS -> "across"
         SwapperProvider.OKU -> "oku"
         SwapperProvider.WAGMI -> "wagmi"
-        SwapperProvider.CETUS_AGGREGATOR, SwapperProvider.CETUS -> "cetus"
+        SwapperProvider.CETUS_AGGREGATOR -> "cetus"
         SwapperProvider.STONFI_V2 -> "stonfi"
         SwapperProvider.MAYAN -> "mayan"
         SwapperProvider.CHAINFLIP -> "chainflip"

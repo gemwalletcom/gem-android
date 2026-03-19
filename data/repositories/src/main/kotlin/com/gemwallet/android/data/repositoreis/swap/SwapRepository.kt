@@ -71,7 +71,7 @@ class SwapRepository(
     }
 
     suspend fun getQuoteData(quote: SwapperQuote, wallet: Wallet): GemSwapQuoteData {
-        val permit = gemSwapper.fetchPermit2ForQuote(quote = quote)
+        val permit = gemSwapper.getPermit2ForQuote(quote = quote)
 
         if (permit == null) {
             return gemSwapper.getQuoteData(quote, FetchQuoteData.None)

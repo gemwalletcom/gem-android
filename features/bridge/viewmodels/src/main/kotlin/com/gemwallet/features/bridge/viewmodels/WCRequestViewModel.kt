@@ -79,25 +79,25 @@ class WCRequestViewModel @Inject constructor(
             val request = when (action) {
                 is WalletConnectAction.ChainOperation -> {
                     when (action.operation) {
-                        WalletConnectChainOperation.ADD_CHAIN -> {}
-                        WalletConnectChainOperation.SWITCH_CHAIN -> onSwitch(sessionRequest)
-                        WalletConnectChainOperation.GET_CHAIN_ID -> {}
+                        WalletConnectChainOperation.AddChain -> {}
+                        is WalletConnectChainOperation.SwitchChain -> onSwitch(sessionRequest)
+                        WalletConnectChainOperation.GetChainId -> {}
                     }
                     onCancel(null)
                     return@launch
                 }
 
                 is WalletConnectAction.SignMessage -> {
-                    try {
-                        WalletConnect().validateSignMessage(
-                            action.chain,
-                            signType = action.signType,
-                            action.data,
-                            sessionDomain = sessionRequest.peerMetaData?.url ?: ""
-                        )
-                    } catch (_: Throwable) {
-                        throw BridgeRequestError.ScamSession
-                    }
+//                    try {
+//                        WalletConnect().validateSignMessage( // TODO: Ask documentation
+//                            action.chain,
+//                            signType = action.signType,
+//                            action.data,
+//                            sessionDomain = sessionRequest.peerMetaData?.url ?: ""
+//                        )
+//                    } catch (_: Throwable) {
+//                        throw BridgeRequestError.ScamSession
+//                    }
                     WCRequest.SignMessage(sessionRequest, account, verificationStatus, action)
                 }
 
