@@ -7,6 +7,7 @@ interface AssetInfoDataAggregate {
     val id: AssetId
     val title: String
     val icon: Any?
+    val supportIcon: Any?
     val balance: String
     val balanceEquivalent: String
     val isZeroBalance: Boolean

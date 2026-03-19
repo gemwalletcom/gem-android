@@ -4,6 +4,8 @@ import androidx.compose.runtime.Stable
 import com.gemwallet.android.application.assets.coordinators.GetActiveAssetsInfo
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.domains.asset.aggregates.AssetInfoDataAggregate
+import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.domains.asset.getSupportIconUrl
 import com.gemwallet.android.domains.price.values.PriceableValue
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.format
@@ -30,7 +32,10 @@ class AssetInfoDataAggregateImpl(
 
     override val title: String = assetInfo.asset.name
 
-    override val icon: Any = assetInfo.asset
+    override val icon: Any = assetInfo.asset.getIconUrl()
+
+    override val supportIcon: Any?
+        get() = assetInfo.asset.getSupportIconUrl()
 
     override val balance: String
         get() = if (hideBalance) "*****" else assetInfo.asset.format(

@@ -39,7 +39,13 @@ fun AssetListItem(
     ListItem(
         modifier = modifier,
         listPosition = listPosition,
-        leading = @Composable { IconWithBadge(asset.icon) },
+        leading = @Composable {
+            IconWithBadge(
+                icon = asset.icon,
+                supportIcon = asset.supportIcon,
+            )
+
+        },
         title = @Composable { ListItemTitleText(asset.title) },
         subtitle = asset.price?.let {
             {
