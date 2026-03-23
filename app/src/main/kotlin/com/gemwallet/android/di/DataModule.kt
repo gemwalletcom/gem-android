@@ -3,12 +3,10 @@ package com.gemwallet.android.di
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
 import com.gemwallet.android.application.pricealerts.coordinators.SyncPriceAlerts
 import com.gemwallet.android.blockchain.clients.algorand.AlgorandSignClient
-import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignClient
 import com.gemwallet.android.blockchain.clients.cardano.CardanoSignClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignClient
-import com.gemwallet.android.blockchain.clients.hyper.HyperCoreSignClient
 import com.gemwallet.android.blockchain.clients.near.NearSignClient
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotSignClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignClient
@@ -20,6 +18,7 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.services.BroadcastService
 import com.gemwallet.android.blockchain.services.NodeStatusService
 import com.gemwallet.android.blockchain.services.SignClientProxy
+import com.gemwallet.android.blockchain.services.SignService
 import com.gemwallet.android.blockchain.services.SignerPreloaderProxy
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.transactions.SyncTransactions
@@ -66,7 +65,7 @@ object DataModule {
     fun provideSignService(
         assetsRepository: AssetsRepository,
     ): SignClientProxy = SignClientProxy(
-        clients = Chain.available().map {
+        clients = Chain.available().mapNotNull {
             when (it.toChainType()) {
                 ChainType.Ethereum -> EvmSignClient(it)
                 ChainType.Bitcoin -> BitcoinSignClient(it)
@@ -74,17 +73,18 @@ object DataModule {
                 ChainType.Cosmos -> CosmosSignClient(it)
                 ChainType.Ton -> TonSignClient(it)
                 ChainType.Tron -> TronSignClient(it)
-                ChainType.Aptos -> AptosSignClient(it)
-                ChainType.Sui -> SuiSignClient(it)
+
                 ChainType.Xrp -> XrpSignClient(it)
                 ChainType.Near -> NearSignClient(it)
                 ChainType.Algorand -> AlgorandSignClient(it)
                 ChainType.Stellar -> StellarSignClient(it)
                 ChainType.Polkadot -> PolkadotSignClient(it)
                 ChainType.Cardano -> CardanoSignClient(it)
-                ChainType.HyperCore -> HyperCoreSignClient(it)
+                ChainType.Aptos,
+                ChainType.Sui,
+                ChainType.HyperCore -> return@mapNotNull null
             }
-        },
+        } + listOf(SignService()),
     )
 
     @Singleton

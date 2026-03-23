@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.blockchain.services.mapper.toUtxo
+import com.gemwallet.android.domains.asset.toUtxo
 import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.model.GemPlatformErrors
 import com.wallet.core.primitives.UTXO

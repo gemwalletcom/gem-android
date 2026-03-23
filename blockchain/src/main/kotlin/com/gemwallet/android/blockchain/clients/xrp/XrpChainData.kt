@@ -4,13 +4,20 @@ import com.gemwallet.android.model.ChainSignData
 import uniffi.gemstone.GemTransactionLoadMetadata
 
 data class XrpChainData(
-    val sequence: Int,
-    val blockNumber: Int,
-) : ChainSignData
+    val sequence: ULong,
+    val blockNumber: ULong,
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Xrp(
+            sequence = sequence,
+            blockNumber = blockNumber,
+        )
+    }
+}
 
 fun GemTransactionLoadMetadata.Xrp.toChainData(): XrpChainData {
     return XrpChainData(
-        sequence = sequence.toInt(),
-        blockNumber = blockNumber.toInt(),
+        sequence = sequence,
+        blockNumber = blockNumber,
     )
 }

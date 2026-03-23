@@ -6,7 +6,14 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 data class StellarChainData(
     val sequence: ULong,
     val isDestinationAddressExist: Boolean,
-) : ChainSignData
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Stellar(
+            sequence = sequence,
+            isDestinationAddressExist = isDestinationAddressExist,
+        )
+    }
+}
 
 fun GemTransactionLoadMetadata.Stellar.toChainData(): StellarChainData {
     return StellarChainData(

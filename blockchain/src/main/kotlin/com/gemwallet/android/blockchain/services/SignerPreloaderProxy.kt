@@ -18,45 +18,24 @@ import com.gemwallet.android.blockchain.clients.sui.toChainData
 import com.gemwallet.android.blockchain.clients.ton.toChainData
 import com.gemwallet.android.blockchain.clients.tron.toChainData
 import com.gemwallet.android.blockchain.clients.xrp.toChainData
-import com.gemwallet.android.blockchain.services.mapper.toGem
-import com.gemwallet.android.domains.confirm.toGem
-import com.gemwallet.android.domains.stake.toGem
 import com.gemwallet.android.ext.toChainType
-import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.FeePriority
-import com.wallet.core.primitives.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import uniffi.gemstone.GemApprovalData
-import uniffi.gemstone.GemFreezeData
-import uniffi.gemstone.GemFreezeType
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemGatewayEstimateFee
-import uniffi.gemstone.GemResource
-import uniffi.gemstone.GemStakeType
-import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadFee
 import uniffi.gemstone.GemTransactionLoadInput
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
-import uniffi.gemstone.GemTransferDataExtra
-import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
-import uniffi.gemstone.PerpetualConfirmData
-import uniffi.gemstone.PerpetualDirection
-import uniffi.gemstone.PerpetualReduceData
-import uniffi.gemstone.PerpetualType
 import uniffi.gemstone.SwapperException.NotSupportedChain
-import uniffi.gemstone.TransferDataOutputAction
-import uniffi.gemstone.TransferDataOutputType
 
 class SignerPreloaderProxy(
     private val gateway: GemGateway,
@@ -70,7 +49,7 @@ class SignerPreloaderProxy(
         val destination = params.destination()?.address ?: throw java.lang.IllegalArgumentException()
 
         try {
-            val inputType = getInputType(params)
+            val inputType = params.toDto()
             val metadata = gateway.getTransactionPreload(
                 chain = gemChain,
                 input = GemTransactionPreloadInput(
@@ -115,146 +94,6 @@ class SignerPreloaderProxy(
         }
     }
 
-    private fun getInputType(params: ConfirmParams): GemTransactionInputType {
-        val gemAsset = params.asset.toGem()
-        val chain = params.assetId.chain.string
-
-        return when (params) {
-            is ConfirmParams.Stake.DelegateParams -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.Delegate(params.validator.toGem(chain))
-            )
-            is ConfirmParams.Stake.RedelegateParams -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.Redelegate(
-                    delegation = params.delegation.toGem(chain),
-                    toValidator = params.dstValidator.toGem(chain)
-                )
-            )
-            is ConfirmParams.Stake.RewardsParams -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.WithdrawRewards(
-                    validators = params.validators.map { it.toGem(chain) }
-                )
-            )
-            is ConfirmParams.Stake.UndelegateParams -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.Undelegate(
-                    delegation = params.delegation.toGem(chain),
-                )
-            )
-            is ConfirmParams.Stake.WithdrawParams -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.Withdraw(params.delegation.toGem(chain))
-            )
-            is ConfirmParams.Stake.Freeze -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.Freeze(
-                    freezeData = GemFreezeData(
-                        freezeType = GemFreezeType.FREEZE,
-                        resource = when (params.resource) {
-                            Resource.Energy -> GemResource.ENERGY
-                            Resource.Bandwidth -> GemResource.BANDWIDTH
-                        }
-                    )
-                )
-            )
-            is ConfirmParams.Stake.Unfreeze -> GemTransactionInputType.Stake(
-                asset = gemAsset,
-                stakeType = GemStakeType.Freeze(
-                    freezeData = GemFreezeData(
-                        freezeType = GemFreezeType.UNFREEZE,
-                        resource = when (params.resource) {
-                            Resource.Energy -> GemResource.ENERGY
-                            Resource.Bandwidth -> GemResource.BANDWIDTH
-                        }
-                    )
-                )
-            )
-            is ConfirmParams.SwapParams -> GemTransactionInputType.Swap(
-                fromAsset = params.fromAsset.toGem(),
-                toAsset = params.toAsset.toGem(),
-                swapData = params.toGem(),
-            )
-            is ConfirmParams.TokenApprovalParams -> GemTransactionInputType.TokenApprove(
-                gemAsset,
-                GemApprovalData(
-                    params.assetId.tokenId!!,
-                    spender = params.contract,
-                    value = params.amount.toString(),
-                )
-            )
-            is ConfirmParams.TransferParams.Generic -> GemTransactionInputType.Generic(
-                asset = gemAsset,
-                metadata = GemWalletConnectionSessionAppMetadata(
-                    name = params.name,
-                    description = params.description,
-                    url = params.url,
-                    icon = params.icon,
-                ),
-                extra = GemTransferDataExtra(
-                    gasLimit = null,
-                    gasPrice = null,
-                    data = params.memo?.let { data ->
-                        if (data.has0xPrefix()) {
-                            try {
-                                return@let data.decodeHex()
-                            } catch (_: Error) { }
-                        }
-                        data.toByteArray()
-                    },
-                    outputType = when (params.inputType) {
-                        ConfirmParams.TransferParams.InputType.Signature -> TransferDataOutputType.SIGNATURE
-                        ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputType.ENCODED_TRANSACTION
-                        null -> throw IllegalArgumentException("Not supported ${params.inputType}")
-                    },
-                    outputAction = when (params.inputType) {
-                        ConfirmParams.TransferParams.InputType.Signature -> TransferDataOutputAction.SIGN
-                        ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputAction.SEND
-                        null -> throw IllegalArgumentException("Not supported ${params.inputType}")
-                    },
-                    to = params.destination().address
-                ),
-            )
-            is ConfirmParams.Activate,
-            is ConfirmParams.NftParams,
-            is ConfirmParams.TransferParams.Native,
-            is ConfirmParams.TransferParams.Token -> GemTransactionInputType.Transfer(gemAsset)
-            is ConfirmParams.PerpetualParams.Open -> GemTransactionInputType.Perpetual(
-                asset = gemAsset,
-                perpetualType = PerpetualType.Open(
-                    v1 = params.order.toGem()
-                )
-            )
-            is ConfirmParams.PerpetualParams.Close -> GemTransactionInputType.Perpetual(
-                asset = gemAsset,
-                perpetualType = PerpetualType.Close(
-                    v1 = params.order.toGem()
-                )
-            )
-            is ConfirmParams.PerpetualParams.Modify -> when (params.action) {
-                ConfirmParams.PerpetualParams.OrderAction.Increase ->  GemTransactionInputType.Perpetual(
-                    asset = gemAsset,
-                    perpetualType = PerpetualType.Increase(
-                        v1 = params.order.toGem()
-                    )
-                )
-                ConfirmParams.PerpetualParams.OrderAction.Decrease -> GemTransactionInputType.Perpetual(
-                    asset = gemAsset,
-                    perpetualType = PerpetualType.Reduce(
-                        v1 = PerpetualReduceData(
-                            data = params.order.toGem(),
-                            positionDirection = when (params.order.direction) {
-                                com.wallet.core.primitives.PerpetualDirection.Long -> PerpetualDirection.LONG
-                                com.wallet.core.primitives.PerpetualDirection.Short -> PerpetualDirection.SHORT
-                            }
-                        )
-                    )
-                )
-                else -> { throw IllegalArgumentException() }
-            }
-        }
-    }
 
     private fun getEstimateFee(chain: Chain): GemGatewayEstimateFee {
         return when (chain.toChainType()) {
@@ -301,7 +140,7 @@ private sealed interface FeeType {
             priority: FeePriority,
             gemFee: GemTransactionLoadFee
         ): Fee {
-            return Fee(
+            return Fee.Plain(
                 feeAssetId = feeAssetId,
                 priority = priority,
                 amount = gemFee.fee.toBigInteger(),
@@ -317,7 +156,7 @@ private sealed interface FeeType {
             priority: FeePriority,
             gemFee: GemTransactionLoadFee
         ): Fee {
-            return GasFee(
+            return Fee.Regular(
                 feeAssetId = feeAssetId,
                 priority = priority,
                 maxGasPrice = (gemFee.gasPriceType as GemGasPriceType.Regular).gasPrice.toBigInteger(),
@@ -336,7 +175,7 @@ private sealed interface FeeType {
             gemFee: GemTransactionLoadFee
         ): Fee {
             return (gemFee.gasPriceType as GemGasPriceType.Eip1559).let { price ->
-                GasFee(
+                Fee.Eip1559(
                     feeAssetId = feeAssetId,
                     priority = priority,
                     maxGasPrice = price.gasPrice.toBigInteger(),
@@ -357,19 +196,18 @@ private sealed interface FeeType {
             gemFee: GemTransactionLoadFee
         ): Fee {
             return (gemFee.gasPriceType as GemGasPriceType.Solana).let { price ->
-                GasFee(
+                Fee.Solana(
                     feeAssetId = feeAssetId,
                     priority = priority,
                     maxGasPrice = price.gasPrice.toBigInteger(),
                     minerFee = price.priorityFee.toBigInteger(),
-//                  unitFee = price.unitPrice.toBigInteger(),
+                    unitFee = price.unitPrice.toBigInteger(),
                     limit = gemFee.gasLimit.toBigInteger(),
                     amount = gemFee.fee.toBigInteger(),
                     options = gemFee.options.options.mapKeys { it.key.name }.mapValues { it.value.toBigInteger() } // TODO: Change keys
                 )
             }
         }
-
     }
 }
 
@@ -410,23 +248,3 @@ private fun GemTransactionLoadMetadata.toChainData() = when (this) {
     is GemTransactionLoadMetadata.Hyperliquid -> toChainData()
     GemTransactionLoadMetadata.None -> throw NotSupportedChain()
 }
-
-fun ConfirmParams.PerpetualParams.Order.toGem() = PerpetualConfirmData(
-    direction = when (direction) {
-        com.wallet.core.primitives.PerpetualDirection.Long -> PerpetualDirection.LONG
-        com.wallet.core.primitives.PerpetualDirection.Short -> PerpetualDirection.SHORT
-    },
-    baseAsset = baseAsset.toGem(),
-    assetIndex = assetIndex,
-    price = marketPrice.toString(),
-    fiatValue = fiatValue,
-    size = size.toString(),
-    slippage = slippage,
-    leverage = leverage.toUByte(),
-    pnl = null,
-    entryPrice = null,
-    marketPrice = marketPrice,
-    marginAmount = marginAmount,
-    takeProfit = takeProfit,
-    stopLoss = stopLoss,
-)

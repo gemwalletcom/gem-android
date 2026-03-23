@@ -1,12 +1,20 @@
-package com.gemwallet.android.blockchain.services.mapper
+package com.gemwallet.android.domains.asset
 
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.NFTAsset
+import com.wallet.core.primitives.NFTType
 import com.wallet.core.primitives.UTXO
+import uniffi.gemstone.Chain
 import uniffi.gemstone.GemAsset
 import uniffi.gemstone.GemAssetType
+import uniffi.gemstone.GemNftAsset
+import uniffi.gemstone.GemNftAttribute
+import uniffi.gemstone.GemNftImages
+import uniffi.gemstone.GemNftResource
+import uniffi.gemstone.GemNftType
 import uniffi.gemstone.GemUtxo
 
 fun Asset.toGem() = GemAsset(
@@ -30,6 +38,36 @@ fun Asset.toGem() = GemAsset(
         AssetType.ASA -> GemAssetType.ASA
         AssetType.PERPETUAL -> GemAssetType.PERPETUAL
         AssetType.SPOT -> throw IllegalAccessException()
+    }
+)
+
+fun NFTAsset.toGem() = GemNftAsset(
+    id = id,
+    collectionId = collectionId,
+    contractAddress = contractAddress,
+    tokenId = tokenId,
+    tokenType = when (tokenType) {
+        NFTType.ERC721 -> GemNftType.ERC721
+        NFTType.ERC1155 -> GemNftType.ERC1155
+        NFTType.SPL -> GemNftType.SPL
+        NFTType.JETTON -> GemNftType.JETTON
+    },
+    name = name,
+    description = description,
+    chain = chain.string,
+    resource = GemNftResource(
+        resource.url,
+        resource.mimeType,
+    ),
+    images = GemNftImages(
+        GemNftResource(images.preview.url, images.preview.mimeType)
+    ),
+    attributes = attributes.map {
+        GemNftAttribute(
+            name = it.name,
+            value = it.value,
+            percentage = it.percentage,
+        )
     }
 )
 
@@ -57,9 +95,18 @@ fun GemAsset.toDTO() = Asset(
 
 fun GemUtxo.toUtxo(): UTXO = UTXO(
     transactionId,
-    vout.toInt(),
+    vout,
+    value,
+    address
+)
+
+fun UTXO.toGem(): GemUtxo = GemUtxo(
+    transaction_id,
+    vout,
     value,
     address
 )
 
 fun List<GemUtxo>.toUtxo() = map { it.toUtxo() }
+
+fun List<UTXO>.toGem() = map { it.toGem() }

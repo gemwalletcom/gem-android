@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.services.mapper.toDTO
+import com.gemwallet.android.domains.asset.toDTO
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetId

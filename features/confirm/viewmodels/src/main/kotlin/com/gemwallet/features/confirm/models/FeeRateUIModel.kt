@@ -5,7 +5,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.feeUnitType
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignMode
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeeUnitType
@@ -30,7 +29,12 @@ data class FeeRateUIModel(
         }
         val value = when (asset.chain) {
             Chain.Solana -> fee.amount
-            else -> (fee as? GasFee)?.maxGasPrice ?: fee.amount
+            else -> when (fee) {
+                is Fee.Eip1559 -> fee.maxGasPrice
+                is Fee.Plain -> fee.amount
+                is Fee.Regular -> fee.maxGasPrice
+                is Fee.Solana -> fee.maxGasPrice
+            }
         }
         val formattedValue = Crypto(value).format(decimals, symbol, 8, -1, SignMode.NoSign, true)
         return formattedValue

@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
@@ -238,7 +237,7 @@ class CosmosSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val meta = chainData as CosmosChainData
-        val fee = fee as GasFee
+        val fee = fee as Fee.Regular
         val feeAmount = fee.amount
         val gas = fee.limit.toLong() * messages.size
         val coin = WCChainTypeProxy().invoke(chain)

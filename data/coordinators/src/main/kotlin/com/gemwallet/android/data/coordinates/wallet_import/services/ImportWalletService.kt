@@ -5,6 +5,7 @@ import android.util.Log
 import com.gemwallet.android.application.wallet_import.coordinators.GetImportWalletState
 import com.gemwallet.android.application.wallet_import.services.ImportAssets
 import com.gemwallet.android.application.wallet_import.values.ImportWalletState
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -37,6 +38,7 @@ class ImportWalletService(
     private val gemDeviceApiClient: GemDeviceApiClient,
     private val searchTokensCase: SearchTokensCase,
     private val assetsRepository: AssetsRepository,
+    private val syncSubscription: SyncSubscription,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler {_, _ -> }),
 ) : ImportAssets, GetImportWalletState {
 
@@ -44,6 +46,7 @@ class ImportWalletService(
 
     override fun importAssets(wallet: Wallet) {
         val job = scope.launch {
+            syncSubscription.syncSubscription(listOf(wallet))
             val currency = sessionRepository.getCurrentCurrency()
             try {
                 val availableAssetsId = gemDeviceApiClient.getAssets(walletId = wallet.id, 0)

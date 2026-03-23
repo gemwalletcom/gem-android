@@ -2,14 +2,13 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.SignClient
-import com.gemwallet.android.blockchain.services.mapper.toGem
 import com.gemwallet.android.domains.asset.subtype
+import com.gemwallet.android.domains.asset.toGem
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -65,7 +64,7 @@ class TronSignClient(
             this.toAddress = params.destination().address
             this.amount = ByteString.copyFrom(finalAmount.toByteArray())
         }.build()
-        return signTransfer(chainData, contract, params.memo, (fee as GasFee).limit.toLong(),  privateKey)
+        return signTransfer(chainData, contract, params.memo, (fee as Fee.Regular).limit.toLong(),  privateKey)
     }
 
     private fun signTransfer(
@@ -82,7 +81,7 @@ class TronSignClient(
                 this.timestamp = chainData.blockTimestamp.toLong()
                 this.version = chainData.blockVersion.toInt()
                 this.witnessAddress = ByteString.copyFrom(chainData.witnessAddress.decodeHex())
-                this.txTrieRoot = ByteString.copyFrom(chainData.txTrieRoot.decodeHex())
+                this.txTrieRoot = ByteString.copyFrom(chainData.transactionTreeRoot.decodeHex())
             }.build()
             when (contract) {
                 is TransferTRC20Contract -> this.transferTrc20Contract = contract
@@ -111,7 +110,7 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val votes = (chainData.tronStakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
+        val votes = (chainData.stakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
         val voteContract = createVoteContract(votes, params.from.address)
         return listOf(
             sign(chainData, voteContract, fee, privateKey),
@@ -126,7 +125,7 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val votes = (chainData.tronStakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
+        val votes = (chainData.stakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
         return listOfNotNull(
             if (votes.isEmpty()) null else createVoteContract(votes,params.from.address),
         )
@@ -143,7 +142,7 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val votes = (chainData.tronStakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
+        val votes = (chainData.stakeData as? TronStakeData.Votes)?.v1 ?: throw IllegalArgumentException()
         val voteContract = createVoteContract(votes, params.from.address)
         return listOf(sign(chainData, voteContract, fee, privateKey))
     }
@@ -252,7 +251,7 @@ class TronSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = (chainData as TronChainData).toGem()
+        val metadata = (chainData as TronChainData).toDto()
         val appMetadata = GemWalletConnectionSessionAppMetadata(
             name = params.name,
             description = params.description,
@@ -286,7 +285,7 @@ class TronSignClient(
             senderAddress = params.from.address,
             destinationAddress = params.destination.address,
             value = finalAmount.toString(),
-            gasPrice = GemGasPriceType.Regular((fee as? GasFee)?.maxGasPrice.toString()),
+            gasPrice = GemGasPriceType.Regular((fee as? Fee.Regular)?.maxGasPrice.toString()),
             memo = null,
             isMaxValue = params.useMaxAmount,
             metadata = metadata,
@@ -325,12 +324,12 @@ class TronSignClient(
                 this.timestamp = chainData.blockTimestamp.toLong()
                 this.version = chainData.blockVersion.toInt()
                 this.witnessAddress = ByteString.copyFrom(chainData.witnessAddress.decodeHex())
-                this.txTrieRoot = ByteString.copyFrom(chainData.txTrieRoot.decodeHex())
+                this.txTrieRoot = ByteString.copyFrom(chainData.transactionTreeRoot.decodeHex())
             }.build()
 
             this.expiration = chainData.blockTimestamp.toLong() + 10 * DateUtils.HOUR_IN_MILLIS
             this.timestamp = chainData.blockTimestamp.toLong()
-            this.feeLimit = fee.amount.toLong()
+            this.feeLimit = (fee as Fee.Regular).amount.toLong()
         }
         val signInput = Tron.SigningInput.newBuilder().apply {
             this.transaction = transaction.build()

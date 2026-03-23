@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.services.mapper.toDTO
+import com.gemwallet.android.domains.asset.toDTO
 import com.gemwallet.android.ext.toAssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChartCandleStick

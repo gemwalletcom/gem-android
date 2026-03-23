@@ -16,7 +16,7 @@ import uniffi.gemstone.GemSwapQuoteDataType
 import java.math.BigInteger
 
 class SignClientProxy(
-    private val clients: List<SignClient>
+    private val clients: List<SignClient>,
 ) {
 
     suspend fun signMessage(

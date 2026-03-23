@@ -1,9 +1,15 @@
 package com.gemwallet.android.model
 
+import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.toGem
+import com.gemwallet.android.domains.confirm.toGem
+import com.gemwallet.android.domains.stake.toGem
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
+import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.model.ConfirmParams.PerpetualParams.OrderAction
 import com.gemwallet.android.serializer.BigIntegerSerializer
 import com.gemwallet.android.serializer.jsonEncoder
@@ -20,8 +26,23 @@ import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
+import uniffi.gemstone.GemAccountDataType
+import uniffi.gemstone.GemApprovalData
+import uniffi.gemstone.GemFreezeData
+import uniffi.gemstone.GemFreezeType
+import uniffi.gemstone.GemResource
+import uniffi.gemstone.GemStakeType
 import uniffi.gemstone.GemSwapQuoteDataType
+import uniffi.gemstone.GemTransactionInputType
+import uniffi.gemstone.GemTransactionInputType.*
+import uniffi.gemstone.GemTransferDataExtra
+import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
+import uniffi.gemstone.PerpetualConfirmData
+import uniffi.gemstone.PerpetualType
+import uniffi.gemstone.PerpetualType.*
 import uniffi.gemstone.SwapperProvider
+import uniffi.gemstone.TransferDataOutputAction
+import uniffi.gemstone.TransferDataOutputType
 import java.math.BigInteger
 import java.util.Base64
 
@@ -159,6 +180,8 @@ sealed class ConfirmParams() {
         }
     }
 
+    abstract fun toDto(): GemTransactionInputType
+
     @Serializable
     sealed class TransferParams : ConfirmParams() {
         abstract val destination: DestinationAddress
@@ -190,6 +213,39 @@ sealed class ConfirmParams() {
             val icon: String,
             val gasLimit: String?,
         ) : TransferParams() {
+            override fun toDto(): GemTransactionInputType = Generic(
+                asset = asset.toGem(),
+                metadata = GemWalletConnectionSessionAppMetadata(
+                    name = name,
+                    description = description,
+                    url = url,
+                    icon = icon,
+                ),
+                extra = GemTransferDataExtra(
+                    gasLimit = null,
+                    gasPrice = null,
+                    data = memo?.let { data ->
+                        if (data.has0xPrefix()) {
+                            try {
+                                return@let data.decodeHex()
+                            } catch (_: Error) { }
+                        }
+                        data.toByteArray()
+                    },
+                    outputType = when (inputType) {
+                        InputType.Signature -> TransferDataOutputType.SIGNATURE
+                        InputType.EncodeTransaction -> TransferDataOutputType.ENCODED_TRANSACTION
+                        null -> throw IllegalArgumentException("Not supported $inputType")
+                    },
+                    outputAction = when (inputType) {
+                        InputType.Signature -> TransferDataOutputAction.SIGN
+                        InputType.EncodeTransaction -> TransferDataOutputAction.SEND
+                        null -> throw IllegalArgumentException("Not supported $inputType")
+                    },
+                    to = destination().address
+                ),
+            )
+
             override fun hashCode(): Int {
                 var result = asset.hashCode()
                 result = 31 * result + requestId.hashCode()
@@ -205,6 +261,7 @@ sealed class ConfirmParams() {
                 result = 31 * result + (gasLimit?.hashCode() ?: 0)
                 return result
             }
+
         }
 
         @Serializable
@@ -216,7 +273,10 @@ sealed class ConfirmParams() {
             override val memo: String? = null,
             override val inputType: InputType? = null,
             override val useMaxAmount: Boolean = false,
-        ) : TransferParams()
+        ) : TransferParams() {
+            override fun toDto(): GemTransactionInputType = GemTransactionInputType.Transfer(asset.toGem())
+
+        }
 
         @Serializable
         class Token(
@@ -227,7 +287,10 @@ sealed class ConfirmParams() {
             override val memo: String? = null,
             override val useMaxAmount: Boolean = false,
             override val inputType: InputType? = null,
-        ) : TransferParams()
+        ) : TransferParams() {
+            override fun toDto(): GemTransactionInputType = Transfer(asset.toGem())
+
+        }
 
         @Serializable
         enum class InputType {
@@ -245,6 +308,15 @@ sealed class ConfirmParams() {
         val contract: String,
     ) : ConfirmParams() {
         override val useMaxAmount: Boolean = false
+
+        override fun toDto(): GemTransactionInputType = TokenApprove(
+            asset.toGem(),
+            GemApprovalData(
+                assetId.tokenId!!,
+                spender = contract,
+                value = amount.toString(),
+            )
+        )
 
         override val amount: BigInteger
             get() = BigInteger.ZERO
@@ -285,6 +357,12 @@ sealed class ConfirmParams() {
         override val amount: BigInteger
             get() = fromAmount
 
+        override fun toDto(): GemTransactionInputType = Swap(
+            fromAsset = fromAsset.toGem(),
+            toAsset = toAsset.toGem(),
+            swapData = toGem(),
+        )
+
         override fun destination(): DestinationAddress = DestinationAddress(toAddress)
 
         override fun memo(): String? = memo
@@ -306,6 +384,9 @@ sealed class ConfirmParams() {
         override val useMaxAmount: Boolean
             get() = false
 
+        override fun toDto(): GemTransactionInputType =
+            Account(asset.toGem(), GemAccountDataType.ACTIVATE)
+
         override fun destination(): DestinationAddress {
             return DestinationAddress(from.address)
         }
@@ -320,6 +401,11 @@ sealed class ConfirmParams() {
     ) : ConfirmParams() {
         override val useMaxAmount: Boolean
             get() = false
+
+        override fun toDto(): GemTransactionInputType = TransferNft(
+                asset.toGem(),
+                nftAsset.toGem(),
+            )
 
         @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO
 
@@ -339,6 +425,11 @@ sealed class ConfirmParams() {
             val validator: DelegationValidator,
             override val useMaxAmount: Boolean = false,
         ) : Stake() {
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.Delegate(validator.toGem(asset.chain.string))
+            )
+
             override fun destination(): DestinationAddress {
                 return DestinationAddress(validator.id)
             }
@@ -354,6 +445,11 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.Withdraw(delegation.toGem(asset.chain.string))
+            )
+
             override fun destination(): DestinationAddress {
                 return DestinationAddress(delegation.validator.id)
             }
@@ -368,6 +464,13 @@ sealed class ConfirmParams() {
         ) : Stake() {
             override val useMaxAmount: Boolean
                 get() = false
+
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.Undelegate(
+                    delegation = delegation.toGem(asset.chain.string),
+                )
+            )
 
             override fun destination(): DestinationAddress {
                 return DestinationAddress(delegation.validator.id)
@@ -387,6 +490,14 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.Redelegate(
+                    delegation = delegation.toGem(asset.chain.string),
+                    toValidator = dstValidator.toGem(asset.chain.string)
+                )
+            )
+
             override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
@@ -402,6 +513,13 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean
                 get() = false
 
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.WithdrawRewards(
+                    validators = validators.map { it.toGem(asset.chain.string) }
+                )
+            )
+
             override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
@@ -415,6 +533,19 @@ sealed class ConfirmParams() {
             val resource: Resource,
             override val useMaxAmount: Boolean = false,
         ) : Stake() {
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.Freeze(
+                    freezeData = GemFreezeData(
+                        freezeType = GemFreezeType.FREEZE,
+                        resource = when (resource) {
+                            Resource.Energy -> GemResource.ENERGY
+                            Resource.Bandwidth -> GemResource.BANDWIDTH
+                        }
+                    )
+                )
+            )
+
             override fun destination(): DestinationAddress {
                 return DestinationAddress("")
             }
@@ -429,6 +560,19 @@ sealed class ConfirmParams() {
         ) : Stake() {
             override val useMaxAmount: Boolean
                 get() = false
+
+            override fun toDto(): GemTransactionInputType = Stake(
+                asset = asset.toGem(),
+                stakeType = GemStakeType.Freeze(
+                    freezeData = GemFreezeData(
+                        freezeType = GemFreezeType.UNFREEZE,
+                        resource = when (resource) {
+                            Resource.Energy -> GemResource.ENERGY
+                            Resource.Bandwidth -> GemResource.BANDWIDTH
+                        }
+                    )
+                )
+            )
 
             override fun destination(): DestinationAddress {
                 return DestinationAddress("")
@@ -471,7 +615,16 @@ sealed class ConfirmParams() {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             override val useMaxAmount: Boolean = false,
             val order: Order,
-        ) : PerpetualParams()
+        ) : PerpetualParams() {
+
+            override fun toDto(): GemTransactionInputType = GemTransactionInputType.Perpetual(
+                asset = asset.toGem(),
+                perpetualType = PerpetualType.Open(
+                    v1 = order.toGem()
+                ) as PerpetualType
+            )
+
+        }
 
         @Serializable
         class Close(
@@ -480,7 +633,15 @@ sealed class ConfirmParams() {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             override val useMaxAmount: Boolean = false,
             val order: Order,
-        ) : PerpetualParams()
+        ) : PerpetualParams() {
+
+            override fun toDto(): GemTransactionInputType = GemTransactionInputType.Perpetual(
+                asset = asset.toGem(),
+                perpetualType = Close(
+                    v1 = order.toGem()
+                )
+            )
+        }
 
         @Serializable
         class Modify(
@@ -490,7 +651,21 @@ sealed class ConfirmParams() {
             override val useMaxAmount: Boolean = false,
             val action: OrderAction,
             val order: Order,
-        ) : PerpetualParams()
+        ) : PerpetualParams() {
+
+            override fun toDto(): GemTransactionInputType = when (action) {
+                OrderAction.Increase -> Perpetual(
+                    asset = asset.toGem(),
+                    perpetualType = Increase(
+                        v1 = order.toGem()
+                    )
+                )
+
+                OrderAction.Open -> TODO()
+                OrderAction.Close -> TODO()
+                OrderAction.Decrease -> TODO()
+            }
+        }
     }
 
     fun pack(): String? {
@@ -560,10 +735,30 @@ sealed class ConfirmParams() {
     }
 }
 
-fun uniffi.gemstone.GemApprovalData.toModel(): ConfirmParams.SwapParams.ApprovalData {
+fun GemApprovalData.toModel(): ConfirmParams.SwapParams.ApprovalData {
     return ConfirmParams.SwapParams.ApprovalData(
         token = this.token,
         spender = this.spender,
         value = this.value,
     )
 }
+
+fun ConfirmParams.PerpetualParams.Order.toGem() = PerpetualConfirmData(
+    direction = when (direction) {
+        PerpetualDirection.Long -> uniffi.gemstone.PerpetualDirection.LONG
+        PerpetualDirection.Short -> uniffi.gemstone.PerpetualDirection.SHORT
+    },
+    baseAsset = baseAsset.toGem(),
+    assetIndex = assetIndex,
+    price = marketPrice.toString(),
+    fiatValue = fiatValue,
+    size = size.toString(),
+    slippage = slippage,
+    leverage = leverage.toUByte(),
+    pnl = null,
+    entryPrice = null,
+    marketPrice = marketPrice,
+    marginAmount = marginAmount,
+    takeProfit = takeProfit,
+    stopLoss = stopLoss,
+)

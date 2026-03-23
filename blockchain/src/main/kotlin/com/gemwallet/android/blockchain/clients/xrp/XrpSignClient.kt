@@ -108,11 +108,11 @@ class XrpSignClient(
     ): List<ByteArray> {
         val metadata = chainData as XrpChainData
         val signInput = Ripple.SigningInput.newBuilder().apply {
-            this.fee = fee.amount.toLong()
-            this.sequence = metadata.sequence
+            this.fee = (fee as Fee.Plain).amount.toLong()
+            this.sequence = metadata.sequence.toInt()
             this.account = params.from.address
             this.privateKey = ByteString.copyFrom(privateKey)
-            this.lastLedgerSequence = (metadata.blockNumber + 12)
+            this.lastLedgerSequence = (metadata.blockNumber.toInt() + 12)
             when (operation) {
                 is String -> this.rawJson = operation
                 is OperationPayment -> this.opPayment = operation

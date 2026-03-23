@@ -51,7 +51,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    stakeData = null,
+                    contractCall = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -95,7 +95,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    stakeData = null,
+                    contractCall = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -161,7 +161,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    stakeData = null,
+                    contractCall = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -208,7 +208,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    stakeData = null,
+                    contractCall = null,
                 ),
                 finalAmount = BigInteger.ZERO,
                 fee = GasFee(

@@ -7,7 +7,6 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.SwapProvider
@@ -106,7 +105,7 @@ class BitcoinSignClient(
         privateKey: ByteArray
     ): Bitcoin.SigningInput.Builder {
         val chainData = chainData as BitcoinChainData
-        val gasFee = fee as GasFee
+        val gasFee = fee as Fee.Regular
         val coinType = coinType
 
         return Bitcoin.SigningInput.newBuilder().apply {
@@ -172,7 +171,7 @@ class BitcoinSignClient(
             this.addPrivateKey(ByteString.copyFrom(privateKey))
         }
         val totalAvailable = chainData.utxo.fold(BigInteger.ZERO) { acc, uTXO -> acc + (uTXO.value.toBigIntegerOrNull() ?: BigInteger.ZERO) }.toLong()
-        val fee = fee.amount.toLong()
+        val fee = (fee as Fee.Regular).amount.toLong()
         val requestAmount = finalAmount.toLong()
         val targetAmount = if (params.useMaxAmount) max(totalAvailable - fee, 0) else requestAmount
         if ((totalAvailable - fee) < targetAmount) {

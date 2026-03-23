@@ -8,7 +8,6 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -54,7 +53,7 @@ class EvmSignClient(
         val transfer = buildTransfer(finalAmount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = fee as GasFee,
+            fee = fee as Fee.Eip1559,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
@@ -75,7 +74,7 @@ class EvmSignClient(
         val transfer = buildTransfer(finalAmount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = fee as GasFee,
+            fee = fee as Fee.Eip1559,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
@@ -97,7 +96,7 @@ class EvmSignClient(
         val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = fee as GasFee,
+            fee = fee as Fee.Eip1559,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
@@ -119,7 +118,7 @@ class EvmSignClient(
         val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = fee as GasFee,
+            fee = fee as Fee.Eip1559,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination()?.address ?: "",
@@ -136,7 +135,7 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val fee = fee as GasFee
+        val fee = fee as Fee.Eip1559
         val approvalData = params.approval
         val chainData = chainData as EvmChainData
         val amount = BigInteger(params.value)
@@ -160,13 +159,14 @@ class EvmSignClient(
             if (approvalData == null) {
                 it
             } else {
-                GasFee(
+                Fee.Eip1559(
                     feeAssetId = it.feeAssetId,
                     priority = it.priority,
                     limit = params.gasLimit!!,
                     maxGasPrice = it.maxGasPrice,
                     minerFee = it.minerFee,
-                    amount = params.gasLimit!!.multiply(it.maxGasPrice)
+                    amount = params.gasLimit!!.multiply(it.maxGasPrice),
+                    options = emptyMap(),
                 )
             }
         }
@@ -266,7 +266,7 @@ class EvmSignClient(
 
         val input = buildSignInput(
             assetId = AssetId(chain, params.nftAsset.contractAddress),
-            fee = fee as GasFee,
+            fee = fee as Fee.Eip1559,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination.address,
@@ -287,9 +287,9 @@ class EvmSignClient(
             throw Exception("Doesn't support")
         }
         val meta = chainData as EvmChainData
-        val toAddress = meta.stakeData?.contractAddress ?: throw java.lang.IllegalArgumentException("No stake data")
-        val stakeData = meta.stakeData.callData.decodeHex() ?: throw java.lang.IllegalArgumentException("No stake data")
-        val fee = fee as GasFee
+        val toAddress = meta.contractCall?.contractAddress ?: throw java.lang.IllegalArgumentException("No stake data")
+        val stakeData = meta.contractCall.callData.decodeHex() ?: throw java.lang.IllegalArgumentException("No stake data")
+        val fee = fee as Fee.Eip1559
         val valueData = when (params) {
             is ConfirmParams.Stake.DelegateParams -> finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()
@@ -316,7 +316,7 @@ class EvmSignClient(
 
     internal fun buildSignInput(
         assetId: AssetId,
-        fee: GasFee,
+        fee: Fee.Eip1559,
         chainId: BigInteger,
         nonce: BigInteger,
         destinationAddress: String,

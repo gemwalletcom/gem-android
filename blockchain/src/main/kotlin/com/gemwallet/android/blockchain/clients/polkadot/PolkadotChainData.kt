@@ -13,6 +13,18 @@ data class PolkadotChainData(
     val period: Long,
 ) : ChainSignData {
     override fun blockNumber(): String = blockNumber.toString()
+
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Polkadot(
+            sequence = sequence,
+            genesisHash = genesisHash,
+            blockHash = blockHash,
+            blockNumber = blockNumber,
+            specVersion = specVersion,
+            transactionVersion = transactionVersion,
+            period = period.toULong(),
+        )
+    }
 }
 
 fun GemTransactionLoadMetadata.Polkadot.toChainData(): PolkadotChainData {

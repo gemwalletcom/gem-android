@@ -64,7 +64,6 @@ class PhraseAddressImportWalletService(
         } catch (_: Throwable) {
             // TODO: Improve error handle
         }
-
         return wallet
     }
 
@@ -72,6 +71,7 @@ class PhraseAddressImportWalletService(
         val wallet = handlePhrase(ImportType(WalletType.Multicoin), walletName, data, WalletSource.Create)
 
         setupWallet(wallet)
+        syncSubscription.syncSubscription(listOf(wallet)) // TODO: Out to queue
 
         return wallet
     }
@@ -79,7 +79,6 @@ class PhraseAddressImportWalletService(
     private suspend fun setupWallet(wallet: Wallet) {
         assetsRepository.createAssets(wallet)
         sessionRepository.setWallet(wallet)
-        syncSubscription.syncSubscription(listOf(wallet))
     }
 
     private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String, source: WalletSource): Wallet {

@@ -82,7 +82,7 @@ class TestTonSigner {
                 ),
                 chainData = TonChainData(
                     sequence = 1UL,
-                    jettonAddress = "EQAlgB03OjJKdXrlwZiGJD5snSzPKF2VL5bErJn_cqJANGH9",
+                    senderTokenAddress = "EQAlgB03OjJKdXrlwZiGJD5snSzPKF2VL5bErJn_cqJANGH9",
                     expireAt = 1000000000,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),

@@ -7,7 +7,13 @@ data class CosmosChainData(
     val chainId: String,
     val accountNumber: ULong,
     val sequence: ULong,
-) : ChainSignData
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata = GemTransactionLoadMetadata.Cosmos(
+        accountNumber = accountNumber,
+        chainId = chainId,
+        sequence = sequence,
+    )
+}
 
 fun GemTransactionLoadMetadata.Cosmos.toChainData(): CosmosChainData {
     return CosmosChainData(

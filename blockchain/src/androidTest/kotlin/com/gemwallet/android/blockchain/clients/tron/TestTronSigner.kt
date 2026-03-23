@@ -46,7 +46,7 @@ class TestTronSigner {
                 chainData = TronChainData(
                     blockNumber = 69501435UL,
                     blockVersion = 31UL,
-                    txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
+                    transactionTreeRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
                     blockTimestamp = 1739156280000UL,
@@ -99,7 +99,7 @@ class TestTronSigner {
                 chainData = TronChainData(
                     blockNumber = 69501435UL,
                     blockVersion = 31UL,
-                    txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
+                    transactionTreeRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
                     blockTimestamp = 1739156280000UL,
@@ -163,7 +163,7 @@ class TestTronSigner {
                 chainData = TronChainData(
                     blockNumber = 69501435UL,
                     blockVersion = 31UL,
-                    txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
+                    transactionTreeRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
                     blockTimestamp = 1739156280000UL,

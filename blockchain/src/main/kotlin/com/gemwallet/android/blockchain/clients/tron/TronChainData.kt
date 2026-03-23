@@ -7,31 +7,33 @@ import uniffi.gemstone.TronStakeData
 data class TronChainData(
     val blockNumber: ULong,
     val blockVersion: ULong,
-    val txTrieRoot: String,
+    val transactionTreeRoot: String,
     val witnessAddress: String,
     val parentHash: String,
     val blockTimestamp: ULong,
-    val tronStakeData: TronStakeData,
-) : ChainSignData
+    val stakeData: TronStakeData,
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Tron(
+            blockNumber = blockNumber,
+            blockVersion = blockVersion,
+            blockTimestamp = blockTimestamp,
+            transactionTreeRoot = transactionTreeRoot,
+            witnessAddress = witnessAddress,
+            parentHash = parentHash,
+            stakeData = stakeData,
+        )
+    }
+}
 
 fun GemTransactionLoadMetadata.Tron.toChainData(): TronChainData {
     return TronChainData(
         blockNumber = blockNumber,
         blockVersion = blockVersion,
         blockTimestamp = blockTimestamp,
-        txTrieRoot = transactionTreeRoot,
+        transactionTreeRoot = transactionTreeRoot,
         witnessAddress = witnessAddress,
         parentHash = parentHash,
-        tronStakeData = stakeData,
+        stakeData = stakeData,
     )
 }
-
-fun TronChainData.toGem(): GemTransactionLoadMetadata.Tron = GemTransactionLoadMetadata.Tron(
-    blockNumber = blockNumber,
-    blockVersion = blockVersion,
-    blockTimestamp = blockTimestamp,
-    transactionTreeRoot = txTrieRoot,
-    witnessAddress = witnessAddress,
-    parentHash = parentHash,
-    stakeData = tronStakeData,
-)

@@ -64,8 +64,8 @@ class TonSignClient(
         }.build()
 
         val message = TheOpenNetwork.Transfer.newBuilder().apply {
-            this.dest = meta.jettonAddress
-            this.amount = ByteString.copyFrom((fee.options[FeeOption.TOKEN_ACCOUNT_CREATION.name] ?: BigInteger.ZERO).toByteArray())
+            this.dest = meta.senderTokenAddress
+            this.amount = ByteString.copyFrom(((fee as Fee.Plain).options[FeeOption.TOKEN_ACCOUNT_CREATION.name] ?: BigInteger.ZERO).toByteArray())
             if (!params.memo().isNullOrEmpty()) {
                 this.comment = params.memo()
             }

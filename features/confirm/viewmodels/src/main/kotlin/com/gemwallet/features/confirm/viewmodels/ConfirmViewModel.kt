@@ -319,6 +319,9 @@ class ConfirmViewModel @Inject constructor(
                 getBalance(assetInfo, signerParams.input),
             )
             val signs = sign(signerParams, session, assetInfo, feePriority)
+            if (signs.isEmpty()) {
+                throw IllegalStateException("Not implemented")
+            }
             when (signerParams.input) {
                 is ConfirmParams.TransferParams.Generic -> {
                     if (!(signerParams.input as ConfirmParams.TransferParams.Generic).isSendable) {

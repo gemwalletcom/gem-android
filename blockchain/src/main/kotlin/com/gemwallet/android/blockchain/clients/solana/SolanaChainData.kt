@@ -5,15 +5,28 @@ import com.wallet.core.primitives.SolanaTokenProgramId
 import uniffi.gemstone.GemTransactionLoadMetadata
 
 data class SolanaChainData(
-    val blockhash: String,
+    val blockHash: String,
     val senderTokenAddress: String?,
     val recipientTokenAddress: String?,
     val tokenProgram: SolanaTokenProgramId?,
-) : ChainSignData
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Solana(
+            blockHash = blockHash,
+            senderTokenAddress = senderTokenAddress,
+            recipientTokenAddress = recipientTokenAddress,
+            tokenProgram = when (tokenProgram) {
+                SolanaTokenProgramId.Token -> uniffi.gemstone.SolanaTokenProgramId.TOKEN
+                SolanaTokenProgramId.Token2022 -> uniffi.gemstone.SolanaTokenProgramId.TOKEN2022
+                null -> null
+            },
+        )
+    }
+}
 
 fun GemTransactionLoadMetadata.Solana.toChainData(): SolanaChainData {
     return SolanaChainData(
-        blockhash = blockHash,
+        blockHash = blockHash,
         senderTokenAddress = senderTokenAddress,
         recipientTokenAddress = recipientTokenAddress,
         tokenProgram = when (tokenProgram) {

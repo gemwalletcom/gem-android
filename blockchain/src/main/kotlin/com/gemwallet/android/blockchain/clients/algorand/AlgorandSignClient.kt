@@ -34,7 +34,7 @@ class AlgorandSignClient(
             }
             this.firstRound = chainData.sequence.toLong()
             this.lastRound = chainData.sequence.toLong() + 1000
-            this.fee = fee.amount.toLong()
+            this.fee = (fee as Fee.Plain).amount.toLong()
             this.privateKey = ByteString.copyFrom(privateKey)
             this.transfer = Algorand.Transfer.newBuilder().apply {
                 this.toAddress = params.destination().address

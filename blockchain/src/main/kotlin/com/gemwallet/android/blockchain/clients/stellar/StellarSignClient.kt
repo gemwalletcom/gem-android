@@ -28,7 +28,7 @@ class StellarSignClient(
             ?: throw Exception("bad params")
         val input = Stellar.SigningInput.newBuilder().apply {
             this.passphrase = StellarPassphrase.STELLAR.toString()
-            this.fee = fee.amount.toInt()
+            this.fee = (fee as Fee.Plain).amount.toInt()
             this.sequence = chainData.sequence.toLong()
             this.account = params.from.address
             if (!params.memo().isNullOrEmpty()) {

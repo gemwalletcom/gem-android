@@ -7,6 +7,20 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 class HyperCoreChainData(
     val order: Order?
 ) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        val order = order?.let {
+            GemHyperliquidOrder(
+                approveAgentRequired = it.approveAgentRequired,
+                approveReferralRequired = it.approveReferralRequired,
+                approveBuilderRequired = it.approveBuilderRequired,
+                builderFeeBps = it.builderFeeBps,
+                agentAddress = it.agentAddress,
+                agentPrivateKey = it.agentPrivateKey,
+            )
+        }
+        return GemTransactionLoadMetadata.Hyperliquid(order)
+    }
+
     class Order(
         val approveAgentRequired: Boolean,
         val approveReferralRequired: Boolean,

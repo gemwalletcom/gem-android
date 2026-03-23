@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cardano
 
-import com.gemwallet.android.blockchain.services.mapper.toUtxo
+import com.gemwallet.android.domains.asset.toUtxo
 import com.gemwallet.android.math.decodeHex
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.UTXO

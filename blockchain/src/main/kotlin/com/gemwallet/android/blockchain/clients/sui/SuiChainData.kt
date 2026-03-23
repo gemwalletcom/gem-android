@@ -5,7 +5,13 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 
 data class SuiChainData(
     val messageBytes: String,
-) : ChainSignData
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Sui(
+            messageBytes = messageBytes
+        )
+    }
+}
 
 fun GemTransactionLoadMetadata.Sui.toChainData(): SuiChainData {
     return SuiChainData(

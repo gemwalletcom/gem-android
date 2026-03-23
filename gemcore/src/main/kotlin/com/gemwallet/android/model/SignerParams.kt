@@ -1,12 +1,11 @@
 package com.gemwallet.android.model
 
 import com.wallet.core.primitives.FeePriority
+import uniffi.gemstone.GemTransactionLoadMetadata
 import java.math.BigInteger
 
 data class SignerParams(
     val input: ConfirmParams,
-//    val chainData: ChainSignData,
-//    private val fee: List<Fee>,
     val data: List<Data>,
     val finalAmount: BigInteger = BigInteger.ZERO,
 ) {
@@ -18,8 +17,6 @@ data class SignerParams(
         return data.firstOrNull { it.fee.priority == priority } ?: data.first()
     }
 
-    fun gasFee(feePriority: FeePriority = FeePriority.Normal): GasFee = (fee(feePriority) as? GasFee) ?: throw Exception("Fee error: wait gas fee")
-
     fun allFee(): List<Fee> = data.map { it.fee }
 
     data class Data(
@@ -30,4 +27,6 @@ data class SignerParams(
 
 interface  ChainSignData {
     fun blockNumber(): String = ""
+
+    fun toDto(): GemTransactionLoadMetadata
 }

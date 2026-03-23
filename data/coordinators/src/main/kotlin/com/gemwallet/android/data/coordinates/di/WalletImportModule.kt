@@ -2,6 +2,7 @@ package com.gemwallet.android.data.coordinates.di
 
 import com.gemwallet.android.application.wallet_import.coordinators.GetImportWalletState
 import com.gemwallet.android.application.wallet_import.services.ImportAssets
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.coordinates.wallet_import.services.ImportWalletService
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -24,12 +25,14 @@ object WalletImportModule {
         gemDeviceApiClient: GemDeviceApiClient,
         searchTokensCase: SearchTokensCase,
         assetsRepository: AssetsRepository,
+        syncSubscription: SyncSubscription,
     ): ImportWalletService {
         return ImportWalletService(
             sessionRepository = sessionRepository,
             gemDeviceApiClient = gemDeviceApiClient,
             searchTokensCase = searchTokensCase,
             assetsRepository = assetsRepository,
+            syncSubscription = syncSubscription,
         )
     }
 

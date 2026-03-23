@@ -5,13 +5,23 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 
 data class TonChainData(
     val sequence: ULong,
-    val jettonAddress: String? = null,
+    val senderTokenAddress: String? = null,
+    val recipientTokenAddress: String? = null,
     val expireAt: Int? = null
-) : ChainSignData
+) : ChainSignData {
+    override fun toDto(): GemTransactionLoadMetadata {
+        return GemTransactionLoadMetadata.Ton(
+            sequence = sequence,
+            senderTokenAddress = senderTokenAddress,
+            recipientTokenAddress = recipientTokenAddress,
+        )
+    }
+}
 
 fun GemTransactionLoadMetadata.Ton.toChainData(): TonChainData {
     return TonChainData(
         sequence = sequence,
-        jettonAddress = senderTokenAddress,
+        senderTokenAddress = senderTokenAddress,
+        recipientTokenAddress = recipientTokenAddress,
     )
 }
