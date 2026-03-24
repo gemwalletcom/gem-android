@@ -28,8 +28,6 @@ import kotlinx.serialization.Serializable
 import org.json.JSONObject
 import uniffi.gemstone.GemAccountDataType
 import uniffi.gemstone.GemApprovalData
-import uniffi.gemstone.GemFreezeData
-import uniffi.gemstone.GemFreezeType
 import uniffi.gemstone.GemResource
 import uniffi.gemstone.GemStakeType
 import uniffi.gemstone.GemSwapQuoteDataType
@@ -39,12 +37,25 @@ import uniffi.gemstone.GemTransferDataExtra
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
 import uniffi.gemstone.PerpetualConfirmData
 import uniffi.gemstone.PerpetualType
-import uniffi.gemstone.PerpetualType.*
+import uniffi.gemstone.PerpetualType.Close
+import uniffi.gemstone.PerpetualType.Increase
 import uniffi.gemstone.SwapperProvider
 import uniffi.gemstone.TransferDataOutputAction
 import uniffi.gemstone.TransferDataOutputType
 import java.math.BigInteger
 import java.util.Base64
+import kotlin.Boolean
+import kotlin.Double
+import kotlin.Error
+import kotlin.IllegalArgumentException
+import kotlin.IllegalStateException
+import kotlin.Int
+import kotlin.String
+import kotlin.TODO
+import kotlin.UInt
+import kotlin.hashCode
+import kotlin.let
+import kotlin.toUByte
 
 @Serializable
 sealed class ConfirmParams() {
@@ -536,13 +547,10 @@ sealed class ConfirmParams() {
             override fun toDto(): GemTransactionInputType = Stake(
                 asset = asset.toGem(),
                 stakeType = GemStakeType.Freeze(
-                    freezeData = GemFreezeData(
-                        freezeType = GemFreezeType.FREEZE,
-                        resource = when (resource) {
-                            Resource.Energy -> GemResource.ENERGY
-                            Resource.Bandwidth -> GemResource.BANDWIDTH
-                        }
-                    )
+                    resource = when (resource) {
+                        Resource.Energy -> GemResource.ENERGY
+                        Resource.Bandwidth -> GemResource.BANDWIDTH
+                    }
                 )
             )
 
@@ -564,13 +572,10 @@ sealed class ConfirmParams() {
             override fun toDto(): GemTransactionInputType = Stake(
                 asset = asset.toGem(),
                 stakeType = GemStakeType.Freeze(
-                    freezeData = GemFreezeData(
-                        freezeType = GemFreezeType.UNFREEZE,
-                        resource = when (resource) {
-                            Resource.Energy -> GemResource.ENERGY
-                            Resource.Bandwidth -> GemResource.BANDWIDTH
-                        }
-                    )
+                    resource = when (resource) {
+                        Resource.Energy -> GemResource.ENERGY
+                        Resource.Bandwidth -> GemResource.BANDWIDTH
+                    }
                 )
             )
 
