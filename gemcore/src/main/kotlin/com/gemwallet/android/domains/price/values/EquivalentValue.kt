@@ -7,13 +7,13 @@ import com.wallet.core.primitives.Currency
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-interface PriceableValue {
+interface EquivalentValue {
     val currency: Currency
-    val priceValue: Double?
-    val dayChangePercentage: Double?
+    val value: Double?
+    val changePercentage: Double?
 
-    val priceValueFormated: String get() {
-        val priceValue = priceValue
+    val valueFormated: String get() {
+        val priceValue = value
         return if (priceValue == null || priceValue.isNaN()) {
             ""
         } else {
@@ -21,14 +21,14 @@ interface PriceableValue {
         }
     }
 
-    val dayChangePercentageFormatted: String
-        get() = dayChangePercentage.formatAsPercentage()
+    val changePercentageFormatted: String
+        get() = changePercentage.formatAsPercentage()
 
     val state: PriceState
         get() {
             val df = DecimalFormat("#.##")
             df.roundingMode = RoundingMode.DOWN
-            val formattedValue = try { df.format(dayChangePercentage) } catch (_: Throwable) { "0" }
+            val formattedValue = try { df.format(changePercentage) } catch (_: Throwable) { "0" }
             val afterFormat = df.parse(formattedValue)?.toDouble() ?: 0.0
             return when {
                 afterFormat > 0 -> PriceState.Up

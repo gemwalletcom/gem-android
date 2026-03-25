@@ -2,7 +2,7 @@ package com.gemwallet.android.data.coordinates.perpetuals
 
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetuals
 import com.gemwallet.android.data.repositoreis.perpetual.PerpetualRepository
-import com.gemwallet.android.domains.price.values.PriceableValue
+import com.gemwallet.android.domains.price.values.EquivalentValue
 import com.gemwallet.android.model.compactFormatter
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
@@ -22,10 +22,10 @@ class GetPerpetualsImpl @Inject constructor(
 
     class PerpetualDataAggregate(
         val data: PerpetualData,
-        override val price: PriceableValue = object : PriceableValue { // TODO: ???
-            override val priceValue: Double = data.perpetual.price
+        override val price: EquivalentValue = object : EquivalentValue { // TODO: ???
+            override val value: Double = data.perpetual.price
             override val currency: Currency = Currency.USD
-            override val dayChangePercentage: Double = data.perpetual.pricePercentChange24h
+            override val changePercentage: Double = data.perpetual.pricePercentChange24h
         }
     ) : com.gemwallet.android.domains.perpetual.aggregates.PerpetualDataAggregate {
 

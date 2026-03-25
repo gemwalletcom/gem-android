@@ -70,7 +70,8 @@ fun AssetsScreen(
     val importing by viewModel.importInProgress.collectAsStateWithLifecycle()
     val pinnedAssets by viewModel.pinnedAssets.collectAsStateWithLifecycle()
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
-    val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
+//    val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
+    val walletSummary by viewModel.walletSummary.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
     val showWelcomeBanner by viewModel.showWelcomeBanner.collectAsStateWithLifecycle()
 
@@ -79,7 +80,7 @@ fun AssetsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { AssetsTopBar(walletInfo, onShowWallets, onSearch) },
+        topBar = { AssetsTopBar(walletSummary, onShowWallets, onSearch) },
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val pullToRefreshState = rememberPullToRefreshState()
@@ -106,7 +107,7 @@ fun AssetsScreen(
             ) {
                 item {
                     AssetsHead(
-                        walletInfo = walletInfo,
+                        walletSummary = walletSummary,
                         onSendClick = onSendClick,
                         onReceiveClick = onReceiveClick,
                         onBuyClick = onBuyClick,

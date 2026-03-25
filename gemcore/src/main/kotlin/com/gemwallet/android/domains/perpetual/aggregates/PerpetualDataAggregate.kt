@@ -1,6 +1,6 @@
 package com.gemwallet.android.domains.perpetual.aggregates
 
-import com.gemwallet.android.domains.price.values.PriceableValue
+import com.gemwallet.android.domains.price.values.EquivalentValue
 import com.wallet.core.primitives.Asset
 
 interface PerpetualDataAggregate {
@@ -11,7 +11,7 @@ interface PerpetualDataAggregate {
 
     val icon: Any
 
-    val price: PriceableValue
+    val price: EquivalentValue
 
     val volume: String
 

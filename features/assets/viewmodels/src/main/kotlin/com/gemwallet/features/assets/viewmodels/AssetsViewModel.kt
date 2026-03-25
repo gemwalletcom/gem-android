@@ -3,6 +3,7 @@ package com.gemwallet.features.assets.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.application.assets.coordinators.GetActiveAssetsInfo
+import com.gemwallet.android.application.assets.coordinators.GetWalletSummary
 import com.gemwallet.android.application.wallet_import.coordinators.GetImportWalletState
 import com.gemwallet.android.application.wallet_import.values.ImportWalletState
 import com.gemwallet.android.cases.banners.HasMultiSign
@@ -10,25 +11,12 @@ import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.domains.percentage.formatAsPercentage
-import com.gemwallet.android.domains.price.PriceState
-import com.gemwallet.android.domains.price.getPriceState
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
-import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.R
-//import com.gemwallet.features.assets.viewmodels.model.PriceUIState
-import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
-import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +25,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -47,7 +34,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -57,22 +43,21 @@ class AssetsViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
     private val userConfig: UserConfig,
-    private val hasMultiSign: HasMultiSign,
     private val getImportWalletState: GetImportWalletState,
     getActiveAssetsInfo: GetActiveAssetsInfo,
+    getWalletSummary: GetWalletSummary,
 ) : ViewModel() {
 
     private val session = sessionRepository.session()
 
-    val importInProgress = session.filterNotNull().flatMapLatest { session ->
-        getImportWalletState.getImportState(session.wallet.id).mapLatest { it == ImportWalletState.Importing }
-    }
+    val importInProgress = session
+        .filterNotNull()
+        .flatMapLatest { session ->
+            getImportWalletState
+                .getImportState(session.wallet.id)
+                .mapLatest { it == ImportWalletState.Importing }
+        }
     .stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    private val operationsEnabled = session.filterNotNull()
-        .flatMapLatest { hasMultiSign.hasMultiSign(it.wallet) }
-        .mapLatest { !it }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val refreshingState = MutableStateFlow<RefreshingState>(RefreshingState.OnOpen)
     val screenState = refreshingState.map { refreshingState ->
@@ -108,26 +93,10 @@ class AssetsViewModel @Inject constructor(
         .map { it.filter { asset -> !asset.pinned } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val walletInfo: StateFlow<WalletInfoUIState> = combine(
-        sessionRepository.session(),
-        assetsState,
-        isHideBalances,
-        operationsEnabled,
-    ) { session, assets, isHideBalances, operationsEnabled ->
-        val wallet = session?.wallet ?: return@combine null
-        val currency = session.currency
-        calcWalletInfo(
-            wallet,
-            currency,
-            assets,
-            isHideBalances,
-            operationsEnabled,
-        )
-    }
-    .filterNotNull()
-    .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
+    val walletSummary = getWalletSummary.getWalletSummary()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val showWelcomeBanner = combine(
+    val showWelcomeBanner = combine( // Move to wallet summary
         sessionRepository.session().filterNotNull(),
         assetsState,
         session.filterNotNull()
@@ -169,74 +138,6 @@ class AssetsViewModel @Inject constructor(
 
     fun onHideWelcomeBanner() = viewModelScope.launch {
         userConfig.hideWelcomeBanner(session.value?.wallet?.id ?: return@launch)
-    }
-
-    private fun calcWalletInfo(
-        wallet: Wallet,
-        currency: Currency,
-        assets: List<AssetInfo>,
-        isHideBalances: Boolean,
-        operationsEnabled: Boolean,
-    ): WalletInfoUIState? {
-        val (totalValue, changedValue) = assets.map {
-            val current = it.balance.fiatTotalAmount.toBigDecimal()
-            val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100).toBigDecimal()
-            Pair(current, changed)
-        }.fold(Pair(BigDecimal.ZERO, BigDecimal.ZERO)) { acc, pair ->
-            Pair(acc.first + pair.first, acc.second + pair.second)
-        }
-        val changedPercentages = (changedValue.toDouble() / (totalValue.toDouble() / 100.0)).let {
-            if (it.isNaN()) 0.0 else it
-        }
-        val icon = when (wallet.type) {
-            WalletType.Multicoin -> R.drawable.multicoin_wallet
-            else -> wallet.accounts.firstOrNull()?.chain?.asset()
-        }
-        val cryptoTotal = assets.fold(0.0) { acc, asset ->
-            acc + asset.balance.totalAmount
-        }
-        val isSwapEnabled = when (wallet.type) {
-            WalletType.Multicoin -> true
-            WalletType.Single,
-            WalletType.PrivateKey -> wallet.accounts.firstOrNull()?.chain?.isSwapSupport() == true
-            WalletType.View -> false
-        }
-        val swapPayAsset = when(wallet.type) {
-            WalletType.Multicoin -> (wallet.getAccount(Chain.Ethereum) ?: wallet.accounts.firstOrNull())?.chain
-            WalletType.Single,
-            WalletType.PrivateKey -> wallet.accounts.firstOrNull()?.chain
-            WalletType.View -> null
-        }?.asset()
-
-        return if (isHideBalances) {
-            WalletInfoUIState(
-                name = wallet.name,
-                icon = icon,
-                cryptoTotalValue = cryptoTotal,
-                totalValueFormatted = "✱✱✱✱✱✱",
-                changedValue = "",
-                changedPercentages = "",
-                priceState = PriceState.None,
-                type = wallet.type,
-                operationsEnabled = operationsEnabled,
-                isSwapEnabled = isSwapEnabled,
-                swapPayAsset = swapPayAsset,
-            )
-        } else {
-            WalletInfoUIState(
-                name = wallet.name,
-                icon = icon,
-                cryptoTotalValue = cryptoTotal,
-                totalValueFormatted = currency.format(totalValue, dynamicPlace = true),
-                changedValue = currency.format(changedValue, dynamicPlace = true, maxDecimals = 2),
-                changedPercentages = changedPercentages.formatAsPercentage(isShowSign = false),
-                priceState = changedPercentages.getPriceState(),
-                type = wallet.type,
-                operationsEnabled = operationsEnabled,
-                isSwapEnabled = isSwapEnabled,
-                swapPayAsset = swapPayAsset,
-            )
-        }
     }
 
     enum class RefreshingState {

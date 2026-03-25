@@ -6,7 +6,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.domains.asset.aggregates.AssetInfoDataAggregate
 import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.domains.asset.getSupportIconUrl
-import com.gemwallet.android.domains.price.values.PriceableValue
+import com.gemwallet.android.domains.price.values.EquivalentValue
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
@@ -55,12 +55,12 @@ class AssetInfoDataAggregateImpl(
     override val isZeroBalance: Boolean
         get() = assetInfo.balance.totalAmount == 0.0
 
-    override val price: PriceableValue?
+    override val price: EquivalentValue?
         get() = assetInfo.price?.price?.let {
-            PriceableValueImpl(
+            EquivalentValueImpl(
                 currency = currency,
-                priceValue = it.price,
-                dayChangePercentage = it.priceChangePercentage24h,
+                value = it.price,
+                changePercentage = it.priceChangePercentage24h,
             )
         }
 
@@ -75,9 +75,9 @@ class AssetInfoDataAggregateImpl(
 
     private val currency: Currency = assetInfo.price?.currency ?: Currency.USD
 
-    private class PriceableValueImpl(
+    private class EquivalentValueImpl(
         override val currency: Currency,
-        override val priceValue: Double?,
-        override val dayChangePercentage: Double?
-    ) : PriceableValue
+        override val value: Double?,
+        override val changePercentage: Double?
+    ) : EquivalentValue
 }

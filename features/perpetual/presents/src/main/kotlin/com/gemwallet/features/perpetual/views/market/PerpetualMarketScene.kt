@@ -17,7 +17,7 @@ import com.gemwallet.android.domains.perpetual.aggregates.PerpetualDataAggregate
 import com.gemwallet.android.domains.perpetual.aggregates.PerpetualPositionDataAggregate
 import com.gemwallet.android.domains.perpetual.values.PerpetualBalance
 import com.gemwallet.android.domains.price.PriceState
-import com.gemwallet.android.domains.price.values.PriceableValue
+import com.gemwallet.android.domains.price.values.EquivalentValue
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.components.list_head.AmountListHead
@@ -185,10 +185,10 @@ fun PreviewPerpetualMarketScene() {
                     override val id: String = "BTC-PERP"
                     override val name: String = "BTC/USD"
                     override val icon: Any = "BTC"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 95420.50
-                        override val dayChangePercentage: Double = 2.5
+                        override val value: Double = 95420.50
+                        override val changePercentage: Double = 2.5
                     }
                     override val volume: String = "15234567890123"
                     override val asset = Asset(
@@ -204,10 +204,10 @@ fun PreviewPerpetualMarketScene() {
                     override val id: String = "ETH-PERP"
                     override val name: String = "ETH/USD"
                     override val icon: Any = "ETH"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 3625.75
-                        override val dayChangePercentage: Double = 1.8
+                        override val value: Double = 3625.75
+                        override val changePercentage: Double = 1.8
                     }
                     override val volume: String = "8456789012345"
                     override val asset = Asset(
@@ -222,10 +222,10 @@ fun PreviewPerpetualMarketScene() {
                 object : PerpetualDataAggregate {
                     override val id: String = "SOL-PERP"
                     override val name: String = "SOL/USD"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 235.40
-                        override val dayChangePercentage: Double = -0.5
+                        override val value: Double = 235.40
+                        override val changePercentage: Double = -0.5
                     }
                     override val volume: String = "3123847573745"
                     override val asset = Asset(
@@ -242,10 +242,10 @@ fun PreviewPerpetualMarketScene() {
                     override val id: String = "AVAX-PERP"
                     override val name: String = "AVAX/USD"
                     override val icon: Any = "AVAX"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 41.85
-                        override val dayChangePercentage: Double = 4.1
+                        override val value: Double = 41.85
+                        override val changePercentage: Double = 4.1
                     }
                     override val volume: String = "1234567890123"
                     override val asset = Asset(
@@ -261,10 +261,10 @@ fun PreviewPerpetualMarketScene() {
                     override val id: String = "LINK-PERP"
                     override val name: String = "LINK/USD"
                     override val icon: Any = "LINK"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 21.45
-                        override val dayChangePercentage: Double = 2.7
+                        override val value: Double = 21.45
+                        override val changePercentage: Double = 2.7
                     }
                     override val volume: String = "987654321098"
                     override val asset = Asset(
@@ -282,10 +282,10 @@ fun PreviewPerpetualMarketScene() {
                     override val id: String = "BTC-PERP"
                     override val name: String = "BTC/USD"
                     override val icon: Any = "BTC"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 95420.50
-                        override val dayChangePercentage: Double = 2.5
+                        override val value: Double = 95420.50
+                        override val changePercentage: Double = 2.5
                     }
                     override val volume: String = "15234567890123"
                     override val asset = Asset(
@@ -301,10 +301,10 @@ fun PreviewPerpetualMarketScene() {
                     override val id: String = "ETH-PERP"
                     override val name: String = "ETH/USD"
                     override val icon: Any = "ETH"
-                    override val price = object : PriceableValue {
+                    override val price = object : EquivalentValue {
                         override val currency = Currency.USD
-                        override val priceValue: Double = 3625.75
-                        override val dayChangePercentage: Double = 1.8
+                        override val value: Double = 3625.75
+                        override val changePercentage: Double = 1.8
                     }
                     override val volume: String = "8456789012345"
                     override val asset = Asset(

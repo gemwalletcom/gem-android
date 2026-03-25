@@ -20,13 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.wallet.aggregates.WalletSummaryAggregate
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AssetsTopBar(
-    walletInfo: WalletInfoUIState,
+    walletInfo: WalletSummaryAggregate?,
     onShowWallets: () -> Unit,
     onShowAssetManage: () -> Unit,
 ) {
@@ -35,10 +35,10 @@ internal fun AssetsTopBar(
             Box {
                 TextButton(onClick = onShowWallets) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        AsyncImage(model = walletInfo.icon, size = 24.dp)
+                        AsyncImage(model = walletInfo?.walletIcon, size = 24.dp)
                         Spacer(modifier = Modifier.size(8.dp))
                         Text(
-                            text = walletInfo.name,
+                            text = walletInfo?.walletName ?: "",
                             maxLines = 1,
                             overflow = TextOverflow.Companion.Ellipsis,
                             color = MaterialTheme.colorScheme.onSurface,

@@ -50,8 +50,8 @@ fun AssetListItem(
         subtitle = asset.price?.let {
             {
                 PriceInfo(
-                    it.priceValueFormated,
-                    it.dayChangePercentageFormatted,
+                    it.valueFormated,
+                    it.changePercentageFormatted,
                     it.state,
                     modifier,
                 )

@@ -6,7 +6,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class PriceableValueTest {
+class EquivalentValueTest {
 
     @Test
     fun testPriceableValue_stateUp() {
@@ -39,7 +39,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_dayChangePercentageFormattedPositive() {
         val price = createTestPriceableValue(dayChangePercentage = 2.5)
-        val formatted = price.dayChangePercentageFormatted
+        val formatted = price.changePercentageFormatted
 
         assertEquals("+2.50%", formatted)
     }
@@ -47,7 +47,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_dayChangePercentageFormattedNegative() {
         val price = createTestPriceableValue(dayChangePercentage = -5.2)
-        val formatted = price.dayChangePercentageFormatted
+        val formatted = price.changePercentageFormatted
 
         assertEquals("-5.20%", formatted)
     }
@@ -55,7 +55,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_dayChangePercentageFormattedZero() {
         val price = createTestPriceableValue(dayChangePercentage = 0.0)
-        val formatted = price.dayChangePercentageFormatted
+        val formatted = price.changePercentageFormatted
 
         assertEquals("0.00%", formatted)
     }
@@ -63,7 +63,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_dayChangePercentageFormattedNull() {
         val price = createTestPriceableValue(dayChangePercentage = null)
-        val formatted = price.dayChangePercentageFormatted
+        val formatted = price.changePercentageFormatted
 
         assertEquals("0.00%", formatted)
     }
@@ -71,7 +71,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_priceValueFormattedWithNull() {
         val price = createTestPriceableValue(priceValue = null)
-        val formatted = price.priceValueFormated
+        val formatted = price.valueFormated
 
         assertEquals("", formatted)
     }
@@ -79,7 +79,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_priceValueFormattedWithNaN() {
         val price = createTestPriceableValue(priceValue = Double.NaN)
-        val formatted = price.priceValueFormated
+        val formatted = price.valueFormated
 
         assertEquals("", formatted)
     }
@@ -87,7 +87,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_priceValueFormattedWithZero() {
         val price = createTestPriceableValue(priceValue = 0.0)
-        val formatted = price.priceValueFormated
+        val formatted = price.valueFormated
 
         assertTrue("Formatted zero price should not be empty", formatted.isNotEmpty())
     }
@@ -95,7 +95,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_priceValueFormattedWithLowValue() {
         val price = createTestPriceableValue(priceValue = 0.0025)
-        val formatted = price.priceValueFormated
+        val formatted = price.valueFormated
 
         assertTrue("Formatted low price should not be empty", formatted.isNotEmpty())
     }
@@ -103,7 +103,7 @@ class PriceableValueTest {
     @Test
     fun testPriceableValue_priceValueFormattedWithNegative() {
         val price = createTestPriceableValue(priceValue = -100.0)
-        val formatted = price.priceValueFormated
+        val formatted = price.valueFormated
 
         assertTrue("Formatted negative price should not be empty", formatted.isNotEmpty())
     }
@@ -116,11 +116,11 @@ class PriceableValueTest {
             currency = Currency.USD
         )
 
-        assertEquals(50000.0, price.priceValue!!, 0.01)
-        assertEquals(3.5, price.dayChangePercentage!!, 0.01)
+        assertEquals(50000.0, price.value!!, 0.01)
+        assertEquals(3.5, price.changePercentage!!, 0.01)
         assertEquals(Currency.USD, price.currency)
         assertEquals(PriceState.Up, price.state)
-        assertEquals("+3.50%", price.dayChangePercentageFormatted)
+        assertEquals("+3.50%", price.changePercentageFormatted)
     }
 
     @Test
@@ -154,11 +154,11 @@ class PriceableValueTest {
         currency: Currency = Currency.USD,
         priceValue: Double? = 1000.0,
         dayChangePercentage: Double? = 0.0
-    ): PriceableValue {
-        return object : PriceableValue {
+    ): EquivalentValue {
+        return object : EquivalentValue {
             override val currency: Currency = currency
-            override val priceValue: Double? = priceValue
-            override val dayChangePercentage: Double? = dayChangePercentage
+            override val value: Double? = priceValue
+            override val changePercentage: Double? = dayChangePercentage
         }
     }
 }

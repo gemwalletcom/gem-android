@@ -168,10 +168,10 @@ class AssetInfoDataAggregateImplTest {
 
         assertNotNull(aggregate.price)
         assertEquals(Currency.USD, aggregate.price?.currency)
-        assertEquals(50000.0, aggregate.price?.priceValue)
-        assertEquals("\$50,000.00", aggregate.price?.priceValueFormated)
-        assertEquals(-5.000002, aggregate.price?.dayChangePercentage)
-        assertEquals("-5.00%", aggregate.price?.dayChangePercentageFormatted)
+        assertEquals(50000.0, aggregate.price?.value)
+        assertEquals("\$50,000.00", aggregate.price?.valueFormated)
+        assertEquals(-5.000002, aggregate.price?.changePercentage)
+        assertEquals("-5.00%", aggregate.price?.changePercentageFormatted)
         assertEquals(PriceState.Down, aggregate.price?.state)
     }
 
@@ -183,8 +183,8 @@ class AssetInfoDataAggregateImplTest {
         )
         val aggregate = AssetInfoDataAggregateImpl(assetInfo, hideBalance = false)
 
-        assertEquals(-0.000006, aggregate.price?.dayChangePercentage)
-        assertEquals("0.00%", aggregate.price?.dayChangePercentageFormatted)
+        assertEquals(-0.000006, aggregate.price?.changePercentage)
+        assertEquals("0.00%", aggregate.price?.changePercentageFormatted)
         assertEquals(PriceState.None, aggregate.price?.state)
     }
 
@@ -196,8 +196,8 @@ class AssetInfoDataAggregateImplTest {
         )
         val aggregate = AssetInfoDataAggregateImpl(assetInfo, hideBalance = false)
 
-        assertEquals(0.000006, aggregate.price?.dayChangePercentage)
-        assertEquals("0.00%", aggregate.price?.dayChangePercentageFormatted)
+        assertEquals(0.000006, aggregate.price?.changePercentage)
+        assertEquals("0.00%", aggregate.price?.changePercentageFormatted)
         assertEquals(PriceState.None, aggregate.price?.state)
     }
 
@@ -211,7 +211,7 @@ class AssetInfoDataAggregateImplTest {
             ),
             hideBalance = false
         ).let { aggregate ->
-            assertEquals("-0.06%", aggregate.price?.dayChangePercentageFormatted)
+            assertEquals("-0.06%", aggregate.price?.changePercentageFormatted)
             assertEquals(PriceState.Down, aggregate.price?.state)
         }
         AssetInfoDataAggregateImpl(
@@ -221,7 +221,7 @@ class AssetInfoDataAggregateImplTest {
             ),
             hideBalance = false
         ).let { aggregate ->
-            assertEquals("-0.02%", aggregate.price?.dayChangePercentageFormatted)
+            assertEquals("-0.02%", aggregate.price?.changePercentageFormatted)
             assertEquals(PriceState.Down, aggregate.price?.state)
         }
 
@@ -232,7 +232,7 @@ class AssetInfoDataAggregateImplTest {
             ),
             hideBalance = false
         ).let { aggregate ->
-            assertEquals("+0.06%", aggregate.price?.dayChangePercentageFormatted)
+            assertEquals("+0.06%", aggregate.price?.changePercentageFormatted)
             assertEquals(PriceState.Up, aggregate.price?.state)
         }
 
@@ -243,7 +243,7 @@ class AssetInfoDataAggregateImplTest {
             ),
             hideBalance = false
         ).let { aggregate ->
-            assertEquals("+0.02%", aggregate.price?.dayChangePercentageFormatted)
+            assertEquals("+0.02%", aggregate.price?.changePercentageFormatted)
             assertEquals(PriceState.Up, aggregate.price?.state)
         }
     }
@@ -357,7 +357,7 @@ class AssetInfoDataAggregateImplTest {
 
         assertNotNull(aggregate.price)
         assertEquals(Currency.EUR, aggregate.price?.currency)
-        assertEquals(3000.0, aggregate.price?.priceValue)
+        assertEquals(3000.0, aggregate.price?.value)
     }
 
     @Test

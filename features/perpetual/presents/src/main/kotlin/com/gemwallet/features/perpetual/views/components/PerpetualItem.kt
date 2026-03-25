@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.domains.perpetual.aggregates.PerpetualDataAggregate
-import com.gemwallet.android.domains.price.values.PriceableValue
+import com.gemwallet.android.domains.price.values.EquivalentValue
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.DropDownContextItem
@@ -82,13 +82,13 @@ fun PerpetualItem(
         listPosition = listPosition,
         leading = @Composable { IconWithBadge(item.asset) },
         title = @Composable { ListItemTitleText(item.asset.name) },
-        subtitle = if (item.price.priceValue == null || item.price.priceValue == 0.0) {
+        subtitle = if (item.price.value == null || item.price.value == 0.0) {
             null
         } else {
             {
                 PriceInfo(
-                    price = item.price.priceValueFormated,
-                    changes = item.price.dayChangePercentageFormatted,
+                    price = item.price.valueFormated,
+                    changes = item.price.changePercentageFormatted,
                     state = item.price.state,
                     style = MaterialTheme.typography.bodyMedium,
                     internalPadding = 4.dp
@@ -121,10 +121,10 @@ private fun PerpetualItemPreview() {
         )
         override val isPinned: Boolean = true
         override val icon: Any = asset
-        override val price = object : PriceableValue {
+        override val price = object : EquivalentValue {
             override val currency = Currency.USD
-            override val priceValue = 95420.50
-            override val dayChangePercentage = 2.5
+            override val value = 95420.50
+            override val changePercentage = 2.5
         }
         override val volume = "$15.0B"
     }
