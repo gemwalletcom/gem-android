@@ -51,7 +51,6 @@ mockkVersion = "1.14.9"
 espressoCore = "3.7.0"
 
 wallet-core = "4.3.22"
-gemstone = "1.0.11"
 
 glance-widgets = "1.1.1"
 
@@ -119,9 +118,6 @@ walletconnect-web3wallet = { module = "com.reown:walletkit" }
 
 # Wallet - core
 wallet-core = { module = "com.trustwallet:wallet-core", version.ref = "wallet-core" }
-
-# Gem Stone
-gemstone = { module = "com.gemwallet.gemstone:gemstone", version.ref = "gemstone" }
 
 # qr code scanning
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing-core" }
