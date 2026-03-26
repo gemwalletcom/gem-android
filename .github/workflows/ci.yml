@@ -58,6 +58,38 @@ jobs:
       - name: Setup NDK
         run: just install-ndk
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-linux-android,aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Cache cargo-ndk binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-ndk
+          key: ${{ runner.os }}-cargo-ndk-4.1.2
+
+      - name: Install cargo-ndk
+        run: command -v cargo-ndk || cargo install cargo-ndk@4.1.2 --locked
+
+      - name: Cache Cargo registry and git
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-deps-${{ hashFiles('core/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-deps-
+
+      - name: Cache Cargo target
+        uses: actions/cache@v4
+        with:
+          path: core/target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('core/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-
+
       - name: Cache AVD
         uses: actions/cache@v4
         id: avd-cache
