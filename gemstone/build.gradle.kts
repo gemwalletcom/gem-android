@@ -32,8 +32,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -50,7 +50,7 @@ android {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -81,13 +81,11 @@ val buildCargoNdk = tasks.register<Exec>("buildCargoNdk") {
     )
 }
 
-afterEvaluate {
-    tasks.matching { it.name.matches(Regex("compile(Debug|Release)Kotlin")) }.configureEach {
-        dependsOn(bindgenKotlin)
-    }
-    tasks.matching { it.name.matches(Regex("merge(Debug|Release)JniLibFolders")) }.configureEach {
-        dependsOn(buildCargoNdk)
-    }
+tasks.matching { it.name.matches(Regex("compile(Debug|Release)Kotlin")) }.configureEach {
+    dependsOn(bindgenKotlin)
+}
+tasks.matching { it.name.matches(Regex("merge(Debug|Release)JniLibFolders")) }.configureEach {
+    dependsOn(buildCargoNdk)
 }
 
 dependencies {
